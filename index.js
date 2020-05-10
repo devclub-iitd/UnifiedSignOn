@@ -1,5 +1,5 @@
 // export the .env file
-require('dotenv').config()
+require('dotenv').config();
 
 // Import the rest of our application.
-module.exports = require('./src/server')
+module.exports = require('./src/server');
