@@ -1,0 +1,34 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <%- include('partials/assets'); %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/login.css" />
+        <title>Login</title>
+    </head>
+    <body>
+        <%- include('partials/header'); %>
+        <div class="rootContainer">
+            <div class="pageTitle">
+                Login
+            </div>
+            <div class="miniLine"></div>
+            <div class="formContainer">
+                <form action="#">
+                    <input type="email" placeholder="Enter your email ..." required />
+                    <input type="password" placeholder="Enter your password ..." required />
+                    <button type="submit" class="btn">
+                        Let's go
+                    </button>
+                </form>
+                <div class="messageContainer">
+                    <!-- Custom error handeler
+                        For error insert the content and add class "error"
+                        For success insert the content and add class "success"
+                    -->
+                </div>
+            </div>
+        </div>
+        <%- include('partials/footer'); %>
+    </body>
+</html>

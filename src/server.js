@@ -2,8 +2,16 @@ const express = require('express');
 
 const app = express();
 
+app.set('view engine', 'ejs');
+app.set('views', `${__dirname}/views`);
+app.use(express.static(`${__dirname}/public`));
+
 app.get('/', (req, res) => {
-    res.send('Welcome to the Auth Server !!');
+    res.render('index');
+});
+
+app.get('/login', (req, res) => {
+    res.render('login');
 });
 
 app.listen(process.env.PORT, () => {
