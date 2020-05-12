@@ -4,7 +4,8 @@
     "description": "A unified sign on system",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"No tests for now 😙\" && exit 0"
+        "test": "echo \"No tests for now 😙\" && exit 0",
+        "lint": "./node_modules/eslint/bin/eslint.js ."
     },
     "repository": {
         "type": "git",
