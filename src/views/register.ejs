@@ -3,7 +3,7 @@
         <meta charset="UTF-8" />
         <%- include('partials/assets'); %>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="css/register.css" />
+        <link rel="stylesheet" href="/css/register.css" />
         <title>Register</title>
     </head>
     <body>
@@ -19,12 +19,30 @@
             <div class="formContainer">
                 <form action="#">
                     <div class="inputRow">
-                        <input id="inputRow1" type="text" placeholder="First Name..." required />
-                        <input id="inputRow2" type="text" placeholder="Last Name..." required />
+                        <input
+                            id="inputRow1"
+                            type="text"
+                            placeholder="First Name..."
+                            required
+                        />
+                        <input
+                            id="inputRow2"
+                            type="text"
+                            placeholder="Last Name..."
+                            required
+                        />
                     </div>
                     <input type="text" placeholder="Username..." required />
-                    <input type="email" placeholder="Enter your email ..." required />
-                    <input type="password" placeholder="Enter your password ..." required />
+                    <input
+                        type="email"
+                        placeholder="Enter your email ..."
+                        required
+                    />
+                    <input
+                        type="password"
+                        placeholder="Enter your password ..."
+                        required
+                    />
                     <button type="submit" class="btn">
                         Let's go
                     </button>
