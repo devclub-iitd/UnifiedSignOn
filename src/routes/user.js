@@ -45,7 +45,9 @@ router.post('/login', async (req, res, next) => {
             user: {
                 id: user._id,
                 email: user.email,
+                role: user.role,
             },
+            iss: 'auth.devclub.in',
         };
 
         // create a token
@@ -104,7 +106,9 @@ router.post('/register', async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
+                role: user.role,
             },
+            iss: 'auth.devclub.in',
         };
 
         // create a token
