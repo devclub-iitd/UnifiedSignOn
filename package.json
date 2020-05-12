@@ -13,7 +13,8 @@
         "lint-fixes": "rimraf dist/;npm run eslint-fix;npm run prettier-fix",
         "build": "rimraf dist/ && babel ./src --out-dir dist/ --copy-files",
         "start": "npm run build && node dist/server.js",
-        "clean": "rimraf dist/"
+        "clean": "rimraf dist/",
+        "devStart": "nodemon --ignore dist/ -e coffee,js,ejs --exec npm start"
     },
     "repository": {
         "type": "git",
