@@ -1,0 +1,143 @@
+:root {
+    --theme-color: rgba(40, 116, 255, 0.872);
+    --error: #e74c3c;
+    --success: #1abc9c;
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+    outline: none;
+    font-family: 'Raleway', sans-serif;
+}
+/* HEADER */
+.header {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background-color: var(--theme-color);
+    position: fixed;
+    top: 0px;
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
+    color: white;
+    display: flex;
+    flex-direction: row;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+}
+.headerTitle {
+    margin-left: 20px;
+}
+.headerTitle span {
+    font-weight: 200;
+}
+.navCont {
+    display: flex;
+    margin-left: auto;
+    margin-right: 20px;
+    justify-content: space-around;
+    align-items: center;
+    height: 60px;
+    width: auto;
+    padding: 0px 20px;
+}
+.headerBtn {
+    height: 20px;
+    width: auto;
+    padding: 4px 25px;
+    cursor: pointer;
+    border: 1px solid rgba(240, 240, 240, 0.4);
+    line-height: 20px;
+    transition: 0.1s ease-out;
+    margin: 0px 10px;
+}
+.headerBtn:hover {
+    background-color: rgba(240, 240, 240, 0.15);
+}
+
+/* FOOTER */
+.footer {
+    min-height: 200px;
+    height: auto;
+    left: 0px;
+    right: 0px;
+    padding: 40px;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* ROOT CONTAINER */
+.rootContainer {
+    margin-top: 60px;
+    padding: 40px;
+    display: flex;
+    padding-bottom: 80px;
+    flex-direction: column;
+}
+
+/* GENERAL */
+a {
+    text-decoration: none;
+    font-size: none;
+    color: inherit;
+}
+
+.pageTitle {
+    font-size: 40px;
+    font-weight: 800;
+    margin: auto;
+    text-align: center;
+}
+.miniLine {
+    width: 40px;
+    height: 6px;
+    border-radius: 2px;
+    background-color: var(--theme-color);
+    margin: 20px auto;
+}
+.tagline {
+    text-align: center;
+    font-weight: 200;
+}
+.textParagraph {
+    width: 70%;
+    margin: 30px auto;
+    text-align: center;
+}
+.btn {
+    padding: 15px 40px;
+    font-size: 11px;
+    font-weight: 200;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    background-color: var(--theme-color);
+    border: 0px;
+    margin: 20px auto;
+    box-shadow: 0px 5px 10px 0px rgba(0, 0, 0, 0.2);
+    transition: 0.2s ease-in-out;
+}
+.fixedBtn {
+    width: 140px;
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 1.2px;
+    font-weight: 400;
+}
+.btn:hover {
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.4);
+}
+.messageContainer {
+    width: 300px;
+    text-align: center;
+    color: white;
+    margin: 20px auto;
+    line-height: 40px;
+}
+.error {
+    background-color: var(--error);
+}
+.success {
+    background-color: var(--success);
+}
