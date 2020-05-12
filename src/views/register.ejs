@@ -1,0 +1,42 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <%- include('partials/assets'); %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="css/register.css" />
+        <title>Login</title>
+    </head>
+    <body>
+        <%- include('partials/header'); %>
+        <div class="rootContainer">
+            <div class="pageTitle">
+                Register
+            </div>
+            <div class="miniLine"></div>
+            <div class="tagLine">
+                Just a couple more things to get you started
+            </div>
+            <div class="formContainer">
+                <form action="#">
+                    <div class="inputRow">
+                        <input id="inputRow1" type="text" placeholder="First Name..." required />
+                        <input id="inputRow2" type="text" placeholder="Last Name..." required />
+                    </div>
+                    <input type="text" placeholder="Username..." required />
+                    <input type="email" placeholder="Enter your email ..." required />
+                    <input type="password" placeholder="Enter your password ..." required />
+                    <button type="submit" class="btn">
+                        Let's go
+                    </button>
+                </form>
+                <div class="messageContainer">
+                    <!-- Custom error handeler
+                        For error insert the content and add class "error"
+                        For success insert the content and add class "success"
+                    -->
+                </div>
+            </div>
+        </div>
+        <%- include('partials/footer'); %>
+    </body>
+</html>

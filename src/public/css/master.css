@@ -90,6 +90,10 @@ a {
     background-color: var(--theme-color);
     margin: 20px auto;
 }
+.tagline {
+    text-align: center;
+    font-weight: 200;
+}
 .textParagraph {
     width: 70%;
     margin: 30px auto;
