@@ -13,11 +13,14 @@ app.use(express.static(`${__dirname}/public`));
 // Body Parser Middleware
 app.use(bodyParser.json());
 
-const db_url = process.env.DB_URL;
+// export the .env file
+require('dotenv').config({ path: `${__dirname}/.env` })
+
+// const db_url = process.env.DB_URL;
 
 // Connect to database
 mongoose
-    .connect(db_url, {
+    .connect('mongodb+srv://jatin:jatin@cluster0-fyl7v.mongodb.net/test?retryWrites=true&w=majority', {
         useNewUrlParser: true,
         useCreateIndex: true,
         useFindAndModify: false,
@@ -47,5 +50,5 @@ app.use('/auth', auth);
 const port = process.env.PORT;
 
 app.listen(port, () => {
-    console.log(`Server listening on ${port}!`);
+    console.log(`Server listening on ${3000}!`);
 });
