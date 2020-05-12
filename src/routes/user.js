@@ -1,7 +1,8 @@
 import express from 'express';
 import User from '../models/user';
 import bcrypt from 'bcryptjs';
-import { generate_token } from '../utils/jwt'
+import jwt from 'jsonwebtoken';
+import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
@@ -15,6 +16,9 @@ router.get('/register', (req, res) => {
 
 router.post('/login', async (req, res, next) => {
     try {
+
+        // pull out the service URL
+        const { serviceURL } = req.query;
 
         const { email, password } = req.body;
 
@@ -35,23 +39,33 @@ router.post('/login', async (req, res, next) => {
         }
 
         const payload = {
-            id: user._id,
-            email: user.email
+            user: {
+                id: user._id,
+                email: user.email
+            }
         }
 
-        // get a token
-        token = generate_token(payload);
+        // create a token
+        const token = jwt.sign(payload, secretkey, {
+            expiresIn: 60 * 10
+        })
 
-        // Return the token
-        return res.status(200).json({ token })
+        // Set the token in the header
+        res.setHeader('x-auth-token', token);
 
+        if (serviceURL) {
+            return res.redirect('http://' + serviceURL);
+        }
+
+        // where to redirect now, for now to SSO homepage
+        return res.redirect('/');
     }
     catch (err) {
         next(err);
     }
 });
 
-router.post('./register', async (req, res) => {
+router.post('/register', async (req, res) => {
     const { firstname, lastname, username, email, password } = req.body;
 
     try {
@@ -85,17 +99,22 @@ router.post('./register', async (req, res) => {
 
         // Create payload to create a token
         const payload = {
-            id: user._id,
-            email: user.email
+            user: {
+                id: user._id,
+                email: user.email
+            }
         }
 
-        // generate token
-        const token = generate_token(payload)
+        // create a token
+        const token = jwt.sign(payload, secretkey, {
+            expiresIn: 60 * 10
+        })
 
-        return token
+        // Return the token
+        return res.status(200).json({ token })
 
     } catch (err) {
-        next(err)
+        console.log(err)
     }
 });
 
