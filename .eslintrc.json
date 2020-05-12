@@ -4,7 +4,11 @@
         "es6": true,
         "node": true
     },
-    "extends": ["plugin:prettier/recommended", "airbnb-base", "prettier"],
+    "extends": [
+        "plugin:prettier/recommended",
+        "airbnb-base",
+        "prettier"
+    ],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly"
@@ -12,6 +16,11 @@
     "parserOptions": {
         "ecmaVersion": 11
     },
-    "plugins": ["prettier"],
-    "rules": {}
+    "plugins": [
+        "prettier"
+    ],
+    "rules": {
+        "no-console": "off",
+        "camelcase": "off"
+    }
 }

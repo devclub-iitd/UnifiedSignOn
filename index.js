@@ -1,3 +1,8 @@
+// add ES6 support
+require('@babel/register')({
+    presets: ['@babel/preset-env'],
+});
+
 // export the .env file
 require('dotenv').config();
 
