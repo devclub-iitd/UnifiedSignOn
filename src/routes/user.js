@@ -1,7 +1,7 @@
 import express from 'express';
-import User from '../models/user';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import User from '../models/user';
 import { secretkey } from '../config/keys';
 
 const router = express.Router();
@@ -16,7 +16,6 @@ router.get('/register', (req, res) => {
 
 router.post('/login', async (req, res, next) => {
     try {
-
         // pull out the service URL
         const { serviceURL } = req.query;
 
@@ -27,7 +26,9 @@ router.post('/login', async (req, res, next) => {
 
         // this means user doesn't exists, so throw an error TODO: add correct status to return
         if (!user) {
-            return res.status(400).json({ msg: 'Not a registered email address' });
+            return res
+                .status(400)
+                .json({ msg: 'Not a registered email address' });
         }
 
         // Compare passwords
@@ -35,32 +36,33 @@ router.post('/login', async (req, res, next) => {
 
         // Incorrect password
         if (!isMatch) {
-            return res.status(400).json({ msg: 'Password seems to be incorrect' });
+            return res
+                .status(400)
+                .json({ msg: 'Password seems to be incorrect' });
         }
 
         const payload = {
             user: {
                 id: user._id,
-                email: user.email
-            }
-        }
+                email: user.email,
+            },
+        };
 
         // create a token
         const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10
-        })
+            expiresIn: 60 * 10,
+        });
 
         // Set the token in the header
         res.setHeader('x-auth-token', token);
 
         if (serviceURL) {
-            return res.redirect('http://' + serviceURL);
+            return res.redirect(`http://${serviceURL}`);
         }
 
         // where to redirect now, for now to SSO homepage
         return res.redirect('/');
-    }
-    catch (err) {
+    } catch (err) {
         next(err);
     }
 });
@@ -76,16 +78,16 @@ router.post('/register', async (req, res) => {
         if (user) {
             return res
                 .status(400)
-                .json({ msg: "User already exists with same email" });
+                .json({ msg: 'User already exists with same email' });
         }
 
         // Create a new user of type `User`
         user = new User({
             first_name: firstname,
             last_name: lastname,
-            username: username,
-            email: email,
-            password: password
+            username,
+            email,
+            password,
         });
 
         // encrypt the password using bcrypt
@@ -101,20 +103,19 @@ router.post('/register', async (req, res) => {
         const payload = {
             user: {
                 id: user._id,
-                email: user.email
-            }
-        }
+                email: user.email,
+            },
+        };
 
         // create a token
         const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10
-        })
+            expiresIn: 60 * 10,
+        });
 
         // Return the token
-        return res.status(200).json({ token })
-
+        return res.status(200).json({ token });
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
 });
 

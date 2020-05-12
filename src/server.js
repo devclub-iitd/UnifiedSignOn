@@ -14,7 +14,7 @@ app.use(express.static(`${__dirname}/public`));
 app.use(bodyParser.json());
 
 // export .env from previous folder
-require('dotenv').config({ path: `${__dirname}/../.env` })
+require('dotenv').config({ path: `${__dirname}/../.env` });
 
 const db_url = process.env.DB_URL;
 
