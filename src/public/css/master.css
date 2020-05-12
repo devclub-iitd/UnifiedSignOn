@@ -22,6 +22,8 @@
     color: white;
     display: flex;
     flex-direction: row;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
 }
 .headerTitle {
     margin-left: 20px;
@@ -76,7 +78,9 @@
 a {
     text-decoration: none;
     font-size: none;
+    color: inherit;
 }
+
 .pageTitle {
     font-size: 40px;
     font-weight: 800;
