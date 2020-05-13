@@ -5,7 +5,7 @@ import { secretkey } from '../config/keys';
 const router = express.Router();
 
 // post route to check validity of tokens, clients will hit this route.
-router.post('/', (res, req) => {
+router.post('/', (req, res) => {
 
     // pull out the token from the header for now
     // later we will extract from the cookie
@@ -15,7 +15,7 @@ router.post('/', (res, req) => {
     try {
         const decoded = verify(token, secretkey);
 
-        user = decoded.user;
+        const user = decoded.user;
 
         return res.status(200).json({ user: user });
 
@@ -34,7 +34,7 @@ router.post('/getuser', (res, req) => {
     try {
         const decoded = verify(token, secretkey);
 
-        user = decoded.user;
+        const user = decoded.user;
 
         // sent the user data to the frontend
         return res.status(200).json({ user: user });

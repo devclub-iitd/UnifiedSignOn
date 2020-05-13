@@ -64,6 +64,7 @@ router.post('/login', async (req, res, next) => {
                 email: user.email,
                 firstname: user.firstname,
                 lastname: user.lastname,
+                username: user.username
             },
         };
 
@@ -129,6 +130,7 @@ router.post('/register', async (req, res) => {
                 email: user.email,
                 firstname: user.firstname,
                 lastname: user.lastname,
+                username: user.username
             },
         };
 
