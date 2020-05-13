@@ -7,6 +7,13 @@ import { secretkey } from '../config/keys';
 const router = express.Router();
 
 router.get('/login', (req, res) => {
+    /*
+    TODO - 
+        ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
+        USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
+        PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
+        OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
+    */
     // we pass the error handeling data to page
     res.render('login', { message: '', error: false });
 });
