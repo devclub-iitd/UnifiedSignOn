@@ -3,6 +3,7 @@
         <meta charset="UTF-8" />
         <%- include('partials/assets'); %>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/index.css" />
         <title>Home</title>
     </head>
     <body>
@@ -13,16 +14,49 @@
             </div>
             <div class="miniLine"></div>
             <p class="textParagraph">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto
-                ab saepe veniam, nihil delectus quidem nobis commodi praesentium
-                debitis voluptate magnam eligendi odio perferendis repellendus
-                eos est cumque sapiente impedit?
+                <b>Welcome Aryan,</b>
+                this is your one stop account for everything Devclub
             </p>
-            <a href="https://devclub.in/#/" target="_blank">
-                <div class="btn fixedBtn">
-                    visit devclub
+            <div class="userDetailContainer">
+                <div class="detail">
+                    <span class="detailTitle">
+                        Name:
+                    </span>
+                    <span class="detailContent">
+                        Aryan Gupta
+                    </span>
                 </div>
-            </a>
+                <div class="detailMiniLine"></div>
+                <div class="detail">
+                    <span class="detailTitle">
+                        Email ID:
+                    </span>
+                    <span class="detailContent">
+                        aryanguptaleo@gmail.com
+                    </span>
+                </div>
+                <div class="detailMiniLine"></div>
+                <div class="detail">
+                    <span class="detailTitle">
+                        Username:
+                    </span>
+                    <span class="detailContent">
+                        aryangupta
+                    </span>
+                </div>
+            </div>
+            <div class="btnContainer">
+                <a href="/">
+                    <div class="btn fixedBtn">
+                        settings
+                    </div>
+                </a>
+                <a href="https://devclub.in/#/" target="_blank">
+                    <div class="btn fixedBtn">
+                        visit devclub
+                    </div>
+                </a>
+            </div>
         </div>
         <%- include('partials/footer.ejs'); %>
     </body>

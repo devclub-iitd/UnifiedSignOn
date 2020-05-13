@@ -7,11 +7,19 @@ import { secretkey } from '../config/keys';
 const router = express.Router();
 
 router.get('/login', (req, res) => {
-    res.render('login');
+    /*
+    TODO - 
+        ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
+        USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
+        PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
+        OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
+    */
+    // we pass the error handeling data to page
+    res.render('login', { message: '', error: false });
 });
 
 router.get('/register', (req, res) => {
-    res.render('register');
+    res.render('register', { message: '', error: false });
 });
 
 router.post('/login', async (req, res, next) => {
@@ -26,9 +34,10 @@ router.post('/login', async (req, res, next) => {
 
         // this means user doesn't exists, so throw an error TODO: add correct status to return
         if (!user) {
-            return res
-                .status(400)
-                .json({ msg: 'Not a registered email address' });
+            return res.render('login', {
+                message: 'Not a registered email address',
+                error: true,
+            });
         }
 
         // Compare passwords
@@ -36,9 +45,10 @@ router.post('/login', async (req, res, next) => {
 
         // Incorrect password
         if (!isMatch) {
-            return res
-                .status(400)
-                .json({ msg: 'Password seems to be incorrect' });
+            return res.render('login', {
+                message: 'Password seems to be incorrect',
+                error: true,
+            });
         }
 
         const payload = {
@@ -70,15 +80,17 @@ router.post('/login', async (req, res, next) => {
 router.post('/register', async (req, res) => {
     const { firstname, lastname, username, email, password } = req.body;
 
+    // TODO: ADD A USERNAME CHECK AS WELL, THAT ALSO HAS TO BE UNIQUE
     try {
         // try to find the user in the database
         let user = await User.findOne({ email });
 
         // User already exists
         if (user) {
-            return res
-                .status(400)
-                .json({ msg: 'User already exists with same email' });
+            return res.render('register', {
+                message: 'User already exists with same email',
+                error: true,
+            });
         }
 
         // Create a new user of type `User`

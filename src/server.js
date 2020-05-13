@@ -35,7 +35,12 @@ mongoose
 
 // Root page
 app.get('/', (req, res) => {
-    res.render('index');
+    if (req.query.token) {
+        const { token } = req.query;
+        res.render('index', { token });
+    } else {
+        res.render('index', { token: '' });
+    }
 });
 
 // About Page
