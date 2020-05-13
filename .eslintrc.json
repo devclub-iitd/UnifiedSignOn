@@ -13,5 +13,11 @@
         "ecmaVersion": 11
     },
     "plugins": ["prettier"],
-    "rules": {}
+    "rules": {
+        "no-console": "off",
+        "camelcase": "off",
+        "import/prefer-default-export": "off",
+        "consistent-return": "off",
+        "no-underscore-dangle": "off"
+    }
 }
