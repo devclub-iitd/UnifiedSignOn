@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import user from './routes/user';
 import auth from './routes/auth';
+import profile from './routes/profile';
 
 const app = express();
 
@@ -35,11 +36,12 @@ mongoose
 
 // Root page
 app.get('/', (req, res) => {
+    const serviceURL = '';
     if (req.query.token) {
         const { token } = req.query;
-        res.render('index', { token });
+        res.render('index', { token, serviceURL });
     } else {
-        res.render('index', { token: '' });
+        res.render('index', { token: '', serviceURL });
     }
 });
 
@@ -51,6 +53,7 @@ app.get('/about', (req, res) => {
 // Set Routes
 app.use('/user', user);
 app.use('/auth', auth);
+app.use('/profile', profile);
 
 const port = process.env.PORT;
 
