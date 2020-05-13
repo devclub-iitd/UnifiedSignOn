@@ -21,7 +21,7 @@ router.get('/login', (req, res) => {
 
     // We should pass the service URL as well to the login page.
     // we pass the error handeling data to page
-    res.render('login', { message: '', error: false, serviceURL: serviceURL });
+    res.render('login', { message: '', error: false, serviceURL });
 });
 
 router.get('/register', (req, res) => {
@@ -30,7 +30,6 @@ router.get('/register', (req, res) => {
 
 router.post('/login', async (req, res, next) => {
     try {
-
         const { email, password, serviceURL } = req.body;
 
         // try to find the user in the database
@@ -41,7 +40,7 @@ router.post('/login', async (req, res, next) => {
             return res.render('login', {
                 message: 'Not a registered email address',
                 error: true,
-                serviceURL: serviceURL
+                serviceURL,
             });
         }
 
@@ -53,7 +52,7 @@ router.post('/login', async (req, res, next) => {
             return res.render('login', {
                 message: 'Password seems to be incorrect',
                 error: true,
-                serviceURL: serviceURL
+                serviceURL,
             });
         }
 
@@ -64,7 +63,7 @@ router.post('/login', async (req, res, next) => {
                 email: user.email,
                 firstname: user.firstname,
                 lastname: user.lastname,
-                username: user.username
+                username: user.username,
             },
         };
 
@@ -74,16 +73,15 @@ router.post('/login', async (req, res, next) => {
         });
 
         // now build a service URL so that
-        var finalServiceURL = null
+        let finalServiceURL = null;
 
         // only build finalService URL if service URL was present.
         if (serviceURL) {
-            finalServiceURL = serviceURL + '&token=' + token;
+            finalServiceURL = `${serviceURL}&token=${token}`;
         }
 
         // render homepage to store token and then redirect to finalServiceURL if possible
-        res.render('index', { token: token, serviceURL: finalServiceURL })
-
+        res.render('index', { token, serviceURL: finalServiceURL });
     } catch (err) {
         next(err);
     }
@@ -130,7 +128,7 @@ router.post('/register', async (req, res) => {
                 email: user.email,
                 firstname: user.firstname,
                 lastname: user.lastname,
-                username: user.username
+                username: user.username,
             },
         };
 

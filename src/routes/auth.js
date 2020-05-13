@@ -6,7 +6,6 @@ const router = express.Router();
 
 // post route to check validity of tokens, clients will hit this route.
 router.post('/', (req, res) => {
-
     // pull out the token from the header for now
     // later we will extract from the cookie
     const token = req.header('x-auth-token');
@@ -15,13 +14,12 @@ router.post('/', (req, res) => {
     try {
         const decoded = verify(token, secretkey);
 
-        const user = decoded.user;
+        const { user } = decoded;
 
-        return res.status(200).json({ user: user });
-
+        return res.status(200).json({ user });
     } catch (err) {
         // I wasn't able to verify the token as it was invalid
-        return res.status(401).json({ msg: "Error, token not valid" });
+        return res.status(401).json({ msg: 'Error, token not valid' });
     }
 });
 
@@ -34,15 +32,14 @@ router.post('/getuser', (res, req) => {
     try {
         const decoded = verify(token, secretkey);
 
-        const user = decoded.user;
+        const { user } = decoded;
 
         // sent the user data to the frontend
-        return res.status(200).json({ user: user });
-
+        return res.status(200).json({ user });
     } catch (err) {
         // I wasn't able to verify the token as it was invalid
-        return res.status(401).json({ msg: "Error, token not valid" });
+        return res.status(401).json({ msg: 'Error, token not valid' });
     }
-})
+});
 
 export default router;
