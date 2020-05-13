@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     try {
         const decoded = verify(token, secretkey);
         const { user } = decoded;
-        res.json(user);
+        res.json({ user });
     } catch (err) {
         res.json({
             err: true,
