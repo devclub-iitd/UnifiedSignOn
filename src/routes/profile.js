@@ -4,13 +4,12 @@ import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-    const { token } = req.data;
-
+router.post('/', (req, res) => {
+    const { token } = req.body;
     try {
         const decoded = verify(token, secretkey);
         const { user } = decoded;
-        res.json({ user });
+        res.send({ user });
     } catch (err) {
         res.json({
             err: true,

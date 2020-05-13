@@ -72,16 +72,8 @@ router.post('/login', async (req, res, next) => {
             expiresIn: 60 * 10,
         });
 
-        // now build a service URL so that
-        let finalServiceURL = null;
-
-        // only build finalService URL if service URL was present.
-        if (serviceURL) {
-            finalServiceURL = `${serviceURL}&token=${token}`;
-        }
-
         // render homepage to store token and then redirect to finalServiceURL if possible
-        res.render('index', { token, serviceURL: finalServiceURL });
+        res.redirect(`/?token=${token}&serviceURL=${serviceURL}`);
     } catch (err) {
         next(err);
     }
@@ -137,10 +129,14 @@ router.post('/register', async (req, res) => {
             expiresIn: 60 * 10,
         });
 
-        // Return the token
-        return res.status(200).json({ token });
+        // set the token and serviceURL = null in the query
+        res.redirect(`/?token=${token}`);
     } catch (err) {
         console.log(err);
+        res.render('register', {
+            message: 'WHOOPS!! A server error occured, please try again later',
+            error: true,
+        });
     }
 });
 
