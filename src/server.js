@@ -12,6 +12,8 @@ app.set('views', `${__dirname}/views`);
 app.use(express.static(`${__dirname}/public`));
 
 // Body Parser Middleware
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
 // export .env from previous folder
