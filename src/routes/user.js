@@ -138,9 +138,13 @@ router.post('/register', async (req, res) => {
         });
 
         // Return the token
-        return res.status(200).json({ token });
+        res.render('index', { token, serviceURL: null });
     } catch (err) {
         console.log(err);
+        res.render('register', {
+            message: 'WHOOPS!! A server error occured, please try again later',
+            error: true,
+        });
     }
 });
 
