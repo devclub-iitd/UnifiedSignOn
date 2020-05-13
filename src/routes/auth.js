@@ -35,7 +35,7 @@ router.get('/', (req, res) => {
         }
 
         // else redirect to SSO homepage
-        return res.redirect('/');
+        return res.redirect(`/?token=${token}`);
     } catch (err) {
         // I wasn't able to verify the token as it was invalid
         // So in any case I should redirect to login
