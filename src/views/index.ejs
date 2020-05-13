@@ -1,197 +1,197 @@
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <%- include('partials/assets'); %>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="/css/index.css" />
-        <title>Home</title>
-        <script>
-            $(document).ready(() => {
-                const clearDisplay = () => {
-                    // Initially no section displayed
-                    $('.userRedirecting').css('display', 'none');
-                    $('.userLoggedIn').css('display', 'none');
-                    $('.userLoggedOut').css('display', 'none');
-                };
-                clearDisplay();
-                // function to send an ajax request to backend and get user details
-                const getUserDetails = (token) => {
-                    // send ajax request to backend to get user details
-                    $.ajax({
-                        type: 'POST',
-                        url: '/profile',
-                        data: { token },
-                        success: (res) => {
-                            // if request succeed then set user details
-                            if (!res.err) {
-                                const { user } = res;
-                                const {
-                                    firstname,
-                                    lastname,
-                                    email,
-                                    username,
-                                } = user;
-                                const userFullName = `${firstname} ${lastname}`;
-                                clearDisplay();
-                                $('#userFirstName').html(firstname);
-                                $('.userLoggedIn .userFullName').html(
-                                    userFullName
-                                );
-                                $('.userLoggedIn .userEmailID').html(email);
-                                $('.userLoggedIn .userUsername').html(username);
-                                $('.userLoggedIn').css('display', 'flex');
-                            } else {
-                                window.localStorage.removeItem('token');
-                                const { message } = res;
-                                clearDisplay();
-                                $('#userFirstName').html('');
-                                $('.userLoggedIn .userFullName').html('');
-                                $('.userLoggedIn .userEmailID').html('');
-                                $('.userLoggedIn .userUsername').html('');
-                                $('.messageContainer').html(message);
-                                $('.messageContainer').css('display', 'block');
-                                $('.userLoggedOut').css('display', 'block');
-                                setTimeout(() => {
-                                    $('.messageContainer').css(
-                                        'display',
-                                        'none'
-                                    );
-                                }, 3000);
-                            }
-                        },
-                        error: (res) => {
-                            // if request fails remove the local storage token
-                            const { err, message } = res;
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/index.css" />
+    <title>Home</title>
+    <script>
+        $(document).ready(() => {
+            const clearDisplay = () => {
+                // Initially no section displayed
+                $('.userRedirecting').css('display', 'none');
+                $('.userLoggedIn').css('display', 'none');
+                $('.userLoggedOut').css('display', 'none');
+            };
+            clearDisplay();
+            // function to send an ajax request to backend and get user details
+            const getUserDetails = (token) => {
+                // send ajax request to backend to get user details
+                $.ajax({
+                    type: 'POST',
+                    url: '/profile',
+                    data: { token },
+                    success: (res) => {
+                        // if request succeed then set user details
+                        if (!res.err) {
+                            const { user } = res;
+                            const {
+                                firstname,
+                                lastname,
+                                email,
+                                username,
+                            } = user;
+                            const userFullName = `${firstname} ${lastname}`;
+                            clearDisplay();
+                            $('#userFirstName').html(firstname);
+                            $('.userLoggedIn .userFullName').html(
+                                userFullName
+                            );
+                            $('.userLoggedIn .userEmailID').html(email);
+                            $('.userLoggedIn .userUsername').html(username);
+                            $('.userLoggedIn').css('display', 'flex');
+                        } else {
                             window.localStorage.removeItem('token');
+                            const { message } = res;
                             clearDisplay();
                             $('#userFirstName').html('');
                             $('.userLoggedIn .userFullName').html('');
                             $('.userLoggedIn .userEmailID').html('');
                             $('.userLoggedIn .userUsername').html('');
-                            $('.messageContainer').html(
-                                'An error occurred, Please reload the page'
-                            );
+                            $('.messageContainer').html(message);
                             $('.messageContainer').css('display', 'block');
                             $('.userLoggedOut').css('display', 'block');
                             setTimeout(() => {
-                                $('.messageContainer').css('display', 'none');
+                                $('.messageContainer').css(
+                                    'display',
+                                    'none'
+                                );
                             }, 3000);
-                        },
-                    });
-                };
-
-                let serverToken, serviceURL;
-
-                if ($('#token').length > 0) {
-                    let serverToken = $('#token').html();
-                    // save token in local storage
-                    window.localStorage.setItem('token', serverToken);
-                    if ($('#serviceURL').length > 0) {
+                        }
+                    },
+                    error: (res) => {
+                        // if request fails remove the local storage token
+                        const { err, message } = res;
+                        window.localStorage.removeItem('token');
                         clearDisplay();
-                        $('.userRedirecting').css('display', 'flex');
-                        let serviceURL = $('#serviceURL').html();
-                        // redirect to service url
-                        window.location.href = serviceURL;
-                    } else {
-                        getUserDetails(serverToken);
-                    }
-                } else {
-                    let localToken = window.localStorage.getItem('token');
-
-                    if (localToken !== null) {
-                        getUserDetails(localToken);
-                    } else {
-                        clearDisplay();
+                        $('#userFirstName').html('');
+                        $('.userLoggedIn .userFullName').html('');
+                        $('.userLoggedIn .userEmailID').html('');
+                        $('.userLoggedIn .userUsername').html('');
+                        $('.messageContainer').html(
+                            'An error occurred, Please reload the page'
+                        );
+                        $('.messageContainer').css('display', 'block');
                         $('.userLoggedOut').css('display', 'block');
-                    }
+                        setTimeout(() => {
+                            $('.messageContainer').css('display', 'none');
+                        }, 3000);
+                    },
+                });
+            };
+
+            let serverToken, serviceURL;
+
+            if ($('#token').length > 0) {
+                let serverToken = $('#token').html();
+                // save token in local storage
+                window.localStorage.setItem('token', serverToken);
+                if ($('#serviceURL').length > 0) {
+                    clearDisplay();
+                    $('.userRedirecting').css('display', 'flex');
+                    let serviceURL = $('#serviceURL').html();
+                    // redirect to service url
+                    window.location.href = serviceURL;
+                } else {
+                    getUserDetails(serverToken);
                 }
-            });
-        </script>
-    </head>
-    <body>
-        <%- include('partials/header'); %>
-        <div class="rootContainer">
-            <% if (token) { %>
-            <div class="hiddenElement" id="token"><%= token %></div>
-            <% } %> <% if (serviceURL) { %>
-            <div class="hiddenELement" id="serviceURL"><%= serviceURL %></div>
-            <% } %>
-            <div class="pageTitle">
-                Single Sign On
+            } else {
+                let localToken = window.localStorage.getItem('token');
+
+                if (localToken !== null) {
+                    getUserDetails(localToken);
+                } else {
+                    clearDisplay();
+                    $('.userLoggedOut').css('display', 'block');
+                }
+            }
+        });
+    </script>
+</head>
+
+<body>
+    <%- include('partials/header'); %>
+    <div class="rootContainer">
+        <% if (token) { %>
+        <div class="hiddenElement" id="token"><%= token %></div>
+        <% } %> <% if (serviceURL) { %>
+        <div class="hiddenELement" id="serviceURL"><%= serviceURL %></div>
+        <% } %>
+        <div class="pageTitle">
+            Single Sign On
+        </div>
+        <div class="miniLine"></div>
+        <div class="userRedirecting">
+            <p class="textParagraph">
+                Please wait to be redirected
+                <br />
+                <br />
+                <b>Do not leave this page</b>
+            </p>
+        </div>
+        <div class="userLoggedOut">
+            <p class="textParagraph">
+                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                Culpa nam perspiciatis ex esse, eveniet dolorum, quam,
+                commodi vitae sunt minima similique. Est nulla tempore
+                distinctio et sit excepturi labore possimus.
+            </p>
+            <div class="messageContainer error" style="display: none;"></div>
+            <a href="https://devclub.in/#/" target="_blank">
+                <div class="btn fixedBtn">
+                    visit devclub
+                </div>
+            </a>
+        </div>
+        <div class="userLoggedIn">
+            <p class="textParagraph">
+                <b>Welcome <span id="userFirstName"></span>,</b>
+                this is your one stop account for everything Devclub
+            </p>
+            <div class="userDetailContainer">
+                <div class="detail">
+                    <span class="detailTitle">
+                        Name:
+                    </span>
+                    <span class="detailContent userFullName">
+                        Aryan Gupta
+                    </span>
+                </div>
+                <div class="detailMiniLine"></div>
+                <div class="detail">
+                    <span class="detailTitle">
+                        Email ID:
+                    </span>
+                    <span class="detailContent userEmailID">
+                        aryanguptaleo@gmail.com
+                    </span>
+                </div>
+                <div class="detailMiniLine"></div>
+                <div class="detail">
+                    <span class="detailTitle">
+                        Username:
+                    </span>
+                    <span class="detailContent userUsername">
+                        aryangupta
+                    </span>
+                </div>
             </div>
-            <div class="miniLine"></div>
-            <div class="userRedirecting">
-                <p class="textParagraph">
-                    Please wait to be redirected
-                    <br />
-                    <br />
-                    <b>Do not leave this page</b>
-                </p>
-            </div>
-            <div class="userLoggedOut">
-                <p class="textParagraph">
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Culpa nam perspiciatis ex esse, eveniet dolorum, quam,
-                    commodi vitae sunt minima similique. Est nulla tempore
-                    distinctio et sit excepturi labore possimus.
-                </p>
-                <div
-                    class="messageContainer error"
-                    style="display: none;"
-                ></div>
+            <div class="btnContainer">
+                <a href="/">
+                    <div class="btn fixedBtn">
+                        settings
+                    </div>
+                </a>
                 <a href="https://devclub.in/#/" target="_blank">
                     <div class="btn fixedBtn">
                         visit devclub
                     </div>
                 </a>
             </div>
-            <div class="userLoggedIn">
-                <p class="textParagraph">
-                    <b>Welcome <span id="userFirstName"></span>,</b>
-                    this is your one stop account for everything Devclub
-                </p>
-                <div class="userDetailContainer">
-                    <div class="detail">
-                        <span class="detailTitle">
-                            Name:
-                        </span>
-                        <span class="detailContent userFullName">
-                            Aryan Gupta
-                        </span>
-                    </div>
-                    <div class="detailMiniLine"></div>
-                    <div class="detail">
-                        <span class="detailTitle">
-                            Email ID:
-                        </span>
-                        <span class="detailContent userEmailID">
-                            aryanguptaleo@gmail.com
-                        </span>
-                    </div>
-                    <div class="detailMiniLine"></div>
-                    <div class="detail">
-                        <span class="detailTitle">
-                            Username:
-                        </span>
-                        <span class="detailContent userUsername">
-                            aryangupta
-                        </span>
-                    </div>
-                </div>
-                <div class="btnContainer">
-                    <a href="/">
-                        <div class="btn fixedBtn">
-                            settings
-                        </div>
-                    </a>
-                    <a href="https://devclub.in/#/" target="_blank">
-                        <div class="btn fixedBtn">
-                            visit devclub
-                        </div>
-                    </a>
-                </div>
-            </div>
         </div>
-        <%- include('partials/footer.ejs'); %>
-    </body>
+    </div>
+    <%- include('partials/footer.ejs'); %>
+</body>
+
 </html>

@@ -72,16 +72,8 @@ router.post('/login', async (req, res, next) => {
             expiresIn: 60 * 10,
         });
 
-        // now build a service URL so that
-        let finalServiceURL = null;
-
-        // only build finalService URL if service URL was present.
-        if (serviceURL) {
-            finalServiceURL = `${serviceURL}&token=${token}`;
-        }
-
         // render homepage to store token and then redirect to finalServiceURL if possible
-        res.redirect(`/?token=${token}&serviceURL=${finalServiceURL}`);
+        res.redirect(`/?token=${token}&serviceURL=${serviceURL}`);
     } catch (err) {
         next(err);
     }

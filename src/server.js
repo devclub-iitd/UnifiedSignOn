@@ -39,11 +39,9 @@ mongoose
 // Root page
 app.get('/', (req, res) => {
     const { token, serviceURL } = req.query;
-    // if (token) {
-    res.render('index', { token, serviceURL });
-    // } else {
-    //     res.render('index', { token: '', serviceURL });
-    // }
+
+    const finalServiceURL = `${serviceURL}?token=${token}`;
+    res.render('index', { token, serviceURL: finalServiceURL });
 });
 
 // About Page
