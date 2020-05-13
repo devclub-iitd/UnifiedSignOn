@@ -23,31 +23,54 @@
                         data: { token },
                         success: (res) => {
                             // if request succeed then set user details
-                            const userData = JSON.parse(res);
-                            const {
-                                firstname,
-                                lastname,
-                                email,
-                                username,
-                            } = userData;
-                            const userFullName = `${firstname} ${lastname}`;
-                            clearDisplay();
-                            $('#userFirstName').html(firstname);
-                            $('.userLoggedIn .userFullName').html(userFullName);
-                            $('.userLoggedIn .userEmailID').html(email);
-                            $('.userLoggedIn .userUsername').html(username);
-                            $('.userLoggedIn').css('display', 'flex');
+                            if (!res.err) {
+                                const { user } = res;
+                                const {
+                                    firstname,
+                                    lastname,
+                                    email,
+                                    username,
+                                } = user;
+                                const userFullName = `${firstname} ${lastname}`;
+                                clearDisplay();
+                                $('#userFirstName').html(firstname);
+                                $('.userLoggedIn .userFullName').html(
+                                    userFullName
+                                );
+                                $('.userLoggedIn .userEmailID').html(email);
+                                $('.userLoggedIn .userUsername').html(username);
+                                $('.userLoggedIn').css('display', 'flex');
+                            } else {
+                                window.localStorage.removeItem('token');
+                                const { message } = res;
+                                clearDisplay();
+                                $('#userFirstName').html('');
+                                $('.userLoggedIn .userFullName').html('');
+                                $('.userLoggedIn .userEmailID').html('');
+                                $('.userLoggedIn .userUsername').html('');
+                                $('.messageContainer').html(message);
+                                $('.messageContainer').css('display', 'block');
+                                $('.userLoggedOut').css('display', 'block');
+                                setTimeout(() => {
+                                    $('.messageContainer').css(
+                                        'display',
+                                        'none'
+                                    );
+                                }, 3000);
+                            }
                         },
                         error: (res) => {
                             // if request fails remove the local storage token
+                            const { err, message } = res;
                             window.localStorage.removeItem('token');
-                            const { err, message } = JSON.parse(res);
                             clearDisplay();
                             $('#userFirstName').html('');
                             $('.userLoggedIn .userFullName').html('');
                             $('.userLoggedIn .userEmailID').html('');
                             $('.userLoggedIn .userUsername').html('');
-                            $('.messageContainer').html(message);
+                            $('.messageContainer').html(
+                                'An error occurred, Please reload the page'
+                            );
                             $('.messageContainer').css('display', 'block');
                             $('.userLoggedOut').css('display', 'block');
                             setTimeout(() => {
@@ -61,12 +84,12 @@
 
                 if ($('#token').length > 0) {
                     let serverToken = $('#token').html();
+                    // save token in local storage
+                    window.localStorage.setItem('token', serverToken);
                     if ($('#serviceURL').length > 0) {
                         clearDisplay();
                         $('.userRedirecting').css('display', 'flex');
                         let serviceURL = $('#serviceURL').html();
-                        // save token in local storage
-                        window.localStorage.setItem('token', serverToken);
                         // redirect to service url
                         window.location.href = serviceURL;
                     } else {
@@ -74,6 +97,7 @@
                     }
                 } else {
                     let localToken = window.localStorage.getItem('token');
+
                     if (localToken !== null) {
                         getUserDetails(localToken);
                     } else {
