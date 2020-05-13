@@ -36,11 +36,12 @@ mongoose
 
 // Root page
 app.get('/', (req, res) => {
+    const serviceURL = '';
     if (req.query.token) {
         const { token } = req.query;
-        res.render('index', { token });
+        res.render('index', { token, serviceURL });
     } else {
-        res.render('index', { token: '' });
+        res.render('index', { token: '', serviceURL });
     }
 });
 
