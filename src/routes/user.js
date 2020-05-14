@@ -14,8 +14,14 @@ router.get('/login', (req, res) => {
         PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
         OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
     */
+
+    // make sure serviceURL already has `http://` prepended
+    // this is the responsibility of the client server.
+    const { serviceURL } = req.query;
+
+    // We should pass the service URL as well to the login page.
     // we pass the error handeling data to page
-    res.render('login', { message: '', error: false });
+    res.render('login', { message: '', error: false, serviceURL });
 });
 
 router.get('/register', (req, res) => {
@@ -24,10 +30,7 @@ router.get('/register', (req, res) => {
 
 router.post('/login', async (req, res, next) => {
     try {
-        // pull out the service URL
-        const { serviceURL } = req.query;
-
-        const { email, password } = req.body;
+        const { email, password, serviceURL } = req.body;
 
         // try to find the user in the database
         const user = await User.findOne({ email });
@@ -37,6 +40,7 @@ router.post('/login', async (req, res, next) => {
             return res.render('login', {
                 message: 'Not a registered email address',
                 error: true,
+                serviceURL,
             });
         }
 
@@ -48,13 +52,18 @@ router.post('/login', async (req, res, next) => {
             return res.render('login', {
                 message: 'Password seems to be incorrect',
                 error: true,
+                serviceURL,
             });
         }
 
+        // Create payload to create a token
         const payload = {
             user: {
                 id: user._id,
                 email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                username: user.username,
             },
         };
 
@@ -63,15 +72,8 @@ router.post('/login', async (req, res, next) => {
             expiresIn: 60 * 10,
         });
 
-        // Set the token in the header
-        res.setHeader('x-auth-token', token);
-
-        if (serviceURL) {
-            return res.redirect(`http://${serviceURL}`);
-        }
-
-        // where to redirect now, for now to SSO homepage
-        return res.redirect('/');
+        // render homepage to store token and then redirect to finalServiceURL if possible
+        res.redirect(`/?token=${token}&serviceURL=${serviceURL}`);
     } catch (err) {
         next(err);
     }
@@ -95,8 +97,8 @@ router.post('/register', async (req, res) => {
 
         // Create a new user of type `User`
         user = new User({
-            first_name: firstname,
-            last_name: lastname,
+            firstname,
+            lastname,
             username,
             email,
             password,
@@ -116,6 +118,9 @@ router.post('/register', async (req, res) => {
             user: {
                 id: user._id,
                 email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                username: user.username,
             },
         };
 
@@ -124,10 +129,14 @@ router.post('/register', async (req, res) => {
             expiresIn: 60 * 10,
         });
 
-        // Return the token
-        return res.status(200).json({ token });
+        // set the token and serviceURL = null in the query
+        res.redirect(`/?token=${token}`);
     } catch (err) {
         console.log(err);
+        res.render('register', {
+            message: 'WHOOPS!! A server error occured, please try again later',
+            error: true,
+        });
     }
 });
 
