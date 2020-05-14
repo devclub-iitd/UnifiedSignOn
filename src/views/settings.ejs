@@ -1,0 +1,52 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/settings.css" />
+    <title>Login</title>
+    <script>
+        $(document).ready(() => {
+            const localToken = window.localStorage.getItem('token');
+            if (typeof localToken === 'undefined' || !localToken) {
+                window.location.href = '/';
+            } else {
+                if ($('.messageContainer').length > 0) {
+                    setTimeout(() => {
+                        $('.messageContainer').css('opacity', '0');
+                    }, 3000);
+                }
+            }
+        })
+    </script>
+</head>
+
+<body>
+    <%- include('partials/header'); %>
+    <div class="rootContainer">
+        <div class="pageTitle">
+            Settings
+        </div>
+        <div class="miniLine"></div>
+        <div class="formContainer">
+            <form action="" method="POST">
+                <button type="submit" class="btn">
+                    Done!
+                </button>
+            </form>
+            <% if (message !== '') { %>
+            <% if (error) { %>
+            <div class="messageContainer error">
+                <% } else { %>
+                <div class="messageContainer success">
+                    <% } %>
+                    <%= message %>
+                </div>
+                <% } %>
+            </div>
+        </div>
+        <%- include('partials/footer'); %>
+</body>
+
+</html>

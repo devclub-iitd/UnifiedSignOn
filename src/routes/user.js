@@ -6,6 +6,10 @@ import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
+router.get('/settings', (req, res) => {
+    res.render('settings', { message: '', error: false });
+});
+
 router.get('/login', (req, res) => {
     /*
     TODO - 
