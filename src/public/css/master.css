@@ -127,6 +127,10 @@ a {
     font-size: 12px;
     letter-spacing: 1.2px;
     font-weight: 400;
+    margin-bottom: 0px;
+}
+.redBtn {
+    background-color: var(--error);
 }
 .btn:hover {
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.4);

@@ -25,13 +25,13 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-    res.render('register', { message: '', error: false });
+    const { serviceURL } = req.query;
+    res.render('register', { message: '', error: false, serviceURL });
 });
 
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password, serviceURL } = req.body;
-
         // try to find the user in the database
         const user = await User.findOne({ email });
 
@@ -71,16 +71,27 @@ router.post('/login', async (req, res, next) => {
         const token = jwt.sign(payload, secretkey, {
             expiresIn: 60 * 10,
         });
-
-        // render homepage to store token and then redirect to finalServiceURL if possible
-        res.redirect(`/?token=${token}&serviceURL=${serviceURL}`);
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(
+                `/redirecting?token=${token}&serviceURL=${serviceURL}`
+            );
+        }
+        res.redirect(`/redirecting?token=${token}`);
     } catch (err) {
         next(err);
     }
 });
 
 router.post('/register', async (req, res) => {
-    const { firstname, lastname, username, email, password } = req.body;
+    const {
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+        serviceURL,
+    } = req.body;
 
     // TODO: ADD A USERNAME CHECK AS WELL, THAT ALSO HAS TO BE UNIQUE
     try {
@@ -129,8 +140,14 @@ router.post('/register', async (req, res) => {
             expiresIn: 60 * 10,
         });
 
-        // set the token and serviceURL = null in the query
-        res.redirect(`/?token=${token}`);
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(
+                `/redirecting?token=${token}&serviceURL=${serviceURL}`
+            );
+        }
+        // set the token
+        res.redirect(`/redirecting?token=${token}`);
     } catch (err) {
         console.log(err);
         res.render('register', {

@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
     } catch (err) {
         res.json({
             err: true,
-            message: 'Token is not valid',
+            message: 'Whoops!! Invalid login attempt...',
         });
     }
 });
