@@ -156,6 +156,7 @@ router.post('/register', async (req, res) => {
             expiresIn: 60 * 10 * 1000, // in ms
         });
 
+
         // set the cookie with token with the same age as that of token
         res.cookie('token', token, {
             maxAge: 60 * 10 * 1000, // in ms

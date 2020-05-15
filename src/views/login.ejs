@@ -22,6 +22,7 @@
                     $('#serviceURLInput').val(serviceURL);
                     $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
                 }
+
             }
         })
     </script>
@@ -38,6 +39,7 @@
             <form action="" method="POST">
                 <input type="email" name="email" placeholder="Enter your email ..." required />
                 <input type="password" name="password" placeholder="Enter your password ..." required />
+
                 <% if (typeof serviceURL !== undefined && serviceURL) { %>
                 <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
                 <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
@@ -45,11 +47,13 @@
                 <button type="submit" class="btn">
                     Let's go
                 </button>
+
                 <p class="textParagraph">
                     <i>Don't have an account?
                     <span id="signupBtn"><a href="/user/register">Signup...</a></span>
                     </i>
                 </p>
+
             </form>
             <% if (message !== '') { %>
             <% if (error) { %>
