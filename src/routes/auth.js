@@ -6,9 +6,8 @@ const router = express.Router();
 
 // post route to check validity of tokens, clients will hit this route.
 router.post('/', (req, res) => {
-
     // extract token from cookie
-    const token = req.cookies.token;
+    const { token } = req.cookies;
 
     if (!token) {
         return res.status(401).json({ msg: 'Error, token is not present' });

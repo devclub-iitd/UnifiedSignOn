@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/', (req, res) => {
     // extract token from cookie
-    const token = req.cookies.token;
+    const { token } = req.cookies;
 
     // no token present
     if (!token) {
@@ -20,7 +20,7 @@ router.post('/', (req, res) => {
 
         res.send({ user });
     } catch (err) {
-        //clear the cookie also
+        // clear the cookie also
         res.clearCookie('token');
 
         return res.status(401).json({
