@@ -13,10 +13,12 @@ router.get('/settings', (req, res) => {
 router.get('/login', (req, res) => {
     /*
     TODO - 
-        ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
+        1. ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
         USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
         PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
         OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
+
+        2. Create a utils function to check validity of serviceURLs
     */
 
     // make sure serviceURL already has `http://` prepended
@@ -73,14 +75,24 @@ router.post('/login', async (req, res, next) => {
 
         // create a token
         const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10,
+            expiresIn: 60 * 10 * 1000, // in ms
         });
+
+        // set the cookie with token with the same age as that of token
+        res.cookie('token', token, {
+            maxAge: 60 * 10 * 1000, // in ms
+            secure: false, // set to true if your using https
+            httpOnly: true,
+            sameSite: "lax"
+        })
+
         if (typeof serviceURL !== 'undefined' && serviceURL) {
             // render homepage to store token and then redirect with serviceURL
             return res.redirect(
                 `/redirecting?token=${token}&serviceURL=${serviceURL}`
             );
         }
+
         res.redirect(`/redirecting?token=${token}`);
     } catch (err) {
         next(err);
@@ -141,8 +153,16 @@ router.post('/register', async (req, res) => {
 
         // create a token
         const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10,
+            expiresIn: 60 * 10 * 1000, // in ms
         });
+
+        // set the cookie with token with the same age as that of token
+        res.cookie('token', token, {
+            maxAge: 60 * 10 * 1000, // in ms
+            secure: false, // set to true if your using https
+            httpOnly: true,
+            sameSite: "lax"
+        })
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {
             // render homepage to store token and then redirect with serviceURL

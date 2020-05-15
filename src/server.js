@@ -1,11 +1,16 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
 
 const app = express();
+
+app.use(cors());
+app.use(cookieParser()); // pass a string inside function to encrypt cookies
 
 app.set('view engine', 'ejs');
 app.set('views', `${__dirname}/views`);
