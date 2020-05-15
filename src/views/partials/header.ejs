@@ -30,6 +30,13 @@
                         if (window.location.href.indexOf('register') > 0) {
                             $('#headerLoginBtn').css('display', 'none');
                         }
+                        if (window.location.href.indexOf('login') > 0) {
+                            const query = window.location.search;
+                            $('#headerLoginBtn').attr(
+                                'href',
+                                `/user/login${query}`
+                            );
+                        }
                     };
                     getUserDetails(userDetailSuccess, userDetailFailure);
                 });
