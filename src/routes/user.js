@@ -6,13 +6,19 @@ import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
+router.get('/settings', (req, res) => {
+    res.render('settings', { message: '', error: false });
+});
+
 router.get('/login', (req, res) => {
     /*
     TODO - 
-        ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
+        1. ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
         USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
         PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
         OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
+
+        2. Create a utils function to check validity of serviceURLs
     */
 
     // make sure serviceURL already has `http://` prepended
@@ -25,13 +31,13 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-    res.render('register', { message: '', error: false });
+    const { serviceURL } = req.query;
+    res.render('register', { message: '', error: false, serviceURL });
 });
 
 router.post('/login', async (req, res, next) => {
     try {
         const { email, password, serviceURL } = req.body;
-
         // try to find the user in the database
         const user = await User.findOne({ email });
 
@@ -69,18 +75,39 @@ router.post('/login', async (req, res, next) => {
 
         // create a token
         const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10,
+            expiresIn: 60 * 10 * 1000, // in ms
         });
 
-        // render homepage to store token and then redirect to finalServiceURL if possible
-        res.redirect(`/?token=${token}&serviceURL=${serviceURL}`);
+        // set the cookie with token with the same age as that of token
+        res.cookie('token', token, {
+            maxAge: 60 * 10 * 1000, // in ms
+            secure: false, // set to true if your using https
+            httpOnly: true,
+            sameSite: 'lax',
+        });
+
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(
+                `/redirecting?token=${token}&serviceURL=${serviceURL}`
+            );
+        }
+
+        res.redirect(`/redirecting?token=${token}`);
     } catch (err) {
         next(err);
     }
 });
 
 router.post('/register', async (req, res) => {
-    const { firstname, lastname, username, email, password } = req.body;
+    const {
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+        serviceURL,
+    } = req.body;
 
     // TODO: ADD A USERNAME CHECK AS WELL, THAT ALSO HAS TO BE UNIQUE
     try {
@@ -126,11 +153,25 @@ router.post('/register', async (req, res) => {
 
         // create a token
         const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10,
+            expiresIn: 60 * 10 * 1000, // in ms
         });
 
-        // set the token and serviceURL = null in the query
-        res.redirect(`/?token=${token}`);
+        // set the cookie with token with the same age as that of token
+        res.cookie('token', token, {
+            maxAge: 60 * 10 * 1000, // in ms
+            secure: false, // set to true if your using https
+            httpOnly: true,
+            sameSite: 'lax',
+        });
+
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(
+                `/redirecting?token=${token}&serviceURL=${serviceURL}`
+            );
+        }
+        // set the token
+        res.redirect(`/redirecting?token=${token}`);
     } catch (err) {
         console.log(err);
         res.render('register', {

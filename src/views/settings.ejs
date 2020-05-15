@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <%- include('partials/assets'); %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/login.css" />
+    <link rel="stylesheet" href="/css/settings.css" />
     <title>Login</title>
     <script>
         $(document).ready(() => {
             const localToken = window.localStorage.getItem('token');
-            if (typeof localToken !== 'undefined' && localToken) {
+            if (typeof localToken === 'undefined' || !localToken) {
                 window.location.href = '/';
             } else {
                 if ($('.messageContainer').length > 0) {
@@ -17,12 +17,6 @@
                         $('.messageContainer').css('opacity', '0');
                     }, 3000);
                 }
-                if ($('#serviceURL').length > 0) {
-                    let serviceURL = $('#serviceURL').html();
-                    $('#serviceURLInput').val(serviceURL);
-                    $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
-                }
-
             }
         })
     </script>
@@ -32,28 +26,14 @@
     <%- include('partials/header'); %>
     <div class="rootContainer">
         <div class="pageTitle">
-            Login
+            Settings
         </div>
         <div class="miniLine"></div>
         <div class="formContainer">
             <form action="" method="POST">
-                <input type="email" name="email" placeholder="Enter your email ..." required />
-                <input type="password" name="password" placeholder="Enter your password ..." required />
-
-                <% if (typeof serviceURL !== undefined && serviceURL) { %>
-                <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
-                <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
-                <% } %>
                 <button type="submit" class="btn">
-                    Let's go
+                    Done!
                 </button>
-
-                <p class="textParagraph">
-                    <i>Don't have an account?
-                    <span id="signupBtn"><a href="/user/register">Signup...</a></span>
-                    </i>
-                </p>
-
             </form>
             <% if (message !== '') { %>
             <% if (error) { %>

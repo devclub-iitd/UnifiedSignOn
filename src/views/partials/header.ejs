@@ -14,14 +14,24 @@
                     About
                 </div>
             </a>
-            <a href="/user/login">
+            <script>
+                $(document).ready(() => {
+                    const localtoken = window.localStorage.getItem('token');
+                    if (typeof localtoken !== 'undefined' && localtoken) {
+                        $('#headerLoginBtn .headerBtn').html('Logout');
+                        $('#headerLoginBtn').attr('href', '/');
+                        $('#headerLoginBtn').css('display', 'block');
+                        $('#headerLoginBtn').click(() => {
+                            window.localStorage.removeItem('token');
+                        });
+                    } else {
+                        $('#headerLoginBtn').css('display', 'block');
+                    }
+                });
+            </script>
+            <a href="/user/login" id="headerLoginBtn" style="display: none;">
                 <div class="headerBtn">
                     Login
-                </div>
-            </a>
-            <a href="/user/register">
-                <div class="headerBtn">
-                    Register
                 </div>
             </a>
         </div>

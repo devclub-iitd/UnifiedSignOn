@@ -1,0 +1,55 @@
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <%- include('partials/assets'); %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/index.css" />
+        <title>Redirecting</title>
+        <script>
+            $(document).ready(() => {
+                let serverToken, serviceURL;
+                if ($('#token').length > 0) {
+                    let serverToken = $('#token').html();
+                    // save token in local storage
+                    window.localStorage.setItem('token', serverToken);
+                    if ($('#serviceURL').length > 0) {
+                        let serviceURL = $('#serviceURL').html();
+                        // redirect to service url
+                        window.location.href = serviceURL;
+                    } else {
+                        window.location.href = '/';
+                    }
+                } else {
+                    window.location.href = '/';
+                }
+            });
+        </script>
+    </head>
+
+    <body>
+        <%- include('partials/header'); %>
+        <div class="rootContainer">
+            <% if (typeof token !== 'undefined' && token) { %>
+            <div class="hiddenElement" id="token"><%= token %></div>
+            <% } %> <% if (typeof serviceURL !== 'undefined' && serviceURL) { %>
+            <div class="hiddenELement" id="serviceURL"><%= serviceURL %></div>
+            <% } %>
+            <div class="pageTitle">
+                Loading ...
+            </div>
+            <div class="miniLine"></div>
+            <div class="userRedirecting">
+                <p class="textParagraph">
+                    Please wait to be redirected
+                    <br />
+                    <br />
+                    <b>Do not leave this page</b>
+                </p>
+                <div class="loaderContainer">
+                    <div class="loaderCircle"></div>
+                </div>
+            </div>
+        </div>
+        <%- include('partials/footer.ejs'); %>
+    </body>
+</html>
