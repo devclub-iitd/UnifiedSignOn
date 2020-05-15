@@ -5,18 +5,23 @@
     <%- include('partials/assets'); %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/settings.css" />
-    <title>Login</title>
+    <title>Settings</title>
     <script>
         $(document).ready(() => {
-            const localToken = window.localStorage.getItem('token');
-            if (typeof localToken === 'undefined' || !localToken) {
+            const getUserDetailsSuccess = (user) => {
+                // insert code here
+                console.log(user);
+            }
+            const getUserDetailsFailure = (message) => {
                 window.location.href = '/';
-            } else {
-                if ($('.messageContainer').length > 0) {
-                    setTimeout(() => {
-                        $('.messageContainer').css('opacity', '0');
-                    }, 3000);
-                }
+            }
+
+            getUserDetails(getUserDetailsSuccess, getUserDetailsFailure);
+
+            if ($('.messageContainer').length > 0) {
+                setTimeout(() => {
+                    $('.messageContainer').css('opacity', '0');
+                }, 3000);
             }
         })
     </script>

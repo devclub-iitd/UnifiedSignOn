@@ -16,17 +16,22 @@
             </a>
             <script>
                 $(document).ready(() => {
-                    const localtoken = window.localStorage.getItem('token');
-                    if (typeof localtoken !== 'undefined' && localtoken) {
+                    const userDetailSuccess = () => {
                         $('#headerLoginBtn .headerBtn').html('Logout');
                         $('#headerLoginBtn').attr('href', '/');
                         $('#headerLoginBtn').css('display', 'block');
                         $('#headerLoginBtn').click(() => {
-                            window.localStorage.removeItem('token');
+                            logoutUser();
                         });
-                    } else {
+                    };
+
+                    const userDetailFailure = () => {
                         $('#headerLoginBtn').css('display', 'block');
-                    }
+                        if (window.location.href.indexOf('register') > 0) {
+                            $('#headerLoginBtn').css('display', 'none');
+                        }
+                    };
+                    getUserDetails(userDetailSuccess, userDetailFailure);
                 });
             </script>
             <a href="/user/login" id="headerLoginBtn" style="display: none;">

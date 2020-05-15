@@ -8,21 +8,20 @@
     <title>Login</title>
     <script>
         $(document).ready(() => {
-            const localToken = window.localStorage.getItem('token');
-            if (typeof localToken !== 'undefined' && localToken) {
+            const getUserDetailsSuccess = () => {
                 window.location.href = '/';
-            } else {
-                if ($('.messageContainer').length > 0) {
-                    setTimeout(() => {
-                        $('.messageContainer').css('opacity', '0');
-                    }, 3000);
-                }
-                if ($('#serviceURL').length > 0) {
-                    let serviceURL = $('#serviceURL').html();
-                    $('#serviceURLInput').val(serviceURL);
-                    $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
-                }
+            }
+            getUserDetails(getUserDetailsSuccess, () => {});
 
+            if ($('.messageContainer').length > 0) {
+                setTimeout(() => {
+                    $('.messageContainer').css('opacity', '0');
+                }, 3000);
+            }
+            if ($('#serviceURL').length > 0) {
+                let serviceURL = $('#serviceURL').html();
+                $('#serviceURLInput').val(serviceURL);
+                $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
             }
         })
     </script>
