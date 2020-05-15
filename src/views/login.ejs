@@ -8,21 +8,24 @@
     <title>Login</title>
     <script>
         $(document).ready(() => {
-            const getUserDetailsSuccess = () => {
-                window.location.href = '/';
-            }
-            getUserDetails(getUserDetailsSuccess, () => {});
-
+            
             if ($('.messageContainer').length > 0) {
                 setTimeout(() => {
                     $('.messageContainer').css('opacity', '0');
                 }, 3000);
             }
+            let serviceURL = '';
             if ($('#serviceURL').length > 0) {
-                let serviceURL = $('#serviceURL').html();
+                serviceURL = $('#serviceURL').html();
                 $('#serviceURLInput').val(serviceURL);
                 $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
             }
+
+            const getUserDetailsSuccess = () => {
+                window.location.href = `/redirecting${window.location.search}`;
+            }
+            getUserDetails(getUserDetailsSuccess, () => {});
+
         })
     </script>
 </head>

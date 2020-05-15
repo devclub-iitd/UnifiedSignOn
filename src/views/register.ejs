@@ -8,7 +8,7 @@
         <script>
             $(document).ready(() => {
                 const getUserDetailsSuccess = () => {
-                window.location.href = '/';
+                    window.location.href = `/redirecting${window.location.search}`;
                 }
                 getUserDetails(getUserDetailsSuccess, () => {});
 
