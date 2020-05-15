@@ -5,15 +5,27 @@ import { secretkey } from '../config/keys';
 const router = express.Router();
 
 router.post('/', (req, res) => {
-    const { token } = req.body;
+    // extract token from cookie
+    const { token } = req.cookies;
+
+    // no token present
+    if (!token) {
+        return res.status(401).json({ msg: 'Error, token is not present' });
+    }
+
     try {
         const decoded = verify(token, secretkey);
+
         const { user } = decoded;
+
         res.send({ user });
     } catch (err) {
-        res.json({
+        // clear the cookie also
+        res.clearCookie('token');
+
+        return res.status(401).json({
             err: true,
-            message: 'Token is not valid',
+            message: 'Whoops!! Invalid login attempt...',
         });
     }
 });

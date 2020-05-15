@@ -1,19 +1,25 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
 
 const app = express();
 
+app.use(cors());
+app.use(cookieParser()); // pass a string inside function to encrypt cookies
+
 app.set('view engine', 'ejs');
 app.set('views', `${__dirname}/views`);
 app.use(express.static(`${__dirname}/public`));
 
 // Body Parser Middleware
-// parse application/x-www-form-urlencoded
+// parse application/x-www-form-urlencoded (for ejs page requests)
 app.use(bodyParser.urlencoded());
+// parse json
 app.use(bodyParser.json());
 
 // export .env from previous folder
@@ -38,10 +44,17 @@ mongoose
 
 // Root page
 app.get('/', (req, res) => {
-    const { token, serviceURL } = req.query;
+    res.render('index');
+});
 
-    const finalServiceURL = `${serviceURL}?token=${token}`;
-    res.render('index', { token, serviceURL: finalServiceURL });
+// middleware page used for redirecting and handeling the user token on our end
+app.get('/redirecting', (req, res) => {
+    const { token, serviceURL } = req.query;
+    if (typeof serviceURL !== 'undefined' && serviceURL) {
+        const finalServiceURL = `${serviceURL}?token=${token}`;
+        return res.render('middleware', { token, serviceURL: finalServiceURL });
+    }
+    res.render('middleware', { token, serviceURL });
 });
 
 // About Page

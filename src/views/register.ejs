@@ -7,10 +7,20 @@
         <title>Register</title>
         <script>
             $(document).ready(() => {
-                if ($('.messageContainer').length > 0) {
-                    setTimeout(() => {
-                        $('.messageContainer').css('opacity', '0');
-                    }, 3000);
+                const localToken = window.localStorage.getItem('token');
+                if (typeof localToken !== 'undefined' && localToken) {
+                    window.location.href = '/';
+                } else {
+                    if ($('.messageContainer').length > 0) {
+                        setTimeout(() => {
+                            $('.messageContainer').css('opacity', '0');
+                        }, 3000);
+                    }
+                    if ($('#serviceURL').length > 0) {
+                        let serviceURL = $('#serviceURL').html();
+                        $('#serviceURLInput').val(serviceURL);
+                        $('#loginBtn a').attr('href', `/user/login?serviceURL=${serviceURL}`);
+                    }
                 }
             })
         </script>
@@ -43,7 +53,13 @@
                             required
                         />
                     </div>
-                    <input type="text" name="username" placeholder="Username..." required />
+
+                    <input 
+                        type="text" 
+                        name="username"
+                        placeholder="Username..."
+                        required />
+
                     <input
                         type="email"
                         name="email"
@@ -56,9 +72,18 @@
                         placeholder="Enter your password ..."
                         required
                     />
+                    <% if (typeof serviceURL !== undefined && serviceURL) { %>
+                    <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
+                    <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
+                    <% } %>
                     <button type="submit" class="btn">
                         Let's go
                     </button>
+                    <p class="textParagraph">
+                        <i>Already have an account?
+                            <span id="loginBtn"><a href="/user/login">Login...</a></span>
+                        </i>
+                    </p>
                 </form>
                 <% if (message !== '') { %>
                     <% if (error) { %>
@@ -66,7 +91,7 @@
                         <% } else { %>
                         <div class="messageContainer success">
                         <% } %>
-                            <%= message %>
+                        <%= message %>
                     </div>
                 <% } %>
             </div>
