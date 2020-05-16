@@ -49,12 +49,13 @@ app.get('/', (req, res) => {
 
 // middleware page used for redirecting and handeling the user token on our end
 app.get('/redirecting', (req, res) => {
-    const { token, serviceURL } = req.query;
+    const { serviceURL } = req.query;
+    const { token } = req.cookies;
     if (typeof serviceURL !== 'undefined' && serviceURL) {
         const finalServiceURL = `${serviceURL}?token=${token}`;
-        return res.render('middleware', { token, serviceURL: finalServiceURL });
+        return res.render('middleware', { serviceURL: finalServiceURL });
     }
-    res.render('middleware', { token, serviceURL });
+    res.render('middleware', { serviceURL });
 });
 
 // About Page

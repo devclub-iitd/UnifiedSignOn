@@ -6,10 +6,6 @@ import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
-router.get('/settings', (req, res) => {
-    res.render('settings', { message: '', error: false });
-});
-
 router.get('/login', (req, res) => {
     /*
     TODO - 
@@ -88,12 +84,10 @@ router.post('/login', async (req, res, next) => {
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {
             // render homepage to store token and then redirect with serviceURL
-            return res.redirect(
-                `/redirecting?token=${token}&serviceURL=${serviceURL}`
-            );
+            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
         }
 
-        res.redirect(`/redirecting?token=${token}`);
+        res.redirect(`/redirecting`);
     } catch (err) {
         next(err);
     }
@@ -119,6 +113,7 @@ router.post('/register', async (req, res) => {
             return res.render('register', {
                 message: 'User already exists with same email',
                 error: true,
+                serviceURL,
             });
         }
 
@@ -166,12 +161,10 @@ router.post('/register', async (req, res) => {
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {
             // render homepage to store token and then redirect with serviceURL
-            return res.redirect(
-                `/redirecting?token=${token}&serviceURL=${serviceURL}`
-            );
+            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
         }
         // set the token
-        res.redirect(`/redirecting?token=${token}`);
+        res.redirect(`/redirecting`);
     } catch (err) {
         console.log(err);
         res.render('register', {

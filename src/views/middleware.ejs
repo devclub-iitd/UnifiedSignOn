@@ -7,18 +7,11 @@
         <title>Redirecting</title>
         <script>
             $(document).ready(() => {
-                let serverToken, serviceURL;
-                if ($('#token').length > 0) {
-                    let serverToken = $('#token').html();
-                    // save token in local storage
-                    window.localStorage.setItem('token', serverToken);
-                    if ($('#serviceURL').length > 0) {
-                        let serviceURL = $('#serviceURL').html();
-                        // redirect to service url
-                        window.location.href = serviceURL;
-                    } else {
-                        window.location.href = '/';
-                    }
+                let serviceURL;
+                if ($('#serviceURL').length > 0) {
+                    let serviceURL = $('#serviceURL').html();
+                    // redirect to service url
+                    window.location.href = serviceURL;
                 } else {
                     window.location.href = '/';
                 }
@@ -29,9 +22,7 @@
     <body>
         <%- include('partials/header'); %>
         <div class="rootContainer">
-            <% if (typeof token !== 'undefined' && token) { %>
-            <div class="hiddenElement" id="token"><%= token %></div>
-            <% } %> <% if (typeof serviceURL !== 'undefined' && serviceURL) { %>
+            <% if (typeof serviceURL !== 'undefined' && serviceURL) { %>
             <div class="hiddenELement" id="serviceURL"><%= serviceURL %></div>
             <% } %>
             <div class="pageTitle">
