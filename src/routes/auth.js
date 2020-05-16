@@ -56,15 +56,16 @@ function verifyToken(token, res, tokenName = 'token') {
 
         // now send a response
         return res.status(401).json({
+            err: true,
             msg: 'Error, token not valid',
         });
     }
 }
 
 // post route to check validity of tokens, clients will hit this route.
-router.post('/verify', (req, res) => {
-    // extract token from cookie
-    const { token, rememberme } = req.cookies;
+router.post('/verify-token', (req, res) => {
+    // extract token from post request body
+    const { token, rememberme } = req.body;
 
     if (!token) {
         if (!rememberme) {
@@ -80,4 +81,4 @@ router.post('/verify', (req, res) => {
 });
 
 export default router;
-export { createJWTCookie };
+export { createJWTCookie, verifyToken };
