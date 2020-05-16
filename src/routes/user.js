@@ -7,7 +7,7 @@ import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
-//Use csrf verfication on all post routes of this router
+// Use csrf verfication on all post routes of this router
 router.use(csrf({ cookie: true }));
 
 router.get('/login', (req, res) => {
