@@ -7,20 +7,20 @@
         <title>Register</title>
         <script>
             $(document).ready(() => {
-                const localToken = window.localStorage.getItem('token');
-                if (typeof localToken !== 'undefined' && localToken) {
-                    window.location.href = '/';
-                } else {
-                    if ($('.messageContainer').length > 0) {
-                        setTimeout(() => {
-                            $('.messageContainer').css('opacity', '0');
-                        }, 3000);
-                    }
-                    if ($('#serviceURL').length > 0) {
-                        let serviceURL = $('#serviceURL').html();
-                        $('#serviceURLInput').val(serviceURL);
-                        $('#loginBtn a').attr('href', `/user/login?serviceURL=${serviceURL}`);
-                    }
+                const getUserDetailsSuccess = () => {
+                    window.location.href = `/redirecting${window.location.search}`;
+                }
+                getUserDetails(getUserDetailsSuccess, () => {});
+
+                if ($('.messageContainer').length > 0) {
+                    setTimeout(() => {
+                        $('.messageContainer').css('opacity', '0');
+                    }, 3000);
+                }
+                if ($('#serviceURL').length > 0) {
+                    let serviceURL = $('#serviceURL').html();
+                    $('#serviceURLInput').val(serviceURL);
+                    $('#loginBtn a').attr('href', `/user/login?serviceURL=${serviceURL}`);
                 }
             })
         </script>
