@@ -6,8 +6,8 @@ const router = express.Router();
 // post route to check validity of tokens, clients will hit this route.
 router.post('/verify-token', (req, res) => {
     // extract token from post request headers
-    const token = req.header('access-token')
-    const rememberme = req.header('refresh-token')
+    const token = req.header('access-token');
+    const rememberme = req.header('refresh-token');
 
     if (!token) {
         if (!rememberme) {
