@@ -1,6 +1,5 @@
 import express from 'express';
-import { verify } from 'jsonwebtoken';
-import { secretkey } from '../config/keys';
+import { verifyToken } from '../utils/utils';
 
 const router = express.Router();
 
@@ -10,33 +9,25 @@ router.get('/settings', (req, res) => {
 
 router.post('/', (req, res) => {
     // extract token from cookie
-    const { token } = req.cookies;
-
-    // no token present
+    const { token, rememberme } = req.cookies;
     if (!token) {
-        return res.status(200).json({ err: true, message: '' });
+        if (!rememberme) {
+            return res.status(401).json({
+                err: true,
+                msg: '',
+            });
+        }
+
+        return verifyToken(rememberme, res, 'rememberme');
     }
 
-    try {
-        const decoded = verify(token, secretkey);
-
-        const { user } = decoded;
-
-        res.send({ user });
-    } catch (err) {
-        // clear the cookie also
-        res.clearCookie('token');
-
-        return res.status(401).json({
-            err: true,
-            message: 'Whoops!! Invalid login attempt...',
-        });
-    }
+    return verifyToken(token, res);
 });
 
 router.post('/logout', (req, res) => {
     try {
         res.clearCookie('token');
+        res.clearCookie('rememberme');
         return res.json({
             err: false,
             message: 'Logged out successfully',

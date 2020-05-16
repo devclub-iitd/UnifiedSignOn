@@ -1,34 +1,26 @@
 import express from 'express';
-import { verify } from 'jsonwebtoken';
-import { secretkey } from '../config/keys';
+import { verifyToken } from '../utils/utils';
 
 const router = express.Router();
 
 // post route to check validity of tokens, clients will hit this route.
-router.post('/', (req, res) => {
-    // extract token from cookie
-    const token = req.header('auth-token');
+router.post('/verify-token', (req, res) => {
+    // extract token from post request body
+    const { token, rememberme } = req.body;
 
     if (!token) {
-        return res.status(401).json({ msg: 'Error, token is not present' });
+        if (!rememberme) {
+            return res.status(401).json({
+                msg: 'Error, token is not present',
+            });
+        }
+
+        // Remember-Me token is present, so use it to authenticate the user
+        return verifyToken(rememberme, res, 'rememberme');
     }
 
-    // So the token is present, so lets verify it
-    try {
-        const decoded = verify(token, secretkey);
-
-        const { user } = decoded;
-
-        return res.status(200).json({ user });
-    } catch (err) {
-        // I wasn't able to verify the token as it was invalid
-        // clear the token, but somehow this doesn't work, so just to
-        // be safe, do the same at client server as well.
-        res.clearCookie('token');
-
-        // now send a response
-        return res.status(401).json({ msg: 'Error, token not valid' });
-    }
+    // Access token is present, so verify it.
+    return verifyToken(token, res);
 });
 
 export default router;

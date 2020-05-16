@@ -1,8 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+import { createJWTCookie } from '../utils/utils';
 import User from '../models/user';
-import { secretkey } from '../config/keys';
 
 const router = express.Router();
 
@@ -33,7 +32,7 @@ router.get('/register', (req, res) => {
 
 router.post('/login', async (req, res, next) => {
     try {
-        const { email, password, serviceURL } = req.body;
+        const { email, password, serviceURL, rememberme } = req.body;
         // try to find the user in the database
         const user = await User.findOne({ email });
 
@@ -58,29 +57,10 @@ router.post('/login', async (req, res, next) => {
             });
         }
 
-        // Create payload to create a token
-        const payload = {
-            user: {
-                id: user._id,
-                email: user.email,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                username: user.username,
-            },
-        };
-
-        // create a token
-        const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10 * 1000, // in ms
-        });
-
-        // set the cookie with token with the same age as that of token
-        res.cookie('token', token, {
-            maxAge: 60 * 10 * 1000, // in ms
-            secure: false, // set to true if your using https
-            httpOnly: true,
-            sameSite: 'lax',
-        });
+        createJWTCookie(user, res);
+        if (rememberme === 'true') {
+            createJWTCookie(user, res, 'rememberme');
+        }
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {
             // render homepage to store token and then redirect with serviceURL
@@ -135,29 +115,7 @@ router.post('/register', async (req, res) => {
         // Save the updated the user in database
         await user.save();
 
-        // Create payload to create a token
-        const payload = {
-            user: {
-                id: user._id,
-                email: user.email,
-                firstname: user.firstname,
-                lastname: user.lastname,
-                username: user.username,
-            },
-        };
-
-        // create a token
-        const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10 * 1000, // in ms
-        });
-
-        // set the cookie with token with the same age as that of token
-        res.cookie('token', token, {
-            maxAge: 60 * 10 * 1000, // in ms
-            secure: false, // set to true if your using https
-            httpOnly: true,
-            sameSite: 'lax',
-        });
+        createJWTCookie(user, res);
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {
             // render homepage to store token and then redirect with serviceURL
