@@ -1,10 +1,14 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import csrf from 'csurf';
 import User from '../models/user';
 import { secretkey } from '../config/keys';
 
 const router = express.Router();
+
+//Use csrf verfication on all post routes of this router
+router.use(csrf({ cookie: true }));
 
 router.get('/login', (req, res) => {
     /*
@@ -23,12 +27,24 @@ router.get('/login', (req, res) => {
 
     // We should pass the service URL as well to the login page.
     // we pass the error handeling data to page
-    res.render('login', { message: '', error: false, serviceURL });
+    // We pass the csrfToken as a context variable
+    res.render('login', {
+        message: '',
+        csrfToken: req.csrfToken(),
+        error: false,
+        serviceURL,
+    });
 });
 
 router.get('/register', (req, res) => {
     const { serviceURL } = req.query;
-    res.render('register', { message: '', error: false, serviceURL });
+    // We pass the csrfToken as a context variable
+    res.render('register', {
+        message: '',
+        csrfToken: req.csrfToken(),
+        error: false,
+        serviceURL,
+    });
 });
 
 router.post('/login', async (req, res, next) => {

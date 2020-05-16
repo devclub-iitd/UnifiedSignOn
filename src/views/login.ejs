@@ -39,6 +39,7 @@
         <div class="miniLine"></div>
         <div class="formContainer">
             <form action="" method="POST">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                 <input type="email" name="email" placeholder="Enter your email ..." required />
                 <input type="password" name="password" placeholder="Enter your password ..." required />
 
