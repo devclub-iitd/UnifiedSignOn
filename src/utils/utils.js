@@ -4,7 +4,7 @@ import { secretkey, expTime, rememberTime } from '../config/keys';
 const createJWTCookie = (user, res, tokenName = 'token') => {
     const payload = {
         user: {
-            id: user._id,
+            id: user.id,
             email: user.email,
             firstname: user.firstname,
             lastname: user.lastname,
