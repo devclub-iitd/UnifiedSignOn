@@ -1,5 +1,6 @@
 import express from 'express';
 import { verifyToken } from '../utils/utils';
+import { tokenName, rememberTokenName } from '../config/keys';
 
 const router = express.Router();
 
@@ -9,7 +10,8 @@ router.get('/settings', (req, res) => {
 
 router.post('/', (req, res) => {
     // extract token from cookie
-    const { token, rememberme } = req.cookies;
+    const token = req.cookies[tokenName];
+    const rememberme = req.cookies[rememberTokenName];
     if (!token) {
         if (!rememberme) {
             return res.status(401).json({
@@ -18,7 +20,7 @@ router.post('/', (req, res) => {
             });
         }
 
-        return verifyToken(rememberme, res, 'rememberme');
+        return verifyToken(rememberme, res, rememberTokenName);
     }
 
     return verifyToken(token, res);
@@ -26,8 +28,8 @@ router.post('/', (req, res) => {
 
 router.post('/logout', (req, res) => {
     try {
-        res.clearCookie('token');
-        res.clearCookie('rememberme');
+        res.clearCookie(tokenName);
+        res.clearCookie(rememberTokenName);
         return res.json({
             err: false,
             message: 'Logged out successfully',
