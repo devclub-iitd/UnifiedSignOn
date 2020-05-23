@@ -15,9 +15,10 @@ const createJWTCookie = (user, res, tokenName = keys.tokenName) => {
     const exp =
         tokenName === keys.rememberTokenName ? keys.rememberTime : keys.expTime;
     // create a token
-    const token = jwt.sign(payload, keys.secretkey, {
+    const token = jwt.sign(payload, keys.privateKey, {
         expiresIn: exp, // in ms
         issuer: keys.iss,
+        algorithm: 'RS256',
     });
 
     // set the cookie with token with the same age as that of token
@@ -31,7 +32,7 @@ const createJWTCookie = (user, res, tokenName = keys.tokenName) => {
 
 const verifyToken = (token, res, tokenName = keys.tokenName) => {
     try {
-        const decoded = verify(token, keys.secretkey);
+        const decoded = verify(token, keys.publicKey);
         const { user } = decoded;
 
         // Set a new cookie which will extend the session a further {expTime} amount of time.
