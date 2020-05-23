@@ -35,7 +35,6 @@ router.post('/login', async (req, res, next) => {
         const { email, password, serviceURL, rememberme } = req.body;
         // try to find the user in the database
         const user = await User.findOne({ email });
-
         // this means user doesn't exists, so throw an error TODO: add correct status to return
         if (!user) {
             return res.render('login', {
