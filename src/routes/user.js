@@ -2,7 +2,7 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import { createJWTCookie } from '../utils/utils';
 import User from '../models/user';
-import { rememberTokenName } from '../config/keys';
+import { refreshTokenName } from '../config/keys';
 
 const router = express.Router();
 
@@ -59,7 +59,7 @@ router.post('/login', async (req, res, next) => {
 
         createJWTCookie(user, res);
         if (rememberme === 'true') {
-            createJWTCookie(user, res, rememberTokenName);
+            createJWTCookie(user, res, refreshTokenName);
         }
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {
