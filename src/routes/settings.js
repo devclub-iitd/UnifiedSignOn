@@ -53,7 +53,6 @@ router.post('/', async (req, res) => {
 
         await user.save({}, (err) => {
             if (err) {
-                console.log(err);
                 return res.render('settings', {
                     message: err.message,
                     error: true,
@@ -67,7 +66,6 @@ router.post('/', async (req, res) => {
             });
         });
     } catch (error) {
-        console.log(error);
         res.render('settings', {
             message: 'Seems like an error occurred',
             error: true,
