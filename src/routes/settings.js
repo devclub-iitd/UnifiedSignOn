@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
                 }
 
                 // Save the user to take advantage of inbuilt validation
-                await user.save({}, (err, doc) => {
+                await user.save({}, (err) => {
                     // Display an error message if their
                     if (err) {
                         res.render('settings', {
