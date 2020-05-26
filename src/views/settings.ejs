@@ -10,9 +10,9 @@
         $(document).ready(() => {
             const getUserDetailsSuccess = (user) => {
                 $('input[type="hidden"]').val(user.email);
-                $('span.firstName').html(user.firstname);
-                $('span.lastName').html(user.lastname);
-                $('span.username').html(user.username);
+                $('input[name="firstName"]').val(user.firstname);
+                $('input[name="lastName"]').val(user.lastname);
+                $('input[name="newUsername"]').val(user.username);
                 console.log(user);
             }
             const getUserDetailsFailure = (message) => {
@@ -52,23 +52,19 @@
                 <div class="form-group">
                     <legend>Personal Information</legend>
                     <input type="hidden" name="email" value="">
-                    <div class="info-group">
-                        <span class="detailTitle">First Name:</span><span class="detailContent firstName"></span>
-                    </div>
+                    <span class="detailTitle">First Name</span>
                     <input type="text" name="firstName" placeholder="First Name" id="firstName" tabindex="1">
-                    <div class="info-group">
-                        <span class="detailTitle">Last Name:</span><span class="detailContent lastName"></span>
-                    </div>
+                    <span class="detailTitle">Last Name</span>
                     <input type="text" name="lastName" placeholder="Last Name" id="lastName" tabindex="2">
-                    <div class="info-group">
-                        <span class="detailTitle">Username:</span><span class="detailContent username"></span>
-                    </div>
+                    <span class="detailTitle">Username</span>
                     <input type="text" name="newUsername" placeholder="Enter new Username" id="newUsername" autocomplete="username" tabindex="3">
                 </div>
                 <div class="form-group">
                     <legend>Update Password</legend>
+                    <span class="detailTitle">New Password</span>
                     <input type="password" name="newPassword" autocomplete="new-password" placeholder="Enter new Password" id="newPassword" tabindex="4">
-                    <input type="password" name="password" autocomplete="current-password" placeholder="Confirm old Password" id="password" tabindex="5">
+                    <span class="detailTitle">Current Password</span>
+                    <input type="password" name="password" autocomplete="current-password" placeholder="Enter current Password" id="password" tabindex="5">
                 </div>
                 <button type="submit" class="btn">
                     Done!
