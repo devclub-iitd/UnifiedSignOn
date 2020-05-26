@@ -6,7 +6,7 @@ import { createJWTCookie } from '../utils/utils';
 const router = require('express').Router();
 
 router.get('/', (req, res) => {
-    res.render('settings', { message: '', error: false });
+    res.render('settings', { messages: [{ message: '', error: false }] });
 });
 
 router.post('/', async (req, res) => {
@@ -19,10 +19,12 @@ router.post('/', async (req, res) => {
         newPassword,
     } = req.body;
 
-    // TODO : Add multiple error messages, for example if the password is wrong but the other fields have been updated
-    // Add an error for the password field but update the other fields regardless
-
     try {
+        // Initialize an empty messages array that stores message related to each change, error and successfull changes, etc.
+        // This is done in order to ensure that the user gets a comprehensive detail about the changes made
+        // Also ensures that even if there was some error changing the password, the other fields get updated
+        const messages = [];
+
         // Extract user from the database
         const user = await User.findOne({ email });
 
@@ -31,57 +33,69 @@ router.post('/', async (req, res) => {
             if (password) {
                 const isMatch = await bcrypt.compare(password, user.password);
                 if (!isMatch) {
-                    return res.render('settings', {
-                        message: 'Incorrect Password',
+                    messages.push({
+                        message: 'Incorrect password',
                         error: true,
                     });
+                } else {
+                    // If the old password has been given and is correct, update the password field on the user
+                    const passwordHash = await bcrypt.hash(newPassword, 10);
+                    user.password = passwordHash;
+                    messages.push({
+                        message: 'Password updated successfully',
+                        error: false,
+                    });
                 }
-
-                // If the old password has been given and is correct, update the password field on the user
-                const passwordHash = await bcrypt.hash(newPassword, 10);
-                user.password = passwordHash;
             } else {
-                return res.render('settings', {
+                messages.push({
                     message:
-                        'Please enter your old password to update your password',
+                        'Please enter your current password to update password',
                     error: true,
                 });
             }
         }
 
         // Update personal info fields
-        if (firstName) {
+        if (firstName !== user.firstname) {
             user.firstname = firstName;
+            messages.push({
+                message: 'First name updated successfuly',
+                error: false,
+            });
         }
-        if (lastName) {
+        if (lastName !== user.lastname) {
             user.lastname = lastName;
+            messages.push({
+                message: 'Last name updated successfuly',
+                error: false,
+            });
         }
-        if (newUsername) {
+        if (newUsername !== user.username) {
             user.username = newUsername;
+            messages.push({
+                message: 'Username updated successfuly',
+                error: false,
+            });
         }
 
         // Save the user and validate inputs
-        await user.save({}, (err) => {
-            // TODO : Display a user friendly error for errors such as max username length
+        await user.save((err) => {
+            // TODO : Add user friendly errors for invalid inputs
             if (err) {
-                return res.render('settings', {
-                    message: err.message,
-                    error: true,
-                });
+                messages.push({ message: err.message, error: true });
+                res.render('settings', { messages });
+            } else {
+                // If the validation was successful, update the user and create a new JWT for the updated credentials
+                res.clearCookie(accessTokenName);
+                createJWTCookie(user, res);
+                res.render('settings', { messages });
             }
-
-            // If their was no error, clear the existing token and create a new one with the updated user info
-            res.clearCookie(accessTokenName);
-            createJWTCookie(user, res);
-            res.render('settings', {
-                message: 'Fields updated successfully',
-                error: false,
-            });
         });
     } catch (error) {
         res.render('settings', {
-            message: 'Seems like an error occurred',
-            error: true,
+            messages: [
+                { message: 'Seems like an error occurred', error: true },
+            ],
         });
     }
 });

@@ -38,15 +38,18 @@
             Settings
         </div>
         <div class="miniLine"></div>
-        <% if (message !== '') { %>
-            <% if (error) { %>
+        <% if (messages) { %>
+        <% messages.forEach( (msg) => { %>
+        <% if (msg.message !== '') { %>
+            <% if (msg.error) { %>
             <div class="messageContainer error">
                 <% } else { %>
                 <div class="messageContainer success">
                     <% } %>
-                    <%= message %>
+                    <%= msg.message %>
                 </div>
                 <% } %>
+        <% })} %>
         <div class="formContainer">
             <form action="/profile/settings" method="POST">
                 <div class="form-group">
