@@ -7,7 +7,37 @@ import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
 
+import User from './models/user';
+
+require('dotenv').config({
+    path: `${__dirname}/../.env`,
+});
+
 const app = express();
+
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+
+passport.use(
+    new GoogleStrategy(
+        {
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: `http://localhost:${process.env.PORT}/auth/google/callback`,
+        },
+        (accessToken, refreshToken, googleProfile, done) => {
+            console.log(googleProfile);
+            User.findOne(
+                {
+                    email: googleProfile._json.email,
+                },
+                (err, u) => done(err, u)
+            );
+        }
+    )
+);
+
+app.use(passport.initialize());
 
 app.use(cors());
 app.use(cookieParser()); // pass a string inside function to encrypt cookies
@@ -23,7 +53,6 @@ app.use(bodyParser.urlencoded());
 app.use(bodyParser.json());
 
 // export .env from previous folder
-require('dotenv').config({ path: `${__dirname}/../.env` });
 
 const db_url = process.env.DB_URL;
 
@@ -52,9 +81,13 @@ app.get('/redirecting', (req, res) => {
     const { serviceURL } = req.query;
     if (typeof serviceURL !== 'undefined' && serviceURL) {
         const finalServiceURL = `${serviceURL}`;
-        return res.render('middleware', { serviceURL: finalServiceURL });
+        return res.render('middleware', {
+            serviceURL: finalServiceURL,
+        });
     }
-    res.render('middleware', { serviceURL });
+    res.render('middleware', {
+        serviceURL,
+    });
 });
 
 // About Page

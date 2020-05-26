@@ -19,6 +19,7 @@
                 serviceURL = $('#serviceURL').html();
                 $('#serviceURLInput').val(serviceURL);
                 $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
+                $('#googleLogin').attr('href', `/auth/google?serviceURL=${serviceURL}`)
             }
 
             const getUserDetailsSuccess = () => {
@@ -56,8 +57,10 @@
                     <span id="signupBtn"><a href="/user/register">Signup...</a></span>
                     </i>
                 </p>
+                <a id="googleLogin" href="/auth/google/"> Sign in with Google</a>
 
             </form>
+            
             <% if (message !== '') { %>
             <% if (error) { %>
             <div class="messageContainer error">
