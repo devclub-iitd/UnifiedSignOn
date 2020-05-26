@@ -52,3 +52,54 @@ router.get(
         return res.redirect('/');
     }
 );
+
+router.get('/facebook', (req, res, next) => {
+    passport.authenticate('facebook', {
+        authType: 'rerequest',
+        state: req.query.serviceURL,
+    })(req, res, next);
+});
+
+router.get(
+    '/facebook/callback',
+    passport.authenticate('facebook', {
+        session: false,
+        failureRedirect: '/user/login',
+    }),
+    (req, res) => {
+        createJWTCookie(req.user, res);
+        console.log(req.query);
+        const { state: serviceURL } = req.query;
+
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
+        }
+        return res.redirect('/');
+    }
+);
+
+router.get('/github', (req, res, next) => {
+    passport.authenticate('github', {
+        // scope: ['user'],
+        state: req.query.serviceURL,
+    })(req, res, next);
+});
+
+router.get(
+    '/github/callback',
+    passport.authenticate('github', {
+        session: false,
+        failureRedirect: '/user/login',
+    }),
+    (req, res) => {
+        createJWTCookie(req.user, res);
+        const { state: serviceURL } = req.query;
+
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
+        }
+        return res.redirect('/');
+    }
+);

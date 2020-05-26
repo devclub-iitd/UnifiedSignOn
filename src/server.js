@@ -17,6 +17,8 @@ const app = express();
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const FbStrategy = require('passport-facebook').Strategy;
+const GithubStrategy = require('passport-github2').Strategy;
 
 passport.use(
     new GoogleStrategy(
@@ -37,6 +39,43 @@ passport.use(
     )
 );
 
+passport.use(
+    new FbStrategy(
+        {
+            clientID: process.env.FACEBOOK_CLIENT_ID,
+            clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+            callbackURL: `http://localhost:${process.env.PORT}/auth/facebook/callback`,
+            profileFields: ['id', 'displayName', 'email'],
+            enableProof: true,
+        },
+        (accessToken, refreshToken, fbProfile, done) => {
+            console.log(fbProfile);
+            User.findOne({ email: fbProfile._json.email }, (err, u) =>
+                done(err, u)
+            );
+        }
+    )
+);
+
+passport.use(
+    new GithubStrategy(
+        {
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: `http://localhost:${process.env.PORT}/auth/github/callback`,
+            scope: ['user:email'],
+        },
+        (accessToken, refreshToken, githubProfile, done) => {
+            console.log(githubProfile);
+            User.findOne(
+                {
+                    email: githubProfile.emails[0].value,
+                },
+                (err, u) => done(err, u)
+            );
+        }
+    )
+);
 app.use(passport.initialize());
 
 app.use(cors());
