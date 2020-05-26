@@ -19,8 +19,14 @@ router.post('/', async (req, res) => {
         newPassword,
     } = req.body;
 
+    // TODO : Add multiple error messages, for example if the password is wrong but the other fields have been updated
+    // Add an error for the password field but update the other fields regardless
+
     try {
+        // Extract user from the database
         const user = await User.findOne({ email });
+
+        // If the user has entered a newPassword check for the old password
         if (newPassword) {
             if (password) {
                 const isMatch = await bcrypt.compare(password, user.password);
@@ -30,6 +36,8 @@ router.post('/', async (req, res) => {
                         error: true,
                     });
                 }
+
+                // If the old password has been given and is correct, update the password field on the user
                 const passwordHash = await bcrypt.hash(newPassword, 10);
                 user.password = passwordHash;
             } else {
@@ -41,6 +49,7 @@ router.post('/', async (req, res) => {
             }
         }
 
+        // Update personal info fields
         if (firstName) {
             user.firstname = firstName;
         }
@@ -51,13 +60,17 @@ router.post('/', async (req, res) => {
             user.username = newUsername;
         }
 
+        // Save the user and validate inputs
         await user.save({}, (err) => {
+            // TODO : Display a user friendly error for errors such as max username length
             if (err) {
                 return res.render('settings', {
                     message: err.message,
                     error: true,
                 });
             }
+
+            // If their was no error, clear the existing token and create a new one with the updated user info
             res.clearCookie(accessTokenName);
             createJWTCookie(user, res);
             res.render('settings', {
