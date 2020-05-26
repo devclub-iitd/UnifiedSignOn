@@ -59,21 +59,33 @@ input:focus::-webkit-input-placeholder {
     margin-top: 0;
 }
 
+.longLine {
+    margin: 10px 0 15px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--theme-color);
+}
+
 .form-group legend {
-    text-align: center;
     font-weight: 600;
     font-size: 1rem;
 }
 
-.info-group {
-    margin: 5px 0 0;
+.inline {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+}
+
+.inline-group {
     display: flex;
+    flex-direction: column;
 }
 
 .detailTitle {
-    color: rgba(40, 116, 255, 0.872);
-    font-weight: 800;
+    display: block;
+    color: rgba(8, 12, 19, 0.872);
+    font-weight: 600;
 }
-.detailContent {
-    margin-left: 5px;
-}
+
+@
