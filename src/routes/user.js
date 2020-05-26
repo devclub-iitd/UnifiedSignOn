@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { createJWTCookie } from '../utils/utils';
-import User from '../models/user';
+import { User } from '../models/user';
 import { refreshTokenName } from '../config/keys';
 
 const router = express.Router();
@@ -87,7 +87,7 @@ router.post('/register', async (req, res) => {
     try {
         // try to find the user in the database
         let user = await User.findOne({ email });
-
+        console.log(user);
         // User already exists
         if (user) {
             return res.render('register', {
@@ -105,7 +105,7 @@ router.post('/register', async (req, res) => {
             email,
             password,
         });
-
+        console.log(user.password);
         // encrypt the password using bcrypt
         const salt = await bcrypt.genSalt(10); // which to use 10 or more than that
 

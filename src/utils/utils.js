@@ -1,5 +1,6 @@
 import jwt, { verify } from 'jsonwebtoken';
 import * as keys from '../config/keys';
+import { User, SocialAccount } from '../models/user';
 
 const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     const payload = {
@@ -62,4 +63,79 @@ const verifyToken = (token, res, tokenName = keys.accessTokenName) => {
         });
     }
 };
-export { createJWTCookie, verifyToken };
+
+const socialAuthenticate = (
+    provider,
+    done,
+    uid,
+    firstname,
+    lastname,
+    email
+) => {
+    SocialAccount.findOne(
+        {
+            provider,
+            email,
+            uid,
+        },
+        (err, acct) => {
+            if (err) return done(err);
+            if (!acct) {
+                User.findOne(
+                    {
+                        email,
+                    },
+                    (error, primary_account) => {
+                        if (error) {
+                            console.log(error);
+                            return done(error);
+                        }
+                        if (primary_account) {
+                            SocialAccount.create({
+                                provider,
+                                uid,
+                                email,
+                                primary_account,
+                            }).catch((e) => {
+                                console.log(e);
+                                return done(e);
+                            });
+                            return done(null, primary_account);
+                        }
+                    }
+                );
+                User.create({
+                    firstname,
+                    lastname,
+                    email,
+                })
+                    .then((primary_account) => {
+                        SocialAccount.create({
+                            provider,
+                            uid,
+                            email,
+                            primary_account,
+                        }).catch((e) => {
+                            console.log(e);
+                            return done(e);
+                        });
+                        return done(null, primary_account);
+                    })
+                    .catch((e) => {
+                        console.log(e);
+                        return done(e);
+                    });
+            } else {
+                User.findOne(acct.primary_account, (e, prime_user) => {
+                    if (e) {
+                        console.log(e);
+                        return done(e);
+                    }
+                    console.log(prime_user);
+                    return done(null, prime_user);
+                });
+            }
+        }
+    );
+};
+export { createJWTCookie, verifyToken, socialAuthenticate };

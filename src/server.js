@@ -7,7 +7,7 @@ import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
 
-import User from './models/user';
+import { socialAuthenticate } from './utils/utils';
 
 require('dotenv').config({
     path: `${__dirname}/../.env`,
@@ -29,11 +29,20 @@ passport.use(
         },
         (accessToken, refreshToken, googleProfile, done) => {
             console.log(googleProfile);
-            User.findOne(
-                {
-                    email: googleProfile._json.email,
-                },
-                (err, u) => done(err, u)
+            const {
+                sub: uid,
+                family_name: lastname,
+                given_name: firstname,
+                email,
+            } = googleProfile._json;
+            console.log(`${uid}:${firstname}:${lastname}:${email}`);
+            return socialAuthenticate(
+                'google',
+                done,
+                uid,
+                firstname,
+                lastname,
+                email
             );
         }
     )
@@ -50,8 +59,13 @@ passport.use(
         },
         (accessToken, refreshToken, fbProfile, done) => {
             console.log(fbProfile);
-            User.findOne({ email: fbProfile._json.email }, (err, u) =>
-                done(err, u)
+            return socialAuthenticate(
+                'facebook',
+                done,
+                fbProfile._json.id,
+                fbProfile._json.name,
+                '',
+                fbProfile._json.email
             );
         }
     )
@@ -67,11 +81,13 @@ passport.use(
         },
         (accessToken, refreshToken, githubProfile, done) => {
             console.log(githubProfile);
-            User.findOne(
-                {
-                    email: githubProfile.emails[0].value,
-                },
-                (err, u) => done(err, u)
+            return socialAuthenticate(
+                'github',
+                done,
+                githubProfile._json.id,
+                githubProfile._json.name,
+                '',
+                githubProfile.emails[0].value
             );
         }
     )

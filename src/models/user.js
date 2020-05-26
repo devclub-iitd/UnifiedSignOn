@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const userSchema = mongoose.Schema({
     username: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 6,
         maxlength: 30,
     },
@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema({
     },
     password: {
         type: String,
-        required: true,
+        // required: true,
     },
     email: {
         type: String,
@@ -33,4 +33,19 @@ const userSchema = mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('User', userSchema);
+const SocialAccountSchema = mongoose.Schema({
+    provider: {
+        type: String,
+        enum: ['google', 'facebook', 'github'],
+    },
+    uid: String,
+    email: String,
+    primary_account: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+});
+module.exports = {
+    SocialAccount: mongoose.model('SocialAccount', SocialAccountSchema),
+    User: mongoose.model('User', userSchema),
+};
