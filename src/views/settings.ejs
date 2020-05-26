@@ -9,7 +9,10 @@
     <script>
         $(document).ready(() => {
             const getUserDetailsSuccess = (user) => {
-                // insert code here
+                $('input[type="hidden"]').val(user.email);
+                $('span.firstName').html(user.firstname);
+                $('span.lastName').html(user.lastname);
+                $('span.username').html(user.username);
                 console.log(user);
             }
             const getUserDetailsFailure = (message) => {
@@ -21,10 +24,11 @@
             if ($('.messageContainer').length > 0) {
                 setTimeout(() => {
                     $('.messageContainer').css('opacity', '0');
+                    $('.messageContainer').css('display', 'none');
                 }, 3000);
             }
         })
-    </script>
+        </script>
 </head>
 
 <body>
@@ -34,13 +38,7 @@
             Settings
         </div>
         <div class="miniLine"></div>
-        <div class="formContainer">
-            <form action="" method="POST">
-                <button type="submit" class="btn">
-                    Done!
-                </button>
-            </form>
-            <% if (message !== '') { %>
+        <% if (message !== '') { %>
             <% if (error) { %>
             <div class="messageContainer error">
                 <% } else { %>
@@ -49,9 +47,36 @@
                     <%= message %>
                 </div>
                 <% } %>
-            </div>
+        <div class="formContainer">
+            <form action="/profile/settings" method="POST">
+                <div class="form-group">
+                    <legend>Personal Information</legend>
+                    <input type="hidden" name="email" value="">
+                    <div class="info-group">
+                        <span class="detailTitle">First Name:</span><span class="detailContent firstName"></span>
+                    </div>
+                    <input type="text" name="firstName" placeholder="First Name" id="firstName" tabindex="1">
+                    <div class="info-group">
+                        <span class="detailTitle">Last Name:</span><span class="detailContent lastName"></span>
+                    </div>
+                    <input type="text" name="lastName" placeholder="Last Name" id="lastName" tabindex="2">
+                    <div class="info-group">
+                        <span class="detailTitle">Username:</span><span class="detailContent username"></span>
+                    </div>
+                    <input type="text" name="newUsername" placeholder="Enter new Username" id="newUsername" autocomplete="username" tabindex="3">
+                </div>
+                <div class="form-group">
+                    <legend>Update Password</legend>
+                    <input type="password" name="newPassword" autocomplete="new-password" placeholder="Enter new Password" id="newPassword" tabindex="4">
+                    <input type="password" name="password" autocomplete="current-password" placeholder="Confirm old Password" id="password" tabindex="5">
+                </div>
+                <button type="submit" class="btn">
+                    Done!
+                </button>
+            </form>
         </div>
-        <%- include('partials/footer'); %>
+    </div>
+    <%- include('partials/footer'); %>
 </body>
 
 </html>
