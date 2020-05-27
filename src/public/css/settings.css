@@ -11,13 +11,14 @@
 }
 .formContainer form {
     display: flex;
+    padding: 0 10px;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
 }
 input {
-    width: 90%;
-    margin: 10px auto;
+    width: 100%;
+    margin: 10px 0;
     height: 45px;
     line-height: 45px;
     border-radius: 8px;
@@ -26,6 +27,10 @@ input {
     padding-left: 15px;
     font-size: 12px;
     transition: 0.2s ease-out;
+}
+
+.messageContainer {
+    margin-bottom: 0;
 }
 
 input:hover {
@@ -41,3 +46,46 @@ input:focus::-webkit-input-placeholder {
     transform: translateX(10px);
     opacity: 0;
 }
+
+.form-group {
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    width: 100%;
+}
+
+.form-group:nth-of-type(1) {
+    margin-top: 0;
+}
+
+.longLine {
+    margin: 10px 0 15px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--theme-color);
+}
+
+.form-group legend {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.inline {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 20px;
+}
+
+.inline-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.detailTitle {
+    display: block;
+    color: rgba(8, 12, 19, 0.872);
+    font-weight: 600;
+}
+
+@

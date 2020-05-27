@@ -27,11 +27,14 @@
 }
 .btnContainer {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
     margin: 20px auto;
 }
 .btnContainer .btn {
-    margin: 0px 15px;
+    margin: 5px 15px;
 }
 .loaderContainer {
     margin: 20px auto;

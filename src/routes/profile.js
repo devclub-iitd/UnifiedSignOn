@@ -1,12 +1,11 @@
 import express from 'express';
 import { verifyToken } from '../utils/utils';
 import { accessTokenName, refreshTokenName } from '../config/keys';
+import settingsRoutes from './settings';
 
 const router = express.Router();
 
-router.get('/settings', (req, res) => {
-    res.render('settings', { message: '', error: false });
-});
+router.use('/settings', settingsRoutes);
 
 router.post('/', (req, res) => {
     // extract token from cookie
