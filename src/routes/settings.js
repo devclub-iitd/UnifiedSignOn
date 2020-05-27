@@ -56,21 +56,21 @@ router.post('/', async (req, res) => {
         }
 
         // Update personal info fields
-        if (firstName !== user.firstname) {
+        if (firstName && firstName !== user.firstname) {
             user.firstname = firstName;
             messages.push({
                 message: 'First name updated successfuly',
                 error: false,
             });
         }
-        if (lastName !== user.lastname) {
+        if (lastName && lastName !== user.lastname) {
             user.lastname = lastName;
             messages.push({
                 message: 'Last name updated successfuly',
                 error: false,
             });
         }
-        if (newUsername !== user.username) {
+        if (newUsername && newUsername !== user.username) {
             user.username = newUsername;
             messages.push({
                 message: 'Username updated successfuly',
