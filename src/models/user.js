@@ -33,4 +33,19 @@ const userSchema = mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('User', userSchema);
+const SocialAccountSchema = mongoose.Schema({
+    provider: {
+        type: String,
+        enum: ['google', 'facebook', 'github'],
+    },
+    uid: String,
+    email: String,
+    primary_account: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+});
+module.exports = {
+    SocialAccount: mongoose.model('SocialAccount', SocialAccountSchema),
+    User: mongoose.model('User', userSchema),
+};

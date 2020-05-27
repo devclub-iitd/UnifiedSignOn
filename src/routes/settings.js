@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { accessTokenName } from '../config/keys';
-import User from '../models/user';
+import { User } from '../models/user';
 import { createJWTCookie } from '../utils/utils';
 
 const router = require('express').Router();
