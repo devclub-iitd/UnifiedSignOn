@@ -64,7 +64,7 @@ const verifyToken = (token, res, tokenName = keys.accessTokenName) => {
     }
 };
 
-const socialAuthenticate = (
+const socialAuthenticate = async (
     provider,
     done,
     uid,
@@ -72,70 +72,54 @@ const socialAuthenticate = (
     lastname,
     email
 ) => {
-    SocialAccount.findOne(
-        {
+    try {
+        // Find if the social account already exists or not
+        const existingSocial = await SocialAccount.findOne({
             provider,
             email,
             uid,
-        },
-        (err, acct) => {
-            if (err) return done(err);
-            if (!acct) {
-                User.findOne(
-                    {
-                        email,
-                    },
-                    (error, primary_account) => {
-                        if (error) {
-                            console.log(error);
-                            return done(error);
-                        }
-                        if (primary_account) {
-                            SocialAccount.create({
-                                provider,
-                                uid,
-                                email,
-                                primary_account,
-                            }).catch((e) => {
-                                console.log(e);
-                                return done(e);
-                            });
-                            return done(null, primary_account);
-                        }
-                    }
-                );
-                User.create({
-                    firstname,
-                    lastname,
-                    email,
-                })
-                    .then((primary_account) => {
-                        SocialAccount.create({
-                            provider,
-                            uid,
-                            email,
-                            primary_account,
-                        }).catch((e) => {
-                            console.log(e);
-                            return done(e);
-                        });
-                        return done(null, primary_account);
-                    })
-                    .catch((e) => {
-                        console.log(e);
-                        return done(e);
-                    });
-            } else {
-                User.findOne(acct.primary_account, (e, prime_user) => {
-                    if (e) {
-                        console.log(e);
-                        return done(e);
-                    }
-                    console.log(prime_user);
-                    return done(null, prime_user);
-                });
-            }
+        });
+
+        // If social account exists then log in as the primary account of the social account.
+        if (existingSocial) {
+            console.log('Social account exists');
+            const user = await User.findOne(existingSocial.primary_account);
+            return done(null, user);
         }
-    );
+        console.log(
+            'No matching social account found for the user\nTrying to find if a user with same email exists or not ...'
+        );
+
+        // Find if a primary_account exists with the same email or not
+        let primary_account = await User.findOne({ email });
+        if (!primary_account) {
+            console.log(
+                'No user found with the given email address\nCreating user ....'
+            );
+
+            // No such account found hence create a DB entry for this user
+            primary_account = await User.create({
+                firstname,
+                lastname,
+                email,
+                role: 'external_user',
+            });
+        } else {
+            console.log('Found a user with the same email address');
+        }
+        console.log('Linking the social account with this user');
+
+        // Create and link the new social account with the primary_accoun found/created in the steps above.
+        await SocialAccount.create({
+            provider,
+            uid,
+            email,
+            primary_account,
+        });
+        return done(null, primary_account);
+    } catch (error) {
+        console.log(error);
+        return done(error);
+    }
 };
 export { createJWTCookie, verifyToken, socialAuthenticate };

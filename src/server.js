@@ -28,14 +28,12 @@ passport.use(
             callbackURL: `http://localhost:${process.env.PORT}/auth/google/callback`,
         },
         (accessToken, refreshToken, googleProfile, done) => {
-            console.log(googleProfile);
             const {
                 sub: uid,
                 family_name: lastname,
                 given_name: firstname,
                 email,
             } = googleProfile._json;
-            console.log(`${uid}:${firstname}:${lastname}:${email}`);
             return socialAuthenticate(
                 'google',
                 done,
@@ -58,7 +56,6 @@ passport.use(
             enableProof: true,
         },
         (accessToken, refreshToken, fbProfile, done) => {
-            console.log(fbProfile);
             return socialAuthenticate(
                 'facebook',
                 done,
@@ -80,7 +77,6 @@ passport.use(
             scope: ['user:email'],
         },
         (accessToken, refreshToken, githubProfile, done) => {
-            console.log(githubProfile);
             return socialAuthenticate(
                 'github',
                 done,
