@@ -64,6 +64,19 @@ const verifyToken = (token, res, tokenName = keys.accessTokenName) => {
     }
 };
 
+const makeid = (length) => {
+    let result = '';
+    const characters =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i += 1) {
+        result += characters.charAt(
+            Math.floor(Math.random() * charactersLength)
+        );
+    }
+    return result;
+};
+
 const socialAuthenticate = async (
     provider,
     done,
@@ -102,6 +115,8 @@ const socialAuthenticate = async (
                 firstname,
                 lastname,
                 email,
+                username: makeid(10),
+                password: makeid(32),
                 role: 'external_user',
             });
         } else {
@@ -122,4 +137,5 @@ const socialAuthenticate = async (
         return done(error);
     }
 };
+
 export { createJWTCookie, verifyToken, socialAuthenticate };
