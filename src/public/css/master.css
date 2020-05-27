@@ -185,6 +185,7 @@ a {
     color: white;
     margin: 20px auto;
     line-height: 40px;
+    border-radius: 5px;
     transition: 0.2s ease-out;
 }
 .error {
