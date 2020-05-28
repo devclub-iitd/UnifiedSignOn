@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
-import { accessTokenName } from '../config/keys';
+import { verify } from 'jsonwebtoken';
 import { User } from '../models/user';
+import { publicKey, accessTokenName } from '../config/keys';
 import { createJWTCookie } from '../utils/utils';
 
 const router = require('express').Router();
@@ -11,7 +12,6 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
     const {
-        email,
         password,
         firstName,
         lastName,
@@ -25,8 +25,17 @@ router.post('/', async (req, res) => {
         // Also ensures that even if there was some error changing the password, the other fields get updated
         const messages = [];
 
+        // Extract JWT token
+        const token = req.cookies[accessTokenName];
+        const decoded = verify(token, publicKey, {
+            algorithms: ['RS256'],
+        });
+
+        // Store user credentials in the userToken for later use in finding the user from the database
+        const userToken = decoded.user;
+
         // Extract user from the database
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ _id: userToken.id });
 
         // If the user has entered a newPassword check for the old password
         if (newPassword) {
@@ -59,21 +68,21 @@ router.post('/', async (req, res) => {
         if (firstName !== user.firstname) {
             user.firstname = firstName;
             messages.push({
-                message: 'First name updated successfuly',
+                message: 'First name updated successfully',
                 error: false,
             });
         }
         if (lastName !== user.lastname) {
             user.lastname = lastName;
             messages.push({
-                message: 'Last name updated successfuly',
+                message: 'Last name updated successfully',
                 error: false,
             });
         }
-        if (newUsername !== user.username) {
+        if (newUsername && newUsername !== user.username) {
             user.username = newUsername;
             messages.push({
-                message: 'Username updated successfuly',
+                message: 'Username updated successfully',
                 error: false,
             });
         }
