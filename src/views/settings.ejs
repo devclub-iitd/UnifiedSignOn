@@ -9,7 +9,7 @@
     <script>
         $(document).ready(() => {
             const getUserDetailsSuccess = (user) => {
-                $('input[type="hidden"]').val(user.email);
+                $('input[type="hidden"]').val(user.id);
                 $('input[name="firstName"]').val(user.firstname);
                 $('input[name="lastName"]').val(user.lastname);
                 $('input[name="newUsername"]').val(user.username);
@@ -55,7 +55,7 @@
                 <div class="form-group">
                     <legend>Personal Information <div class="long-line"></div></legend>
                     <div class="longLine"></div>
-                    <input type="hidden" name="email" value="">
+                    <input type="hidden" name="id" value="">
                     <div class="inline">
                         <div class="inline-group">
                             <span class="detailTitle">First Name</span>

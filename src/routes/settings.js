@@ -11,7 +11,7 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
     const {
-        email,
+        id,
         password,
         firstName,
         lastName,
@@ -25,8 +25,8 @@ router.post('/', async (req, res) => {
         // Also ensures that even if there was some error changing the password, the other fields get updated
         const messages = [];
 
-        // Extract user from the database
-        const user = await User.findOne({ email });
+        // Extract user from the database using the unique mongoDB ID
+        const user = await User.findOne({ _id: id });
 
         // If the user has entered a newPassword check for the old password
         if (newPassword) {
@@ -59,21 +59,21 @@ router.post('/', async (req, res) => {
         if (firstName !== user.firstname) {
             user.firstname = firstName;
             messages.push({
-                message: 'First name updated successfuly',
+                message: 'First name updated successfully',
                 error: false,
             });
         }
         if (lastName !== user.lastname) {
             user.lastname = lastName;
             messages.push({
-                message: 'Last name updated successfuly',
+                message: 'Last name updated successfully',
                 error: false,
             });
         }
         if (newUsername && newUsername !== user.username) {
             user.username = newUsername;
             messages.push({
-                message: 'Username updated successfuly',
+                message: 'Username updated successfully',
                 error: false,
             });
         }
