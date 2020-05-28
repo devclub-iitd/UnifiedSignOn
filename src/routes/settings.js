@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { verify } from 'jsonwebtoken';
-import User from '../models/user';
+import { User } from '../models/user';
 import { publicKey, accessTokenName } from '../config/keys';
 import { createJWTCookie } from '../utils/utils';
 
