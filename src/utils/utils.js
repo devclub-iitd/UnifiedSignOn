@@ -83,7 +83,8 @@ const socialAuthenticate = async (
     uid,
     firstname,
     lastname,
-    email
+    email,
+    role = 'external_user'
 ) => {
     try {
         // Find if the social account already exists or not
@@ -117,7 +118,7 @@ const socialAuthenticate = async (
                 email,
                 username: makeid(10),
                 password: makeid(32),
-                role: 'external_user',
+                role: [role],
             });
         } else {
             console.log('Found a user with the same email address');
