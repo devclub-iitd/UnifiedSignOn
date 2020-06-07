@@ -1,17 +1,56 @@
 :root {
     --theme-color: rgba(40, 116, 255, 0.872);
 }
+
+.tabContainer {
+    font-size: 14px;
+    margin: 1rem 0 2.5rem;
+}
+
+.tabs {
+    list-style: none;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.tab-item {
+    height: fit-content;
+    border-radius: 500px;
+    border: 1px solid rgb(197, 197, 197);
+    text-align: center;
+    transition: all 200ms ease-in-out;
+}
+
+.tab-item:hover {
+    background-color: rgb(235, 235, 235);
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.tab-item.active {
+    font-weight: 600;
+    color: white;
+    border: none;
+    background-color: var(--theme-color);
+    -webkit-box-shadow: 0px 11px 10px -7px rgba(0, 0, 0, 0.59);
+    -moz-box-shadow: 0px 11px 10px -7px rgba(0, 0, 0, 0.59);
+    box-shadow: 0px 10px 10px -7px rgba(0, 0, 0, 0.5);
+}
+
+.tab-link {
+    padding: 8px 0;
+    display: block;
+}
+
 .formContainer {
     width: 40%;
     height: auto;
-    padding: 20px;
     min-width: 300px;
-    /* background-color: red; */
     margin: auto;
+    /* background-color: red; */
 }
 .formContainer form {
     display: flex;
-    padding: 0 10px;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
@@ -68,7 +107,7 @@ input:focus::-webkit-input-placeholder {
 
 .form-group legend {
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.25rem;
 }
 
 .inline {
@@ -88,4 +127,8 @@ input:focus::-webkit-input-placeholder {
     font-weight: 600;
 }
 
-@
+@media (max-width: 500px) {
+    .tabContainer {
+        font-size: 14px;
+    }
+}
