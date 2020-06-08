@@ -4,7 +4,11 @@ import {
     createJWTCookie,
     socialAuthenticate,
 } from '../utils/utils';
-import { accessTokenName, refreshTokenName } from '../config/keys';
+import {
+    accessTokenName,
+    refreshTokenName,
+    profileNotFoundMsg,
+} from '../config/keys';
 
 const router = express.Router();
 const passport = require('passport');
@@ -63,6 +67,9 @@ router.get(
     },
     (req, res) => {
         createJWTCookie(req.user, res);
+        if (req.authInfo.message === profileNotFoundMsg) {
+            return res.render('confirm');
+        }
         const { state: serviceURL } = req.query;
 
         if (typeof serviceURL !== 'undefined' && serviceURL) {

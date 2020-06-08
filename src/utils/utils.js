@@ -11,6 +11,7 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
             lastname: user.lastname,
             username: user.username,
             role: user.role,
+            isverified: user.isverified,
         },
     };
     const exp =
@@ -37,6 +38,9 @@ const verifyToken = (token, res, tokenName = keys.accessTokenName) => {
             algorithms: ['RS256'],
         });
         const { user } = decoded;
+
+        // The user is not yet verified.
+        if (!user.isverified) throw jwt.JsonWebTokenError;
 
         // Set a new cookie which will extend the session a further {expTime} amount of time.
         // So essentially whenever any auth request is made the user session will be extended.
@@ -67,7 +71,7 @@ const verifyToken = (token, res, tokenName = keys.accessTokenName) => {
 const makeid = (length) => {
     let result = '';
     const characters =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,./;:?><[]{}|`~!@#$%^&*()-_=+';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i += 1) {
         result += characters.charAt(
@@ -87,10 +91,10 @@ const socialAuthenticate = async (
     role = 'external_user'
 ) => {
     try {
+        let msg = '';
         // Find if the social account already exists or not
         const existingSocial = await SocialAccount.findOne({
             provider,
-            email,
             uid,
         });
 
@@ -120,6 +124,7 @@ const socialAuthenticate = async (
                 password: makeid(32),
                 role: [role],
             });
+            msg = keys.profileNotFoundMsg;
         } else {
             console.log('Found a user with the same email address');
         }
@@ -132,7 +137,10 @@ const socialAuthenticate = async (
             email,
             primary_account,
         });
-        return done(null, primary_account);
+
+        return done(null, primary_account, {
+            message: msg,
+        });
     } catch (error) {
         console.log(error);
         return done(error);

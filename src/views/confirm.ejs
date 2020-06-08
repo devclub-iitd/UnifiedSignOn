@@ -1,0 +1,72 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/settings.css" />
+    <title>Confirm account</title>
+    <script>
+        $(document).ready(() => {
+            const deleteAcct = () => {
+                $.ajax({
+                    type: "POST",
+                    url: "/profile/delete",
+                    success: (res) => {
+                        window.location.href = '/';
+                    },
+                    error: (res) => {
+                        const { err, message } = res.responseJSON;
+                        console.log(message);
+                    }
+                });
+            };
+            $('body > button:nth-child(2)').click(() => {
+                $('#mainForm').css('display','block');
+            });
+
+            $('body > button:nth-child(3)').click(()=>{
+                deleteAcct();
+                window.location.href = '/';
+            })
+
+        });
+    </script>
+</head>
+
+
+<body>
+    <h1>You are about to create a new account!</h1>
+    <button name="ok" type="button" class="btn">
+        OK, Let me enter my username.
+    </button>
+    <button name="reject" type="button" class="btn">
+        No, Take me back!
+    </button>
+    <div id="mainForm" class="formContainer" style="display: none;">
+        <form action="/profile/settings" method="POST">
+            <div class="form-group">
+                <legend>Personal Information <div class="long-line"></div>
+                </legend>
+                <div class="longLine"></div>
+                <div class="inline">
+                    <div class="inline-group">
+                        <span class="detailTitle">First Name</span>
+                        <input type="text" name="firstName" placeholder="First Name" id="firstName" tabindex="1">
+                    </div>
+                    <div class="inline-group">
+                        <span class="detailTitle">Last Name</span>
+                        <input type="text" name="lastName" placeholder="Last Name" id="lastName" tabindex="2">
+                    </div>
+                </div>
+                <span class="detailTitle">Username</span>
+                <input type="text" name="newUsername" placeholder="Enter new Username" id="newUsername" autocomplete="username"
+                    tabindex="3">
+            </div>
+            <button type="submit" class="btn">
+                Create my account!
+            </button>
+        </form>
+    </div>
+</body>
+

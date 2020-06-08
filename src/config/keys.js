@@ -12,3 +12,5 @@ export const privateKey = fs.readFileSync(
 export const publicKey = fs.readFileSync(
     path.resolve(__dirname, './public.pem')
 );
+export const profileNotFoundMsg =
+    'Sorry. We do not recognize this account. Maybe you would like to create a new account';

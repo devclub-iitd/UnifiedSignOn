@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { verify } from 'jsonwebtoken';
-import { User } from '../models/user';
+import { User, SocialAccount } from '../models/user';
 import { publicKey, accessTokenName } from '../config/keys';
 import { createJWTCookie } from '../utils/utils';
 
@@ -85,6 +85,13 @@ router.post('/', async (req, res) => {
                 message: 'Username updated successfully',
                 error: false,
             });
+        }
+
+        const socialConnection = await SocialAccount.findOne({
+            primary_account: user,
+        });
+        if (socialConnection) {
+            user.isverified = true;
         }
 
         // Save the user and validate inputs
