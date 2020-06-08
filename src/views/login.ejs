@@ -42,6 +42,7 @@
         </div>
         <div class="miniLine"></div>
         <div class="formContainer">
+           
             <form action="" method="POST">
                 <input type="email" name="email" placeholder="Enter your email ..." required />
                 <input type="password" name="password" placeholder="Enter your password ..." required />
@@ -60,11 +61,6 @@
                     <span id="signupBtn"><a href="/user/register">Signup...</a></span>
                     </i>
                 </p>
-                <a id="googleLogin" href="/auth/google/"> Sign in with Google</a>
-                <a id="fbLogin" href="/auth/facebook/"> Sign in with Facebook</a>
-                <a id="githubLogin" href="/auth/github/"> Sign in with Github</a>
-                <a id="iitdLogin" href="/auth/iitd/"> Sign in with IITD Kerberos</a>
-
             </form>
             
             <% if (message !== '') { %>
@@ -77,8 +73,21 @@
                 </div>
                 <% } %>
             </div>
+            <div class="socialLoginContainer">
+                <fieldset>
+                    <legend>Or Sign in With</legend>
+                    <div class="icon-container">
+                        <a class="btn oauthBtn" id="googleLogin" href="/auth/google/"><i class="fab fa-google"></i></a>
+                        <a class="btn oauthBtn" id="fbLogin" href="/auth/facebook/"><i class="fab fa-facebook"></i></a>
+                        <a class="btn oauthBtn" id="githubLogin" href="/auth/github/"><i class="fab fa-github"></i></a>
+                        <a class="btn oauthBtn" id="iitdLogin" href="/auth/iitd/"><i class="fab"></i></a>
+                    </div>
+                </fieldset>
+            </div>
         </div>
         <%- include('partials/footer'); %>
+
+        <script src="https://kit.fontawesome.com/1e335addbd.js" crossorigin="anonymous"></script>
 </body>
 
 </html>

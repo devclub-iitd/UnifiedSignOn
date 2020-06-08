@@ -5,6 +5,7 @@
     width: 40%;
     height: auto;
     padding: 20px;
+    padding-bottom: 0;
     min-width: 300px;
     /* background-color: red; */
     margin: auto;
@@ -46,4 +47,43 @@ input:focus::-webkit-input-placeholder {
     margin-left: 5px;
     font-weight: 600;
     text-decoration: underline;
+}
+
+.socialLoginContainer {
+    width: auto;
+    margin: auto;
+    display: flex;
+}
+
+.socialLoginContainer fieldset {
+    border: 1px solid grey;
+    text-align: center;
+    border-radius: 5px;
+    padding: 1rem 1.5rem;
+    -webkit-appearance: none;
+}
+
+fieldset legend {
+    padding: 0 0.5rem;
+    font-weight: 600;
+}
+
+.icon-container {
+    display: flex;
+}
+
+.oauthBtn {
+    margin: 1rem;
+    padding: 0;
+    height: fit-content;
+    background-color: whitesmoke;
+    display: flex;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 139, 0.699);
+    box-shadow: unset;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: rgba(2, 2, 112, 0.747);
+    border-radius: 5px;
 }
