@@ -106,6 +106,7 @@ router.get('/auth/iitd/confirm', async (req, res) => {
         const iitdCallback = async (
             err = null,
             user = null,
+            // authInfo = { message: '' },
             request = req,
             response = res
         ) => {

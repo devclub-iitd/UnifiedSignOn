@@ -102,7 +102,8 @@ const socialAuthenticate = async (
         if (existingSocial) {
             console.log('Social account exists');
             const user = await User.findOne(existingSocial.primary_account);
-            return done(null, user);
+            if (!user.isverified) msg = keys.profileNotFoundMsg;
+            return done(null, user, { message: msg });
         }
         console.log(
             'No matching social account found for the user\nTrying to find if a user with same email exists or not ...'
@@ -125,6 +126,9 @@ const socialAuthenticate = async (
                 role: [role],
             });
             msg = keys.profileNotFoundMsg;
+        } else if (!primary_account.isverified) {
+            msg = keys.profileNotFoundMsg;
+            console.log('Found an unverified user with the same email address');
         } else {
             console.log('Found a user with the same email address');
         }

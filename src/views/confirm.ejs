@@ -8,6 +8,18 @@
     <title>Confirm account</title>
     <script>
         $(document).ready(() => {
+            const getParams = function (url) {
+                const params = {};
+                const parser = document.createElement('a');
+                parser.href = url;
+                const query = parser.search.substring(1);
+                const vars = query.split('&');
+                for (let i = 0; i < vars.length; i++) {
+                    const pair = vars[i].split('=');
+                    params[pair[0]] = decodeURIComponent(pair[1]);
+                }
+                return params;
+            };
             const deleteAcct = () => {
                 $.ajax({
                     type: "POST",
@@ -30,6 +42,24 @@
                 window.location.href = '/';
             })
 
+            $('#mainForm').submit((e)=>{
+                e.preventDefault();
+                $.ajax({
+                    type: 'POST',
+                    url: '/profile/settings',
+                    data: {
+                        firstName: $('#firstName').val(),
+                        lastName: $('#lastName').val(),
+                        newUsername: $('#newUsername').val(),
+                    },
+                    complete: (a,b) =>{
+                        const { state } = getParams(location.href);
+                        if(state){
+                            window.location = '/redirecting?serviceURL='+state;
+                        }else window.location = '/';
+                    }
+                })
+            });
         });
     </script>
 </head>
