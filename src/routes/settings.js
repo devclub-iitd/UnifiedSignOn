@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { verify } from 'jsonwebtoken';
-import { User } from '../models/user';
+import { User, SocialAccount } from '../models/user';
 import { publicKey, accessTokenName } from '../config/keys';
 import { createJWTCookie } from '../utils/utils';
 
@@ -25,6 +25,7 @@ router.post('/', async (req, res) => {
         // Also ensures that even if there was some error changing the password, the other fields get updated
         const messages = [];
 
+        // console.log(req.headers.referer);
         // Extract JWT token
         const token = req.cookies[accessTokenName];
         const decoded = verify(token, publicKey, {
@@ -85,6 +86,14 @@ router.post('/', async (req, res) => {
                 message: 'Username updated successfully',
                 error: false,
             });
+        }
+        if (!user.isverified) {
+            const socialConnection = await SocialAccount.findOne({
+                primary_account: user,
+            });
+            if (socialConnection) {
+                user.isverified = true;
+            }
         }
 
         // Save the user and validate inputs
