@@ -22,6 +22,7 @@
                 $('#googleLogin').attr('href', `/auth/google?serviceURL=${serviceURL}`)
                 $('#fbLogin').attr('href', `/auth/facebook?serviceURL=${serviceURL}`)
                 $('#githubLogin').attr('href', `/auth/github?serviceURL=${serviceURL}`)
+                $('#iitdLogin').attr('href', `/auth/iitd?serviceURL=${serviceURL}`)
             }
 
             const getUserDetailsSuccess = () => {
@@ -83,6 +84,7 @@
                         <a class="btn oauthBtn" id="googleLogin" href="/auth/google/"><i class="fab fa-google"></i></a>
                         <a class="btn oauthBtn" id="fbLogin" href="/auth/facebook/"><i class="fab fa-facebook"></i></a>
                         <a class="btn oauthBtn" id="githubLogin" href="/auth/github/"><i class="fab fa-github"></i></a>
+                        <a class="btn oauthBtn" id="iitdLogin" href="/auth/iitd/"><i class="fab"></i></a>
                     </div>
                 </fieldset>
             </div>

@@ -27,8 +27,12 @@ const userSchema = mongoose.Schema({
         required: true,
         unique: true,
     },
+    isverified: {
+        type: Boolean,
+        default: false,
+    },
     role: {
-        type: String,
+        type: [String],
         enum: ['admin', 'external_user', 'dc_core', 'dc_member', 'iitd_user'],
     },
 });
@@ -36,7 +40,7 @@ const userSchema = mongoose.Schema({
 const SocialAccountSchema = mongoose.Schema({
     provider: {
         type: String,
-        enum: ['google', 'facebook', 'github'],
+        enum: ['google', 'facebook', 'github', 'iitd'],
     },
     uid: String,
     email: String,
