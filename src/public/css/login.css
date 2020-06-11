@@ -69,6 +69,8 @@ fieldset legend {
 }
 
 .icon-container {
+    justify-self: center;
+    width: fit-content;
     display: flex;
 }
 
@@ -86,4 +88,28 @@ fieldset legend {
     font-size: 30px;
     color: rgba(2, 2, 112, 0.747);
     border-radius: 5px;
+}
+
+.kerbLogin {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    justify-content: center;
+    border-bottom: 1px solid gray;
+}
+
+.kerbLogin h5 {
+    font-weight: 600;
+}
+
+.kerberosBtn {
+    background-color: whitesmoke;
+    border: 1px solid orangered;
+    padding: 0.5rem;
+    margin: 1rem auto;
+    box-shadow: unset;
+}
+
+.kerberosBtn img {
+    width: 40px;
 }
