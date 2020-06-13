@@ -134,6 +134,12 @@ a {
     margin: auto;
     text-align: center;
 }
+
+.subtitle {
+    font-weight: 600;
+    text-align: center;
+}
+
 .miniLine {
     width: 40px;
     height: 6px;
