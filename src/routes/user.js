@@ -45,6 +45,14 @@ router.post('/login', async (req, res, next) => {
             });
         }
 
+        if (!user.isverified) {
+            return res.render('login', {
+                message: 'Your account is not verified',
+                error: true,
+                serviceURL,
+            });
+        }
+
         // Compare passwords
         const isMatch = await bcrypt.compare(password, user.password);
 
@@ -87,7 +95,7 @@ router.post('/register', async (req, res) => {
     try {
         // try to find the user in the database
         let user = await User.findOne({ email });
-        console.log(user);
+
         // User already exists
         if (user) {
             return res.render('register', {
@@ -104,8 +112,9 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password,
+            isverified: true,
         });
-        console.log(user.password);
+
         // encrypt the password using bcrypt
         const salt = await bcrypt.genSalt(10); // which to use 10 or more than that
 
@@ -113,7 +122,15 @@ router.post('/register', async (req, res) => {
         user.password = await bcrypt.hash(user.password, salt);
 
         // Save the updated the user in database
-        await user.save();
+        await user.save((err) => {
+            if (err) {
+                return res.render('register', {
+                    message: err.message,
+                    error: true,
+                    serviceURL,
+                });
+            }
+        });
 
         createJWTCookie(user, res);
 

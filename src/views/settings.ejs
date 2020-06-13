@@ -1,13 +1,26 @@
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <%- include('partials/assets'); %>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/settings.css" />
-    <title>Settings</title>
-    <script>
+    <head>
+        <meta charset="UTF-8" />
+        <%- include('partials/assets'); %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/settings.css" />
+        <title>Settings</title>
+        <script>
         $(document).ready(() => {
+            $('#btn2').click(() => {
+                $('.tab-item').removeClass('active');
+                $('#btn2').addClass('active');
+                $('#generalForm').fadeOut(200);
+                $('#socialForm').fadeIn(200);
+            });
+            
+            $('#btn1').click(() => {
+                $('.tab-item').removeClass('active');
+                $('#btn1').addClass('active');
+                $('#socialForm').fadeOut(200);
+                $('#generalForm').fadeIn(200);
+            });
+
             const getUserDetailsSuccess = (user) => {
                 $('input[name="firstName"]').val(user.firstname);
                 $('input[name="lastName"]').val(user.lastname);
@@ -22,9 +35,8 @@
 
             if ($('.messageContainer').length > 0) {
                 setTimeout(() => {
-                    $('.messageContainer').css('opacity', '0');
-                    $('.messageContainer').css('display', 'none');
-                }, 3000);
+                    $('.messageContainer').fadeOut(200)
+                }, 4000);
             }
         });
     </script>
@@ -52,12 +64,12 @@
         <div class="formContainer">
             <div class="tabContainer">
                 <ul class="tabs">
-                    <li class="tab-item active"><a href="#" class="tab-link">General</a></li>
-                    <li class="tab-item"><a href="#" class="tab-link">Social</a></li>
-                    <li class="tab-item"><a href="#" class="tab-link">Email</a></li>
+                    <li class="tab-item active" id="btn1"><a href="#" class="tab-link">General</a></li>
+                    <li class="tab-item" id="btn2"><a href="#" class="tab-link">Social</a></li>
+                    <li class="tab-item" id="btn3"><a href="#" class="tab-link">Email</a></li>
                 </ul>
             </div>
-            <form action="/profile/settings" method="POST">
+            <form action="/profile/settings" method="POST" id="generalForm" class="tab-content">
                 <div class="form-group">
                     <legend>Personal Information <div class="long-line"></div></legend>
                     <div class="longLine"></div>
@@ -86,6 +98,34 @@
                     Update!
                 </button>
             </form>
+            <div class="socialLinkContainer" id="socialForm" class="tab-content">
+                <fieldset>
+                    <legend>Kerberos</legend>
+                    <ul>
+                        <li class="socialLink">
+                            <img src="/images/iitdlogo.png" alt="" class="socialIcon">
+                            <h4 class="socialInfo">Not currently linked</h4>
+                        </li>
+                    </ul>
+                </fieldset>
+                <fieldset>
+                    <legend>Social</legend>
+                    <ul>
+                        <li class="socialLink">
+                            <img src="/images/Facebook.svg" alt="" class="socialIcon">
+                            <h4 class="socialInfo">Not currently linked</h4>
+                        </li>
+                        <li class="socialLink">
+                            <img src="/images/Github.svg" alt="" class="socialIcon">
+                            <h4 class="socialInfo">Not currently linked</h4>
+                        </li>
+                        <li class="socialLink">
+                            <img src="/images/Google.svg" alt="" class="socialIcon">
+                            <h4 class="socialInfo">Not currently linked</h4>
+                        </li>
+                    </ul>
+                </fieldset>
+            </div>
         </div>
     </div>
     <%- include('partials/footer'); %>

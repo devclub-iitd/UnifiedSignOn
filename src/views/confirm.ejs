@@ -1,102 +1,160 @@
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <%- include('partials/assets'); %>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/settings.css" />
-    <title>Confirm account</title>
-    <script>
-        $(document).ready(() => {
-            const getParams = function (url) {
-                const params = {};
-                const parser = document.createElement('a');
-                parser.href = url;
-                const query = parser.search.substring(1);
-                const vars = query.split('&');
-                for (let i = 0; i < vars.length; i++) {
-                    const pair = vars[i].split('=');
-                    params[pair[0]] = decodeURIComponent(pair[1]);
-                }
-                return params;
-            };
-            const deleteAcct = () => {
-                $.ajax({
-                    type: "POST",
-                    url: "/profile/delete",
-                    success: (res) => {
-                        window.location.href = '/';
-                    },
-                    error: (res) => {
-                        const { err, message } = res.responseJSON;
-                        console.log(message);
+    <head>
+        <meta charset="UTF-8" />
+        <%- include('partials/assets'); %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/settings.css" />
+        <title>Confirm account</title>
+        <script>
+            $(document).ready(() => {
+                const getParams = function (url) {
+                    const params = {};
+                    const parser = document.createElement('a');
+                    parser.href = url;
+                    const query = parser.search.substring(1);
+                    const vars = query.split('&');
+                    for (let i = 0; i < vars.length; i++) {
+                        const pair = vars[i].split('=');
+                        params[pair[0]] = decodeURIComponent(pair[1]);
                     }
+                    return params;
+                };
+                const deleteAcct = () => {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/profile/delete',
+                        success: (res) => {
+                            window.location.href = '/';
+                        },
+                        error: (res) => {
+                            const { err, message } = res.responseJSON;
+                            console.log(message);
+                        },
+                    });
+                };
+                $('#displayBtn').click(() => {
+                    $('#mainForm').fadeIn(300);
+                    $('#displayBtn').fadeOut(100);
                 });
-            };
-            $('body > button:nth-child(2)').click(() => {
-                $('#mainForm').css('display','block');
+
+                $('#delBtn').click(() => {
+                    deleteAcct();
+                    window.location.href = '/';
+                });
+
+                $('#mainForm').submit((e) => {
+                    e.preventDefault();
+                    $.ajax({
+                        type: 'POST',
+                        url: '/profile/settings',
+                        data: {
+                            firstName: $('#firstName').val(),
+                            lastName: $('#lastName').val(),
+                            newUsername: $('#newUsername').val(),
+                        },
+                        complete: (a, b) => {
+                            const { state } = getParams(location.href);
+                            if (state) {
+                                window.location =
+                                    '/redirecting?serviceURL=' + state;
+                            } else window.location = '/';
+                        },
+                    });
+                });
             });
+        </script>
+    </head>
 
-            $('body > button:nth-child(3)').click(()=>{
-                deleteAcct();
-                window.location.href = '/';
-            })
-
-            $('#mainForm').submit((e)=>{
-                e.preventDefault();
-                $.ajax({
-                    type: 'POST',
-                    url: '/profile/settings',
-                    data: {
-                        firstName: $('#firstName').val(),
-                        lastName: $('#lastName').val(),
-                        newUsername: $('#newUsername').val(),
-                    },
-                    complete: (a,b) =>{
-                        const { state } = getParams(location.href);
-                        if(state){
-                            window.location = '/redirecting?serviceURL='+state;
-                        }else window.location = '/';
-                    }
-                })
-            });
-        });
-    </script>
-</head>
-
-
-<body>
-    <h1>You are about to create a new account!</h1>
-    <button name="ok" type="button" class="btn">
-        OK, Let me enter my username.
-    </button>
-    <button name="reject" type="button" class="btn">
-        No, Take me back!
-    </button>
-    <div id="mainForm" class="formContainer" style="display: none;">
-        <form action="/profile/settings" method="POST">
-            <div class="form-group">
-                <legend>Personal Information <div class="long-line"></div>
-                </legend>
-                <div class="longLine"></div>
-                <div class="inline">
-                    <div class="inline-group">
-                        <span class="detailTitle">First Name</span>
-                        <input type="text" name="firstName" placeholder="First Name" id="firstName" tabindex="1">
-                    </div>
-                    <div class="inline-group">
-                        <span class="detailTitle">Last Name</span>
-                        <input type="text" name="lastName" placeholder="Last Name" id="lastName" tabindex="2">
-                    </div>
+    <body>
+        <nav>
+            <div class="header">
+                <div class="headerTitle">
+                    <h2>SSO <span>@ Devclub IIT Delhi</span></h2>
                 </div>
-                <span class="detailTitle">Username</span>
-                <input type="text" name="newUsername" placeholder="Enter new Username" id="newUsername" autocomplete="username"
-                    tabindex="3">
+                <div class="navCont">
+                    <a href="/">
+                        <div class="headerBtn">
+                            Home
+                        </div>
+                    </a>
+                    <a href="/about">
+                        <div class="headerBtn">
+                            About
+                        </div>
+                    </a>
+                </div>
             </div>
-            <button type="submit" class="btn">
-                Create my account!
-            </button>
-        </form>
-    </div>
-</body>
-
+        </nav>
+        <div class="rootContainer">
+            <div class="pageTitle">
+                Confirm Acccount
+                <div class="miniLine"></div>
+            </div>
+            <div class="textParagraph">
+                Are you sure you want to create a new account?
+            </div>
+            <div
+                class="inline"
+                style="width: 40%; min-width: 300px; margin: auto;"
+            >
+                <button name="ok" type="button" class="btn" id="displayBtn">
+                    Yes!
+                </button>
+                <button
+                    name="reject"
+                    type="button"
+                    class="btn redBtn"
+                    id="delBtn"
+                >
+                    No, Take me back!
+                </button>
+            </div>
+            <div id="mainForm" class="formContainer" style="display: none;">
+                <form action="/profile/settings" method="POST">
+                    <div class="form-group">
+                        <legend>
+                            Personal Information
+                            <div class="long-line"></div>
+                        </legend>
+                        <div class="longLine"></div>
+                        <div class="inline">
+                            <div class="inline-group">
+                                <span class="detailTitle">First Name</span>
+                                <input
+                                    type="text"
+                                    name="firstName"
+                                    placeholder="First Name"
+                                    id="firstName"
+                                    tabindex="1"
+                                />
+                            </div>
+                            <div class="inline-group">
+                                <span class="detailTitle">Last Name</span>
+                                <input
+                                    type="text"
+                                    name="lastName"
+                                    placeholder="Last Name"
+                                    id="lastName"
+                                    tabindex="2"
+                                />
+                            </div>
+                        </div>
+                        <span class="detailTitle">Username</span>
+                        <input
+                            type="text"
+                            name="newUsername"
+                            placeholder="Enter new Username"
+                            id="newUsername"
+                            autocomplete="username"
+                            tabindex="3"
+                        />
+                    </div>
+                    <button type="submit" class="btn">
+                        Create my account!
+                    </button>
+                </form>
+            </div>
+        </div>
+        <%- include('partials/footer'); %>
+    </body>
+</html>
