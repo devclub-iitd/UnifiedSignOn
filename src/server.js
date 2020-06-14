@@ -6,8 +6,9 @@ import cookieParser from 'cookie-parser';
 import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
+import * as keys from './config/keys';
 
-import { socialAuthenticate } from './utils/utils';
+import { socialAuthenticate, linkSocial } from './utils/utils';
 
 require('dotenv').config({
     path: `${__dirname}/../.env`,
@@ -26,22 +27,35 @@ passport.use(
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
             callbackURL: `http://localhost:${process.env.PORT}/auth/google/callback`,
+            passReqToCallback: true,
         },
-        (accessToken, refreshToken, googleProfile, done) => {
+        async (req, accessToken, refreshToken, googleProfile, done) => {
+            const token = req.cookies[keys.accessTokenName];
             const {
                 sub: uid,
                 family_name: lastname,
                 given_name: firstname,
                 email,
             } = googleProfile._json;
-            return socialAuthenticate(
-                'google',
-                done,
-                uid,
-                firstname,
-                lastname,
-                email
-            );
+            try {
+                const resp = await linkSocial(
+                    token,
+                    'google',
+                    uid,
+                    email,
+                    done
+                );
+                return resp;
+            } catch (error) {
+                return socialAuthenticate(
+                    'google',
+                    done,
+                    uid,
+                    firstname,
+                    lastname,
+                    email
+                );
+            }
         }
     )
 );
@@ -54,16 +68,30 @@ passport.use(
             callbackURL: `http://localhost:${process.env.PORT}/auth/facebook/callback`,
             profileFields: ['id', 'displayName', 'email'],
             enableProof: true,
+            passReqToCallback: true,
         },
-        (accessToken, refreshToken, fbProfile, done) => {
-            return socialAuthenticate(
-                'facebook',
-                done,
-                fbProfile._json.id,
-                fbProfile._json.name,
-                '',
-                fbProfile._json.email
-            );
+        async (req, accessToken, refreshToken, fbProfile, done) => {
+            const token = req.cookies[keys.accessTokenName];
+            const { id: uid, name: firstname, email } = fbProfile._json;
+            try {
+                const resp = await linkSocial(
+                    token,
+                    'facebook',
+                    uid,
+                    email,
+                    done
+                );
+                return resp;
+            } catch (error) {
+                return socialAuthenticate(
+                    'facebook',
+                    done,
+                    uid,
+                    firstname,
+                    '',
+                    email
+                );
+            }
         }
     )
 );
@@ -75,16 +103,31 @@ passport.use(
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
             callbackURL: `http://localhost:${process.env.PORT}/auth/github/callback`,
             scope: ['user:email'],
+            passReqToCallback: true,
         },
-        (accessToken, refreshToken, githubProfile, done) => {
-            return socialAuthenticate(
-                'github',
-                done,
-                githubProfile._json.id,
-                githubProfile._json.name,
-                '',
-                githubProfile.emails[0].value
-            );
+        async (req, accessToken, refreshToken, githubProfile, done) => {
+            const token = req.cookies[keys.accessTokenName];
+            const { id: uid, name: firstname } = githubProfile._json;
+            const email = githubProfile.emails[0].value;
+            try {
+                const resp = await linkSocial(
+                    token,
+                    'github',
+                    uid,
+                    email,
+                    done
+                );
+                return resp;
+            } catch (error) {
+                return socialAuthenticate(
+                    'github',
+                    done,
+                    uid,
+                    firstname,
+                    '',
+                    email
+                );
+            }
         }
     )
 );

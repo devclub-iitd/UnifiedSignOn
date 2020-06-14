@@ -16,7 +16,7 @@
             success: (res) => {
                 if (!res.err) {
                     loggedInUser = false;
-                    window.location.reload();
+                    location.href = '/';
                 }
             },
             error: (res) => {

@@ -1,13 +1,19 @@
 import bcrypt from 'bcryptjs';
-import { verify } from 'jsonwebtoken';
-import { User, SocialAccount } from '../models/user';
-import { publicKey, accessTokenName } from '../config/keys';
-import { createJWTCookie } from '../utils/utils';
+import { SocialAccount } from '../models/user';
+import { accessTokenName } from '../config/keys';
+import { createJWTCookie, verifyToken } from '../utils/utils';
 
 const router = require('express').Router();
 
 router.get('/', (req, res) => {
-    res.render('settings', { messages: [{ message: '', error: false }] });
+    res.render('settings', {
+        messages: [
+            {
+                message: '',
+                error: false,
+            },
+        ],
+    });
 });
 
 router.post('/', async (req, res) => {
@@ -25,18 +31,7 @@ router.post('/', async (req, res) => {
         // Also ensures that even if there was some error changing the password, the other fields get updated
         const messages = [];
 
-        // console.log(req.headers.referer);
-        // Extract JWT token
-        const token = req.cookies[accessTokenName];
-        const decoded = verify(token, publicKey, {
-            algorithms: ['RS256'],
-        });
-
-        // Store user credentials in the userToken for later use in finding the user from the database
-        const userToken = decoded.user;
-
-        // Extract user from the database
-        const user = await User.findOne({ _id: userToken.id });
+        const user = await verifyToken(req, res, false);
 
         // If the user has entered a newPassword check for the old password
         if (newPassword) {
