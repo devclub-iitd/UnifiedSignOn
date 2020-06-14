@@ -13,10 +13,10 @@
                     $('.userRedirecting').css('display', 'none');
                     $('.userLoggedIn').css('display', 'none');
                     $('.userLoggedOut').css('display', 'none');
-                    $('#userFirstName').html('');
-                    $('.userLoggedIn .userFullName').html('');
-                    $('.userLoggedIn .userEmailID').html('');
-                    $('.userLoggedIn .userUsername').html('');
+                    $('#userFirstName').text('');
+                    $('.userLoggedIn .userFullName').text('');
+                    $('.userLoggedIn .userEmailID').text('');
+                    $('.userLoggedIn .userUsername').text('');
                 };
 
                 clearDisplay();
@@ -31,10 +31,10 @@
                     const { firstname, lastname, email, username } = user;
                     const userFullName = `${firstname} ${lastname}`;
                     clearDisplay();
-                    $('#userFirstName').html(firstname);
-                    $('.userLoggedIn .userFullName').html(userFullName);
-                    $('.userLoggedIn .userEmailID').html(email);
-                    $('.userLoggedIn .userUsername').html(username);
+                    $('#userFirstName').text(firstname);
+                    $('.userLoggedIn .userFullName').text(userFullName);
+                    $('.userLoggedIn .userEmailID').text(email);
+                    $('.userLoggedIn .userUsername').text(username);
                     $('.userLoggedIn').css('display', 'flex');
                 }
 

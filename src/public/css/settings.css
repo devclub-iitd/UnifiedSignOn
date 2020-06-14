@@ -112,7 +112,7 @@ input:focus::-webkit-input-placeholder {
 
 .inline {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
     grid-column-gap: 20px;
 }
 
@@ -121,9 +121,61 @@ input:focus::-webkit-input-placeholder {
     flex-direction: column;
 }
 
+.inline .btn {
+    width: 100%;
+    max-width: 200px;
+    margin-bottom: 2rem;
+}
+
 .detailTitle {
     display: block;
     color: rgba(8, 12, 19, 0.872);
+    font-weight: 600;
+}
+
+.socialLinkContainer {
+    display: none;
+    height: 580px;
+    box-sizing: border-box;
+    margin: auto;
+    width: 70%;
+    min-width: 300px;
+}
+
+.socialLinkContainer fieldset {
+    padding: 0 1.5rem;
+    border-radius: 5px;
+    border: 1px solid rgba(10, 49, 122, 0.872);
+    margin-bottom: 2rem;
+}
+
+.socialLinkContainer legend {
+    padding: 0 1rem 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.socialLinkContainer ul {
+    list-style: none;
+}
+
+.socialLink {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(10, 51, 128, 0.872);
+    padding: 1rem 0;
+}
+
+.socialLink:last-child {
+    border-bottom: none;
+}
+
+.socialIcon {
+    width: 40px;
+    margin-right: 3rem;
+}
+
+.socialInfo {
     font-weight: 600;
 }
 
