@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import jwt, { verify } from 'jsonwebtoken';
 import * as keys from '../config/keys';
 import { User, SocialAccount } from '../models/user';
@@ -32,39 +33,50 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     });
 };
 
-const verifyToken = (token, res, tokenName = keys.accessTokenName) => {
+const verifyToken = async (
+    req,
+    res,
+    verified = true,
+    token = null,
+    refreshToken = null
+) => {
+    if (!token) token = req.cookies[keys.accessTokenName];
+    if (!refreshToken) refreshToken = req.cookies[keys.refreshTokenName];
+    let user;
     try {
-        const decoded = verify(token, keys.publicKey, {
-            algorithms: ['RS256'],
-        });
-        const { user } = decoded;
+        if (!token) {
+            if (!refreshToken) throw jwt.JsonWebTokenError;
+
+            const decoded = verify(refreshToken, keys.publicKey, {
+                algorithms: ['RS256'],
+            });
+            user = decoded.user;
+
+            // Extend the refresh token.
+            createJWTCookie(user, res, keys.refreshTokenName);
+        } else {
+            const decoded = verify(token, keys.publicKey, {
+                algorithms: ['RS256'],
+            });
+            user = decoded.user;
+        }
 
         // The user is not yet verified.
-        if (!user.isverified) throw jwt.JsonWebTokenError;
-
-        // Set a new cookie which will extend the session a further {expTime} amount of time.
-        // So essentially whenever any auth request is made the user session will be extended.
-        if (tokenName === keys.refreshTokenName) {
-            // Refresh the remember me cookie
-            createJWTCookie(user, res, tokenName);
-        }
+        if (verified && !user.isverified) throw jwt.JsonWebTokenError;
 
         // Refresh the token cookie
         createJWTCookie(user, res);
 
-        return res.status(200).json({
-            user,
-        });
+        user = await User.findById(user.id);
+        if (!user) throw jwt.JsonWebTokenError;
+
+        return user;
     } catch (err) {
         // I wasn't able to verify the token as it was invalid
-        // clear the token
-        res.clearCookie(tokenName);
-
-        // now send a response
-        return res.status(401).json({
-            err: true,
-            msg: 'Error, token not valid',
-        });
+        // clear the tokens
+        res.clearCookie(keys.accessTokenName);
+        res.clearCookie(keys.refreshTokenName);
+        throw err;
     }
 };
 
@@ -151,4 +163,23 @@ const socialAuthenticate = async (
     }
 };
 
-export { createJWTCookie, verifyToken, socialAuthenticate };
+const linkSocial = async (token, provider, uid, email, done) => {
+    const decoded = verify(token, keys.publicKey, {
+        algorithms: ['RS256'],
+    });
+
+    const primary_account = await User.findById(decoded.user.id);
+    if (!primary_account || !primary_account.isverified)
+        throw jwt.JsonWebTokenError;
+    if (await SocialAccount.findOne({ provider, uid }))
+        return done(null, primary_account, { message: keys.accountExists });
+    await SocialAccount.create({
+        provider,
+        uid,
+        email,
+        primary_account,
+    });
+    return done(null, primary_account);
+};
+
+export { createJWTCookie, verifyToken, socialAuthenticate, linkSocial };

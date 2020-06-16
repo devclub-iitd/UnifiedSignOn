@@ -1,30 +1,25 @@
 import express from 'express';
-import { verify } from 'jsonwebtoken';
 import { verifyToken } from '../utils/utils';
-import { accessTokenName, refreshTokenName, publicKey } from '../config/keys';
+import { accessTokenName, refreshTokenName } from '../config/keys';
 import settingsRoutes from './settings';
-import { User, SocialAccount } from '../models/user';
+import { SocialAccount } from '../models/user';
 
 const router = express.Router();
 
 router.use('/settings', settingsRoutes);
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     // extract token from cookie
-    const token = req.cookies[accessTokenName];
-    const refreshToken = req.cookies[refreshTokenName];
-    if (!token) {
-        if (!refreshToken) {
-            return res.status(401).json({
-                err: true,
-                msg: '',
-            });
-        }
 
-        return verifyToken(refreshToken, res, refreshTokenName);
+    try {
+        const user = await verifyToken(req, res);
+        return res.status(200).json({ user });
+    } catch (error) {
+        return res.status(401).json({
+            err: true,
+            msg: 'Error, token not valid',
+        });
     }
-
-    return verifyToken(token, res);
 });
 
 router.post('/logout', (req, res) => {
@@ -44,13 +39,8 @@ router.post('/logout', (req, res) => {
 });
 
 router.post('/delete', async (req, res) => {
-    const token = req.cookies[accessTokenName];
     try {
-        const decoded = verify(token, publicKey, {
-            algorithms: ['RS256'],
-        });
-
-        const user = await User.findById(decoded.user.id);
+        const user = await verifyToken(req, res, false);
         const socialConnections = SocialAccount.find({ primary_account: user });
         (await socialConnections).forEach((social) => {
             social.remove();
@@ -63,8 +53,6 @@ router.post('/delete', async (req, res) => {
             msg: 'Account Deleted Successfully',
         });
     } catch (error) {
-        res.clearCookie(accessTokenName);
-
         // now send a response
         return res.status(401).json({
             err: true,
@@ -73,4 +61,48 @@ router.post('/delete', async (req, res) => {
     }
 });
 
+router.get('/connections', async (req, res) => {
+    try {
+        const user = await verifyToken(req, res);
+        const socialConnections = await SocialAccount.find({
+            primary_account: user,
+        });
+        return res.status(200).json({ connections: socialConnections });
+    } catch (error) {
+        // now send a response
+        return res.status(401).json({
+            err: true,
+            msg: 'Error, token not valid',
+        });
+    }
+});
+
+router.post('/disconnect/:provider', async (req, res) => {
+    try {
+        const user = await verifyToken(req, res);
+        const accounts = await SocialAccount.find({
+            primary_account: user,
+            provider: req.params.provider,
+        });
+        if (accounts) {
+            (await accounts).forEach((account) => {
+                account.remove();
+            });
+            return res.status(200).json({
+                err: false,
+                msg: 'Accounts unlinked successfully',
+            });
+        }
+        return res.status(400).json({
+            err: true,
+            msg: 'Account Not Found',
+        });
+    } catch (error) {
+        // now send a response
+        return res.status(401).json({
+            err: true,
+            msg: 'Error, token not valid',
+        });
+    }
+});
 export default router;
