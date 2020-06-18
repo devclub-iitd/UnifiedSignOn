@@ -15,3 +15,12 @@ export const publicKey = fs.readFileSync(
 export const profileNotFoundMsg = 'Create a new account';
 export const accountExists =
     'An account is already linked with that account, Please try linking another one.';
+
+// Role to Privilege
+export const r2p = {
+    external_user: 0,
+    iitd_user: 1,
+    dc_member: 2,
+    dc_core: 3,
+    admin: 4,
+};

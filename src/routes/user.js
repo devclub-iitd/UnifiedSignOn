@@ -1,8 +1,9 @@
+/* eslint-disable import/named */
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import { createJWTCookie } from '../utils/utils';
-import { User } from '../models/user';
 import { refreshTokenName } from '../config/keys';
+import { User } from '../models/user';
 
 const router = express.Router();
 
@@ -122,15 +123,7 @@ router.post('/register', async (req, res) => {
         user.password = await bcrypt.hash(user.password, salt);
 
         // Save the updated the user in database
-        await user.save((err) => {
-            if (err) {
-                return res.render('register', {
-                    message: err.message,
-                    error: true,
-                    serviceURL,
-                });
-            }
-        });
+        await user.save();
 
         createJWTCookie(user, res);
 
