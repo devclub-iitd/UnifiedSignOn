@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 import express from 'express';
 import { verifyToken } from '../utils/utils';
 import { accessTokenName, refreshTokenName } from '../config/keys';

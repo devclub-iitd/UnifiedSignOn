@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable import/named */
 /* eslint-disable no-param-reassign */
@@ -101,6 +102,45 @@ const verifyToken = async (
         res.clearCookie(keys.accessTokenName);
         res.clearCookie(keys.refreshTokenName);
         throw err;
+    }
+};
+
+const matchUserRegex = (user, regex) => {
+    let assign = true;
+    for (const [field, regexp] of Object.entries(regex)) {
+        if (user[field]) {
+            const patt = new RegExp(regexp);
+            if (!patt.test(user[field])) {
+                assign = false;
+                break;
+            }
+        } else {
+            assign = false;
+            break;
+        }
+    }
+    return assign;
+};
+
+const assignRoleToUsers = async (role) => {
+    const users = await User.find({});
+    for (let index = 0; index < users.length; index += 1) {
+        const user = users[index];
+        const assign = matchUserRegex(user, role.regex);
+
+        if (assign && !user.roles.includes(role.name)) {
+            user.roles.push(role.name);
+            await user.save();
+        }
+
+        if (!assign && user.roles.includes(role.name)) {
+            // eslint-disable-next-line no-shadow
+            const index = user.roles.findIndex((name) => {
+                return name === role.name;
+            });
+            user.roles.splice(index, 1);
+            await user.save();
+        }
     }
 };
 
@@ -213,4 +253,5 @@ export {
     linkSocial,
     getUserPrivilege,
     getRoleData,
+    assignRoleToUsers,
 };
