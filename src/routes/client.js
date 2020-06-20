@@ -76,8 +76,8 @@ router.post('/register', async (req, res) => {
             role_names.push(role.name);
         });
         client.custom_roles = role_names;
-
         client.owner = req.user;
+
         await client.save();
         return res.status(201).json({
             err: false,
@@ -107,6 +107,47 @@ router.get('/:id', async (req, res) => {
         return res.render('client/client_page.ejs', {
             client_data: client,
             roles,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            err: true,
+            msg: 'Whoops! A server error occured',
+        });
+    }
+});
+
+router.post('/:id/update', async (req, res) => {
+    try {
+        const client = await Client.findById(req.params.id);
+        const owner = await User.findById(client.owner);
+        if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
+            return res.status(401).json({
+                err: true,
+                msg: 'This client does not belong to you',
+            });
+        }
+        const { domain, description } = req.body;
+        let { custom_roles } = req.body;
+        if (domain) client.domain = domain;
+        if (description) client.description = description;
+
+        if (!custom_roles) custom_roles = {};
+        for (let index = 0; index < client.custom_roles.length; index += 1) {
+            const element = client.custom_roles[index];
+            if (custom_roles[element]) {
+                let role = await Role.findOne({ name: element });
+                const newRegexObj = custom_roles[element];
+                for (const [key, regex] of Object.entries(newRegexObj)) {
+                    role.regex[key] = regex;
+                }
+                role = await role.save();
+                await assignRoleToUsers(role);
+            }
+        }
+        await client.save();
+        return res.status(201).json({
+            err: false,
+            msg: 'Update Successfull',
         });
     } catch (error) {
         return res.status(500).json({
