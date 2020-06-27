@@ -72,6 +72,7 @@ const verifyToken = async (
 
         return user;
     } catch (err) {
+        console.log(err);
         // I wasn't able to verify the token as it was invalid
         // clear the tokens
         res.clearCookie(keys.accessTokenName);
