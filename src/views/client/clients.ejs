@@ -1,19 +1,50 @@
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <%- include('../partials/assets'); %>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/client.css" />
+        <title>Clients</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8" />
-    <%- include('../partials/assets'); %>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="/css/settings.css" />
-    <title>Clients</title>
-</head>
-
-<body>
-    <ul>
-    <% if(clients) %>
-    <% clients.forEach((client) => { %>
-    <li><%= client %></li>
-    <% }) %>
-    </ul>
-</body>
+    <body>
+        <%- include('../partials/header'); %>
+        <div class="rootContainer">
+            <div class="pageTitle">
+                Client Dashboard
+                <div class="miniLine"></div>
+            </div>
+            <div class="clientListContainer">
+                <ul class="clientList">
+                    <li class="clientItem">
+                        <a href="#" class="domain">cabShare.devclub.in</a>
+                        <a href="#" class="btn listBtn">Manage</a>
+                    </li>
+                    <li class="clientItem">
+                        <a href="#" class="domain">iitdConnect.devclub.in</a>
+                        <a href="#" class="btn listBtn">Manage</a>
+                    </li>
+                    <li class="clientItem">
+                        <a href="#" class="domain">porty.devclub.in</a>
+                        <a href="#" class="btn listBtn">Manage</a>
+                    </li>
+                    <li class="clientItem">
+                        <a href="#" class="domain">51whispers.devclub.in</a>
+                        <a href="#" class="btn listBtn">Manage</a>
+                    </li>
+                </ul>
+                <!-- <% if(clients.length > 0) { %>
+                    <ul class="clientList">
+                    <% clients.forEach((client) => { %>
+                        <li class="clientItem"><%= client.domain %></li>
+                        <% }) %>
+                </ul>
+                <% } else { %>
+                    <h2 style="text-align: center;">You don't have any clients registered</h1>
+                        <% } %> -->
+            </div>
+            <a href="#" class="btn">Register New Client </a>
+        </div>
+        <%- include('../partials/footer'); %>
+    </body>
 </html>

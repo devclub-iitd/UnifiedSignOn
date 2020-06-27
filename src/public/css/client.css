@@ -1,0 +1,33 @@
+.clientListContainer {
+    margin: auto;
+    border: 1px solid black;
+    border-radius: 10px;
+    width: 40%;
+    min-width: 400px;
+}
+
+.clientList {
+    padding: 0 2rem;
+    list-style: none;
+}
+
+.clientItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid black;
+}
+
+.clientItem:last-child {
+    border-bottom: none;
+}
+
+.listBtn {
+    padding: 10px 20px;
+    margin: 0;
+}
+
+.domain {
+    font-weight: 500;
+}
