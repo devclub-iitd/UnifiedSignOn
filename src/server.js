@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
+import client from './routes/client';
 import * as keys from './config/keys';
 
 import { socialAuthenticate, linkSocial } from './utils/utils';
@@ -193,6 +194,7 @@ app.get('/about', (req, res) => {
 app.use('/user', user);
 app.use('/auth', auth);
 app.use('/profile', profile);
+app.use('/client', client);
 
 const port = process.env.PORT;
 

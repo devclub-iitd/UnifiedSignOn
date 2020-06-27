@@ -1,6 +1,8 @@
 // User Model Schema
 
 // Import mongoose
+import { r2p } from '../config/keys';
+
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
@@ -31,9 +33,13 @@ const userSchema = mongoose.Schema({
         type: Boolean,
         default: false,
     },
-    role: {
+    entry_num: {
+        type: String,
+        maxlength: 15,
+    },
+    roles: {
         type: [String],
-        enum: ['admin', 'external_user', 'dc_core', 'dc_member', 'iitd_user'],
+        default: ['external_user'],
     },
 });
 
@@ -49,7 +55,62 @@ const SocialAccountSchema = mongoose.Schema({
         ref: 'User',
     },
 });
+
+const roleSchema = mongoose.Schema({
+    name: {
+        type: String,
+        maxlength: 30,
+        unique: true,
+    },
+    category: {
+        type: String,
+        enum: ['universal', 'custom'],
+        default: 'custom',
+    },
+
+    privilege: {
+        type: Number,
+        min: 0,
+        max: 4,
+        get: (v) => Math.round(v),
+        set: (v) => Math.round(v),
+        default() {
+            if (this.category === 'custom') return 0;
+            return r2p[this.name];
+        },
+        immutable: true,
+    },
+
+    regex: {
+        entry_num: { type: String },
+        username: { type: String },
+        email: { type: String },
+        firstname: { type: String },
+        lastname: { type: String },
+    },
+});
+
+const clientSchema = mongoose.Schema({
+    domain: {
+        type: String,
+        maxlength: 50,
+    },
+    description: {
+        type: String,
+        maxlength: 4096,
+    },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    custom_roles: {
+        type: [String],
+    },
+});
+
 module.exports = {
     SocialAccount: mongoose.model('SocialAccount', SocialAccountSchema),
     User: mongoose.model('User', userSchema),
+    Role: mongoose.model('Role', roleSchema),
+    Client: mongoose.model('Client', clientSchema),
 };

@@ -1,3 +1,4 @@
+/* eslint-disable import/named */
 import bcrypt from 'bcryptjs';
 import { SocialAccount } from '../models/user';
 import { accessTokenName } from '../config/keys';
@@ -92,7 +93,7 @@ router.post('/', async (req, res) => {
         }
 
         // Save the user and validate inputs
-        await user.save((err) => {
+        await user.save(async (err) => {
             // TODO : Add user friendly errors for invalid inputs
             if (err) {
                 messages.push({ message: err.message, error: true });
@@ -100,7 +101,7 @@ router.post('/', async (req, res) => {
             } else {
                 // If the validation was successful, update the user and create a new JWT for the updated credentials
                 res.clearCookie(accessTokenName);
-                createJWTCookie(user, res);
+                await createJWTCookie(user, res);
                 res.render('settings', { messages });
             }
         });

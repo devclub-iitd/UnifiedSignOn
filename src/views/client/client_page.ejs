@@ -1,0 +1,24 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('../partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/settings.css" />
+    <title>Client</title>
+</head>
+
+<body>
+    <ul>
+        <% if(client_data) %>
+        <li><%= client_data %></li>
+    </ul>
+    <ul>
+        <% if(roles) %>
+        <% roles.forEach((role) => { %>
+        <li><%= role %></li>
+        <% }) %>
+    </ul>
+</body>
+
+</html>

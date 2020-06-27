@@ -1,0 +1,25 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('../partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/settings.css" />
+    <title>Client Registration</title>
+</head>
+
+<body>
+    <form action="/" method="POST">
+        <input type="text" name="domain" id="domain">
+        <textarea name="description" id="description"> Description </textarea>
+        <div class="customRole">
+            <input type="text" name="roleName" id="roleName">
+            <input type="text" name="entrynumRegex" id="entrynumRegex">
+            <input type="text" name="firstRegex" id="firstRegex">
+            ....
+        </div>
+
+    </form>
+</body>
+
+</html>
