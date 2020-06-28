@@ -118,6 +118,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/:id/update', async (req, res) => {
     try {
+        console.dir(req.body, { depth: null });
         const client = await Client.findById(req.params.id);
         const owner = await User.findById(client.owner);
         if (JSON.stringify(req.user) !== JSON.stringify(owner)) {

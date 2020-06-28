@@ -31,3 +31,44 @@
 .domain {
     font-weight: 500;
 }
+
+.roleField {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.roleField legend {
+    padding: 1rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.roleField .inline {
+    align-items: center;
+}
+
+.roleField input {
+    padding: 10px 5px;
+}
+
+.subtext {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.roleField .inline input {
+    height: 35px;
+}
+
+.roleField .inline {
+    grid-template-columns: 1fr 1fr;
+}
+
+#roleBtn {
+    margin: 0;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}

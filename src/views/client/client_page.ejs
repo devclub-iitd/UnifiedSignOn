@@ -5,10 +5,74 @@
     <%- include('../partials/assets'); %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/settings.css" />
-    <title>Client</title>
+    <link rel="stylesheet" href="/css/client.css">
+    <title>Client Registration</title>
 </head>
 
 <body>
+    <%- include('../partials/header'); %>
+    <div class="rootContainer">
+        <div class="pageTitle">
+            Manage Client
+            <div class="miniLine"></div>
+        </div>
+        <% if(client_data) { %>
+        <div class="formContainer">
+            <form action="/client/<%= client_data.id %>/update" method="POST" id="clientForm">
+                <div class="form-group">
+                    <legend>Basic Information
+                        <div class="longLine"></div>
+                    </legend>
+                    <span class="detailTitle">Domain Name</span>
+                    <input type="text" name="domain" id="domain" value="<%= client_data.domain %>" />
+                    <span class="detailTitle">Description</span>
+                    <textarea name="description" id="description"><%= client_data.description %></textarea>
+                </div>
+                <% if(roles) { %>
+                <div class="form-group">
+                    <legend>Custom Roles</legend>
+                    <div class="longLine"></div>
+                    <% roles.forEach((role) => { %>
+                    <fieldset class="roleField">
+                        <legend><%= role.name %></legend>
+                        <span class="detailTitle">Regular Expressions</span>
+                        <div class="longLine"></div>
+                        <div class="inline">
+                            <span class="detailTitle">First Name</span>
+                            <input type="text" name="custom_roles[<%= role.name %>][regex][firstname]" value="<%= role.regex.firstname %>">
+                        </div>
+                        <div class="inline">
+                            <span class="detailTitle">Last Name</span>
+                            <input type="text" name="custom_roles[<%= role.name %>][regex][lastname]" value="<%= role.regex.lastname %>">
+                        </div>
+                        <div class="inline">
+                            <span class="detailTitle">Entry Number</span>
+                            <input type="text" name="custom_roles[<%= role.name %>][regex][entry_num]" value="<%= role.regex.entry_num %>">
+                        </div>
+                        <div class="inline">
+                            <span class="detailTitle">Username</span>
+                            <input type="text" name="custom_roles[<%= role.name %>][regex][username]" value="<%= role.regex.username %>">
+                        </div>
+                        <div class="inline">
+                            <span class="detailTitle">Email</span>
+                            <input type="text" name="custom_roles[<%= role.name %>][regex][email]" value="<%= role.regex.email %>">
+                        </div>
+                    </fieldset>
+                    <% }); %>
+                </div>
+                <% } %>
+                <button type="submit" class="btn">Update</button>
+            </form>
+        </div>
+        <% } else { %>
+        <h1 style="text-align: center;">This client doesn't seem to have any data!</h1>
+        <% } %>
+    </div>
+</body>
+
+</html>
+
+<!-- <body>
     <ul>
         <% if(client_data) %>
         <li><%= client_data %></li>
@@ -19,6 +83,6 @@
         <li><%= role %></li>
         <% }) %>
     </ul>
-</body>
+</body> -->
 
 </html>
