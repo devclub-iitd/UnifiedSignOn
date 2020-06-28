@@ -31,37 +31,48 @@ router.get('/register', (req, res) => {
     });
 });
 
+const validateRoles = async (roles) => {
+    for (let index = 0; index < roles.length; index += 1) {
+        const element = roles[index];
+        if (
+            await Role.findOne({
+                name: element.name,
+            })
+        ) {
+            return {
+                message: {
+                    err: true,
+                    msg: `A role with name ${element.name} already exists`,
+                },
+            };
+        }
+        // eslint-disable-next-line no-unused-vars
+        for (const [key, value] of Object.entries(element.regex)) {
+            if (!safe(value)) {
+                return {
+                    message: {
+                        err: true,
+                        msg: `The regex ${value} entered is potentially destructive, Try changing it`,
+                    },
+                };
+            }
+        }
+    }
+    return {
+        message: {
+            err: false,
+        },
+    };
+};
+
 router.post('/register', async (req, res) => {
     try {
         const { domain, description } = req.body;
         let { custom_roles } = req.body;
         if (!custom_roles) custom_roles = [];
-        for (let index = 0; index < custom_roles.length; index += 1) {
-            const element = custom_roles[index];
-            if (
-                await Role.findOne({
-                    name: element.name,
-                })
-            ) {
-                return res.render('client/client_register.ejs', {
-                    message: {
-                        err: true,
-                        msg: `A role with name ${element.name} already exists`,
-                    },
-                });
-            }
-            // eslint-disable-next-line no-unused-vars
-            for (const [key, value] of Object.entries(element.regex)) {
-                if (!safe(value)) {
-                    return res.render('client/client_register.ejs', {
-                        message: {
-                            err: true,
-                            msg: `The regex ${value} entered is potentially destructive, Try changing it`,
-                        },
-                    });
-                }
-            }
-        }
+
+        const { message } = await validateRoles(custom_roles);
+        if (message.err) return res.render('client/clients.ejs', { message });
 
         for (let index = 0; index < custom_roles.length; index += 1) {
             let role = custom_roles[index];
@@ -106,7 +117,7 @@ router.get('/:id', async (req, res) => {
         const client = await Client.findById(req.params.id);
         const owner = await User.findById(client.owner);
         if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
-            return res.render('client/client.ejs', {
+            return res.render('client/clients.ejs', {
                 message: {
                     err: true,
                     msg: 'This client does not belong to you',
@@ -120,7 +131,7 @@ router.get('/:id', async (req, res) => {
             roles,
         });
     } catch (error) {
-        return res.render('client/client.ejs', {
+        return res.render('client/clients.ejs', {
             message: {
                 err: true,
                 msg: 'Whoops! A server error occured',
@@ -131,23 +142,24 @@ router.get('/:id', async (req, res) => {
 
 router.post('/:id/update', async (req, res) => {
     try {
-        console.dir(req.body, { depth: null });
         const client = await Client.findById(req.params.id);
         const owner = await User.findById(client.owner);
         if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
-            return res.render('client/client.ejs', {
-                message: {
-                    err: true,
-                    msg: 'This client does not belong to you',
-                },
+            return res.status(401).json({
+                err: true,
+                msg: 'This client does not belong to you',
             });
         }
+
         const { domain, description } = req.body;
-        let { custom_roles } = req.body;
+        let { custom_roles, new_roles, delete_roles } = req.body;
         if (domain) client.domain = domain;
         if (description) client.description = description;
 
         if (!custom_roles) custom_roles = {};
+        if (!new_roles) new_roles = [];
+        if (!delete_roles) delete_roles = [];
+
         for (const key in custom_roles) {
             const element = custom_roles[key];
 
@@ -161,20 +173,51 @@ router.post('/:id/update', async (req, res) => {
             role = await role.save();
             await assignRoleToUsers(role);
         }
+
+        const { message } = await validateRoles(new_roles);
+
+        if (message.err) {
+            await client.save();
+            return res.status(400).json(message);
+        }
+
+        // Addition of more roles
+        for (let index = 0; index < new_roles.length; index += 1) {
+            let role = new_roles[index];
+            role = await Role.create({
+                name: role.name,
+                regex: role.regex,
+            });
+            await assignRoleToUsers(role);
+            client.custom_roles.push(role.name);
+        }
+
+        // Deletion of requested roles
+        for (let index = 0; index < delete_roles.length; index += 1) {
+            const role = delete_roles[index];
+            if (client.custom_roles.includes(role)) {
+                const role_obj = await Role.findOne({
+                    name: role,
+                });
+                assignRoleToUsers(role_obj, true);
+                await Role.deleteOne({ _id: role_obj.id });
+                const pos = client.custom_roles.findIndex((name) => {
+                    return name === role;
+                });
+                client.custom_roles.splice(pos, 1);
+            }
+        }
         await client.save();
-        return res.render('client/client_page.ejs', {
-            message: {
-                err: false,
-                msg: 'Update Successfull',
-            },
+
+        return res.status(200).json({
+            err: false,
+            msg: 'Client Updated Successfully',
         });
     } catch (error) {
         console.log(error);
-        return res.render('client/client', {
-            message: {
-                err: true,
-                msg: 'Whoops! A server error occured',
-            },
+        return res.status(500).json({
+            err: true,
+            msg: 'Whoops! A server error occured',
         });
     }
 });

@@ -123,7 +123,7 @@ const matchUserRegex = (user, regex) => {
     return assign;
 };
 
-const assignRoleToUsers = async (role) => {
+const assignRoleToUsers = async (role, del = false) => {
     const users = await User.find({});
     for (let index = 0; index < users.length; index += 1) {
         const user = users[index];
@@ -133,7 +133,7 @@ const assignRoleToUsers = async (role) => {
             await user.save();
         }
 
-        if (!assign && user.roles.includes(role.name)) {
+        if (del || (!assign && user.roles.includes(role.name))) {
             // eslint-disable-next-line no-shadow
             const index = user.roles.findIndex((name) => {
                 return name === role.name;
