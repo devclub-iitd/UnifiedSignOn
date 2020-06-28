@@ -1,14 +1,13 @@
 // User Model Schema
 
 // Import mongoose
-import { r2p } from '../config/keys';
 
 const mongoose = require('mongoose');
 
 const userSchema = mongoose.Schema({
     username: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 6,
         maxlength: 30,
     },
@@ -62,24 +61,24 @@ const roleSchema = mongoose.Schema({
         maxlength: 30,
         unique: true,
     },
-    category: {
-        type: String,
-        enum: ['universal', 'custom'],
-        default: 'custom',
-    },
+    // category: {
+    //     type: String,
+    //     enum: ['universal', 'custom'],
+    //     default: 'custom',
+    // },
 
-    privilege: {
-        type: Number,
-        min: 0,
-        max: 4,
-        get: (v) => Math.round(v),
-        set: (v) => Math.round(v),
-        default() {
-            if (this.category === 'custom') return 0;
-            return r2p[this.name];
-        },
-        immutable: true,
-    },
+    // privilege: {
+    //     type: Number,
+    //     min: 0,
+    //     max: 4,
+    //     get: (v) => Math.round(v),
+    //     set: (v) => Math.round(v),
+    //     default() {
+    //         if (this.category === 'custom') return 0;
+    //         return r2p[this.name];
+    //     },
+    //     immutable: true,
+    // },
 
     regex: {
         entry_num: { type: String },

@@ -109,13 +109,13 @@ const verifyToken = async (
 const matchUserRegex = (user, regex) => {
     let assign = true;
     for (const [field, regexp] of Object.entries(regex)) {
-        if (user[field]) {
+        if (user[field] && regexp) {
             const patt = new RegExp(regexp);
             if (!patt.test(user[field])) {
                 assign = false;
                 break;
             }
-        } else {
+        } else if (regexp) {
             assign = false;
             break;
         }
@@ -128,7 +128,6 @@ const assignRoleToUsers = async (role) => {
     for (let index = 0; index < users.length; index += 1) {
         const user = users[index];
         const assign = matchUserRegex(user, role.regex);
-
         if (assign && !user.roles.includes(role.name)) {
             user.roles.push(role.name);
             await user.save();

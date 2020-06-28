@@ -21,7 +21,7 @@
                 <% clients.forEach((client) => { %>
                 <li class="clientItem">
                     <a href="#" class="domain"><%= client.domain %></a>
-                    <a href="client/<%= client.id %>" class="btn listBtn">Manage</a>
+                    <a href="/client/<%= client.id %>" class="btn listBtn">Manage</a>
                 </li>
                 <% }) %>
             </ul>
