@@ -124,23 +124,27 @@ const matchUserRegex = (user, regex) => {
 };
 
 const assignRoleToUsers = async (role, del = false) => {
-    const users = await User.find({});
-    for (let index = 0; index < users.length; index += 1) {
-        const user = users[index];
-        const assign = matchUserRegex(user, role.regex);
-        if (assign && !user.roles.includes(role.name)) {
-            user.roles.push(role.name);
-            await user.save();
-        }
+    try {
+        const users = await User.find({});
+        for (let index = 0; index < users.length; index += 1) {
+            const user = users[index];
+            const assign = matchUserRegex(user, role.regex);
+            if (assign && !user.roles.includes(role.name)) {
+                user.roles.push(role.name);
+                await user.save();
+            }
 
-        if (del || (!assign && user.roles.includes(role.name))) {
-            // eslint-disable-next-line no-shadow
-            const index = user.roles.findIndex((name) => {
-                return name === role.name;
-            });
-            user.roles.splice(index, 1);
-            await user.save();
+            if (del && user.roles.includes(role.name)) {
+                // eslint-disable-next-line no-shadow
+                const index = user.roles.findIndex((name) => {
+                    return name === role.name;
+                });
+                user.roles.splice(index, 1);
+                await user.save();
+            }
         }
+    } catch (err) {
+        console.log(err);
     }
 };
 

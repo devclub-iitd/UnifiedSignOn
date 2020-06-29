@@ -15,8 +15,8 @@
             Client Dashboard
             <div class="miniLine"></div>
         </div>
+        <% if(clients.length > 0) { %>
         <div class="clientListContainer">
-            <% if(clients.length > 0) { %>
             <ul class="clientList">
                 <% clients.forEach((client) => { %>
                 <li class="clientItem">
@@ -25,11 +25,11 @@
                 </li>
                 <% }) %>
             </ul>
-            <% } else { %>
-            <h2 style="text-align: center;">You don't have any clients registered</h1>
-                <% } %>
         </div>
-        <a href="/client/register" class="btn">Register New Client </a>
+        <% } else { %>
+        <h2 style="text-align: center;">You don't have any clients registered</h1>
+            <% } %>
+            <a href="/client/register" class="btn">Register New Client </a>
     </div>
     <%- include('../partials/footer'); %>
 </body>

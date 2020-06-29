@@ -28,13 +28,16 @@
                     <span class="detailTitle">Description</span>
                     <textarea name="description" id="description"><%= client_data.description %></textarea>
                 </div>
-                <% if(roles) { %>
+                <% if(roles.length > 0) { %>
                 <div class="form-group">
                     <legend>Custom Roles</legend>
                     <div class="longLine"></div>
                     <% roles.forEach((role) => { %>
                     <fieldset class="roleField">
                         <legend><%= role.name %></legend>
+                        <label for="delete_roles[]" id="delCheckbox">Delete Role
+                            <input type="checkbox" name="delete_roles[]" value="<%= role.name %>">
+                        </label>
                         <span class="detailTitle">Regular Expressions</span>
                         <div class="longLine"></div>
                         <div class="inline">
@@ -60,29 +63,93 @@
                     </fieldset>
                     <% }); %>
                 </div>
+                <% } else { %>
+                <h3 style="margin-bottom: 1rem;">This client has no custom roles</h3>
                 <% } %>
+                <button type="button" class="btn" id="roleBtn">Add new role</button>
                 <button type="submit" class="btn">Update</button>
+                <div class="loaderContainer" style="display: none;">
+                    <div class="loaderCircle"></div>
+                </div>
             </form>
         </div>
         <% } else { %>
         <h1 style="text-align: center;">This client doesn't seem to have any data!</h1>
         <% } %>
     </div>
+    <script>
+        $(document).ready(() => {
+            $('#clientForm').submit((e) => {
+                e.preventDefault();
+                const loader = $('.loaderContainer');
+                loader.fadeIn(100);
+                const message = document.createElement('div');
+                const clientForm = $('#clientForm');
+                $.ajax({
+                    url: clientForm.attr('action'),
+                    type: 'POST',
+                    data: clientForm.serialize(),
+                    success: (res) => {
+                        if (!res.err) {
+                            loader.fadeOut(100);
+                            message.classList.add('messageContainer', 'success');
+                            message.innerText = `${res.msg}`
+                            clientForm.append(message);
+                            setTimeout(() => {
+                                $(message).fadeOut(200);
+                            }, 3000);
+                        }
+                    },
+                    error: (res) => {
+                        loader.fadeOut(100);
+                        if (res.err) {
+                            message.classList.add('messageContainer', 'error');
+                            message.innerText = `${res.msg}, Please try again :(`;
+                            clientForm.append(message);
+                            setTimeout(() => {
+                                $(message).fadeOut(200);
+                            }, 3000);
+                        }
+                    }
+                });
+            });
+
+            let roleCount = 0;
+            $('#roleBtn').click(() => {
+                const roleDiv = document.createElement('fieldset');
+                roleDiv.classList.add('roleField')
+                roleDiv.innerHTML = `
+                <legend>New Role</legend>
+                    <span class="detailTitle">Role Name</span>
+                    <input type="text" name="new_roles[${roleCount}][name]" id="name">
+                    <span class="detailTitle">Regular Expressions</span>
+                    <div class="longLine"></div>
+                    <div class="inline">
+                        <span class="detailTitle">First Name</span>
+                        <input type="text" name="new_roles[${roleCount}][regex][firstname]">
+                    </div>
+                    <div class="inline">
+                        <span class="detailTitle">Last Name</span>
+                        <input type="text" name="new_roles[${roleCount}][regex][lastname]">
+                    </div>
+                    <div class="inline">
+                        <span class="detailTitle">Entry Number</span>
+                        <input type="text" name="new_roles[${roleCount}][regex][entry_num]">
+                    </div>
+                    <div class="inline">
+                        <span class="detailTitle">Username</span>
+                        <input type="text" name="new_roles[${roleCount}][regex][username]">
+                    </div>
+                    <div class="inline">
+                        <span class="detailTitle">Email</span>
+                        <input type="text" name="new_roles[${roleCount}][regex][email]">
+                    </div>
+                `;
+                $(roleDiv).insertBefore('button[type="submit"]');
+                roleCount += 1;
+            });
+        });
+    </script>
 </body>
-
-</html>
-
-<!-- <body>
-    <ul>
-        <% if(client_data) %>
-        <li><%= client_data %></li>
-    </ul>
-    <ul>
-        <% if(roles) %>
-        <% roles.forEach((role) => { %>
-        <li><%= role %></li>
-        <% }) %>
-    </ul>
-</body> -->
 
 </html>
