@@ -61,24 +61,6 @@ const roleSchema = mongoose.Schema({
         maxlength: 30,
         unique: true,
     },
-    // category: {
-    //     type: String,
-    //     enum: ['universal', 'custom'],
-    //     default: 'custom',
-    // },
-
-    // privilege: {
-    //     type: Number,
-    //     min: 0,
-    //     max: 4,
-    //     get: (v) => Math.round(v),
-    //     set: (v) => Math.round(v),
-    //     default() {
-    //         if (this.category === 'custom') return 0;
-    //         return r2p[this.name];
-    //     },
-    //     immutable: true,
-    // },
 
     regex: {
         entry_num: { type: String },

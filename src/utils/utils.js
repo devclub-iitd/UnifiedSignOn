@@ -124,9 +124,9 @@ const matchUserRegex = (user, regex) => {
 };
 
 const assignRoleToUsers = async (role, del = false) => {
-    try {
-        const users = await User.find({});
-        for (let index = 0; index < users.length; index += 1) {
+    const users = await User.find({});
+    for (let index = 0; index < users.length; index += 1) {
+        try {
             const user = users[index];
             const assign = matchUserRegex(user, role.regex);
             if (assign && !user.roles.includes(role.name)) {
@@ -134,7 +134,7 @@ const assignRoleToUsers = async (role, del = false) => {
                 await user.save();
             }
 
-            if (del && user.roles.includes(role.name)) {
+            if ((del || !assign) && user.roles.includes(role.name)) {
                 // eslint-disable-next-line no-shadow
                 const index = user.roles.findIndex((name) => {
                     return name === role.name;
@@ -142,9 +142,9 @@ const assignRoleToUsers = async (role, del = false) => {
                 user.roles.splice(index, 1);
                 await user.save();
             }
+        } catch (err) {
+            console.log(err);
         }
-    } catch (err) {
-        console.log(err);
     }
 };
 

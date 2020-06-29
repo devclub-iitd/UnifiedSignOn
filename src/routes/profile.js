@@ -1,6 +1,6 @@
 /* eslint-disable import/named */
 import express from 'express';
-import { verifyToken } from '../utils/utils';
+import { verifyToken, getUserPrivilege } from '../utils/utils';
 import { accessTokenName, refreshTokenName } from '../config/keys';
 import settingsRoutes from './settings';
 import { SocialAccount } from '../models/user';
@@ -104,6 +104,16 @@ router.post('/disconnect/:provider', async (req, res) => {
             err: true,
             msg: 'Error, token not valid',
         });
+    }
+});
+
+router.post('/privilege', async (req, res) => {
+    try {
+        const user = await verifyToken(req, res);
+        const privilege = getUserPrivilege(user);
+        return res.status(200).json({ privilege });
+    } catch (error) {
+        return res.status(401).send();
     }
 });
 export default router;

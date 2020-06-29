@@ -98,16 +98,18 @@
                             setTimeout(() => {
                                 $(message).fadeOut(200);
                             }, 3000);
+                            location.reload();
                         }
                     },
                     error: (res) => {
                         loader.fadeOut(100);
-                        if (res.err) {
+                        if (res.responseJSON.err) {
                             message.classList.add('messageContainer', 'error');
-                            message.innerText = `${res.msg}, Please try again :(`;
+                            message.innerText = `${res.responseJSON.msg}, Please try again :(`;
                             clientForm.append(message);
                             setTimeout(() => {
                                 $(message).fadeOut(200);
+                                location.reload();
                             }, 3000);
                         }
                     }

@@ -34,6 +34,14 @@ router.get('/register', (req, res) => {
 const validateRoles = async (roles) => {
     for (let index = 0; index < roles.length; index += 1) {
         const element = roles[index];
+        if (!element.name) {
+            return {
+                message: {
+                    err: true,
+                    msg: 'Role name cannot be empty',
+                },
+            };
+        }
         if (
             await Role.findOne({
                 name: element.name,
@@ -166,12 +174,19 @@ router.post('/:id/update', async (req, res) => {
             let role = await Role.findOne({ name: key });
             // eslint-disable-next-line no-continue
             if (!role) continue;
+
+            let modified = false;
             const newRegexObj = element.regex;
             for (const [entry, regex] of Object.entries(newRegexObj)) {
-                role.regex[entry] = regex;
+                if (role.regex[entry] !== regex && safe(regex)) {
+                    role.regex[entry] = regex;
+                    modified = true;
+                }
             }
-            role = await role.save();
-            await assignRoleToUsers(role);
+            if (modified) {
+                role = await role.save();
+                await assignRoleToUsers(role);
+            }
         }
 
         const { message } = await validateRoles(new_roles);
