@@ -3,11 +3,18 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable import/named */
 import express from 'express';
-import { verifyToken, getRoleData, assignRoleToUsers } from '../utils/utils';
+import {
+    verifyToken,
+    getRoleData,
+    assignRoleToUsers,
+    makeid,
+} from '../utils/utils';
 import { Client, User, Role } from '../models/user';
 
 const router = express.Router();
 const safe = require('safe-regex');
+const fs = require('fs');
+const path = require('path');
 
 router.use(async (req, res, next) => {
     try {
@@ -22,6 +29,10 @@ router.use(async (req, res, next) => {
 router.get('/', async (req, res) => {
     const clients = await Client.find({ owner: req.user });
     res.render('client/clients', { clients });
+});
+
+router.get('/public-key', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../config/public.pem'));
 });
 
 router.get('/register', (req, res) => {
@@ -137,6 +148,45 @@ router.get('/:id', async (req, res) => {
         return res.render('client/client_page.ejs', {
             client_data: client,
             roles,
+        });
+    } catch (error) {
+        return res.render('client/clients.ejs', {
+            message: {
+                err: true,
+                msg: 'Whoops! A server error occured',
+            },
+        });
+    }
+});
+
+router.get('/:id/config', async (req, res) => {
+    try {
+        const client = await Client.findById(req.params.id);
+        const owner = await User.findById(client.owner);
+        if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
+            return res.render('client/clients.ejs', {
+                message: {
+                    err: true,
+                    msg: 'This client does not belong to you',
+                },
+            });
+        }
+
+        let vars = fs.readFileSync(
+            path.resolve(__dirname, '../config/conf-vars')
+        );
+        vars += '\n';
+        client.custom_roles.forEach((role) => {
+            vars += `${role
+                .toUpperCase()
+                .replace(' ', '_')}_ROLE = '${role}'\n`;
+        });
+
+        const randomFile = path.resolve(__dirname, `./${makeid(10, true)}`);
+        fs.writeFileSync(randomFile, vars);
+        res.sendFile(randomFile, (err) => {
+            if (err) console.log(err);
+            fs.unlinkSync(randomFile);
         });
     } catch (error) {
         return res.render('client/clients.ejs', {

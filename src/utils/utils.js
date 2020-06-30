@@ -148,10 +148,11 @@ const assignRoleToUsers = async (role, del = false) => {
     }
 };
 
-const makeid = (length) => {
+const makeid = (length, alpahnum_only = false) => {
     let result = '';
-    const characters =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,./;:?><[]{}|`~!@#$%^&*()-_=+';
+    const characters = !alpahnum_only
+        ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,./;:?><[]{}|`~!@#$%^&*()-_=+'
+        : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i += 1) {
         result += characters.charAt(
@@ -251,6 +252,7 @@ const linkSocial = async (token, provider, uid, email, done) => {
 };
 
 export {
+    makeid,
     createJWTCookie,
     verifyToken,
     socialAuthenticate,
