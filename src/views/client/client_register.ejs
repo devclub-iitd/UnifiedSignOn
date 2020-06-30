@@ -16,29 +16,38 @@
             Register Client
             <div class="miniLine"></div>
         </div>
-        <div class="formContainer">
-            <form action="/client/register" method="POST" id="clientForm">
-                <div class="form-group">
-                    <legend>Basic Information
-                        <div class="longLine"></div>
-                    </legend>
-                    <span class="detailTitle">Domain Name</span>
-                    <input type="text" name="domain" id="domain" placeholder="www.example.com" />
-                    <span class="detailTitle">Description</span>
-                    <textarea name="description" id="description"></textarea>
-                </div>
-                <button class="btn" id="roleBtn" type="button">Add New Role</button>
-                <button type="submit" class="btn">Register</button>
-            </form>
+        <% if(msg.length > 0) { %>
+        <% if(err) { %>
+        <div class="messageContainer error">
+            <% } else { %>
+            <div class="messageContainer success">
+                <% } %>
+                <%= msg %>
+            </div>
+            <% } %>
+            <div class="formContainer">
+                <form action="/client/register" method="POST" id="clientForm">
+                    <div class="form-group">
+                        <legend>Basic Information
+                            <div class="longLine"></div>
+                        </legend>
+                        <span class="detailTitle">Domain Name</span>
+                        <input type="text" name="domain" id="domain" placeholder="www.example.com" required />
+                        <span class="detailTitle">Description</span>
+                        <textarea name="description" id="description" required></textarea>
+                    </div>
+                    <button class="btn" id="roleBtn" type="button">Add New Role</button>
+                    <button type="submit" class="btn">Register</button>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <script>
-        let roleCount = 0;
-        $('#roleBtn').click(() => {
-            const roleDiv = document.createElement('fieldset');
-            roleDiv.classList.add('roleField')
-            roleDiv.innerHTML = `
+        <script>
+            let roleCount = 0;
+            $('#roleBtn').click(() => {
+                const roleDiv = document.createElement('fieldset');
+                roleDiv.classList.add('roleField')
+                roleDiv.innerHTML = `
             <legend>New Role</legend>
                     <span class="detailTitle">Role Name</span>
                     <input type="text" name="custom_roles[${roleCount}][name]" id="name">
@@ -65,10 +74,10 @@
                         <input type="text" name="custom_roles[${roleCount}][regex][email]">
                     </div>
             `;
-            $(roleDiv).insertBefore('button[type="submit"]');
-            roleCount += 1;
-        });
-    </script>
+                $(roleDiv).insertBefore('button[type="submit"]');
+                roleCount += 1;
+            });
+        </script>
 </body>
 
 </html>

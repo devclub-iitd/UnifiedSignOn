@@ -21,7 +21,7 @@ router.use(async (req, res, next) => {
 
 router.get('/', async (req, res) => {
     const clients = await Client.find({ owner: req.user });
-    res.render('client/clients', { clients });
+    res.render('client/clients', { clients, err: false, msg: '' });
 });
 
 router.get('/register', (req, res) => {
@@ -80,7 +80,11 @@ router.post('/register', async (req, res) => {
         if (!custom_roles) custom_roles = [];
 
         const { message } = await validateRoles(custom_roles);
-        if (message.err) return res.render('client/clients.ejs', { message });
+        if (message.err)
+            return res.render('client/clients.ejs', {
+                err: true,
+                msg: message.msg,
+            });
 
         for (let index = 0; index < custom_roles.length; index += 1) {
             let role = custom_roles[index];
@@ -104,18 +108,14 @@ router.post('/register', async (req, res) => {
 
         await client.save();
         return res.render('client/client_register.ejs', {
-            message: {
-                err: false,
-                msg: 'Client Registered successfully',
-            },
+            err: false,
+            msg: 'Client Registered successfully',
         });
     } catch (error) {
         console.log(error);
         return res.render('client/client_register.ejs', {
-            message: {
-                err: true,
-                msg: 'Whoops! A server error occured',
-            },
+            err: true,
+            msg: 'Whoops! A server error occured',
         });
     }
 });
@@ -126,10 +126,8 @@ router.get('/:id', async (req, res) => {
         const owner = await User.findById(client.owner);
         if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
             return res.render('client/clients.ejs', {
-                message: {
-                    err: true,
-                    msg: 'This client does not belong to you',
-                },
+                err: true,
+                msg: 'This client does not belong to you',
             });
         }
 
@@ -140,10 +138,8 @@ router.get('/:id', async (req, res) => {
         });
     } catch (error) {
         return res.render('client/clients.ejs', {
-            message: {
-                err: true,
-                msg: 'Whoops! A server error occured',
-            },
+            err: true,
+            msg: 'Whoops! A server error occured',
         });
     }
 });
