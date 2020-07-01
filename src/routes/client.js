@@ -161,10 +161,8 @@ router.get('/:id/config', async (req, res) => {
         const owner = await User.findById(client.owner);
         if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
             return res.render('client/clients.ejs', {
-                message: {
-                    err: true,
-                    msg: 'This client does not belong to you',
-                },
+                err: true,
+                msg: 'This client does not belong to you',
             });
         }
 
@@ -186,10 +184,8 @@ router.get('/:id/config', async (req, res) => {
         });
     } catch (error) {
         return res.render('client/clients.ejs', {
-            message: {
-                err: true,
-                msg: 'Whoops! A server error occured',
-            },
+            err: true,
+            msg: 'Whoops! A server error occured',
         });
     }
 });

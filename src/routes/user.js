@@ -138,6 +138,7 @@ router.post('/register', async (req, res) => {
         res.render('register', {
             message: 'WHOOPS!! A server error occured, please try again later',
             error: true,
+            serviceURL,
         });
     }
 });
