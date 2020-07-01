@@ -44,6 +44,12 @@
                         }
                     };
                     getUserDetails(userDetailSuccess, userDetailFailure);
+
+                    getPrivilege((priv) => {
+                        if (priv >= 2) {
+                            $('#clientBtn').css('display', 'block');
+                        }
+                    });
                 });
             </script>
             <a href="/user/login" id="headerLoginBtn" style="display: none;">

@@ -55,9 +55,19 @@
             },
         });
     };
+
+    const getPrivilege = (cb) => {
+        $.ajax({
+            url: '/profile/privilege',
+            type: 'POST',
+            success: (res) => {
+                cb(res.privilege);
+            },
+            error: (res) => {
+                cb(-1);
+            }
+        });
+    };
 </script>
-<link
-    href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600;800&display=swap"
-    rel="stylesheet"
-/>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/master.css" />

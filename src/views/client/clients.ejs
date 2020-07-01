@@ -15,23 +15,31 @@
             Client Dashboard
             <div class="miniLine"></div>
         </div>
-        <% if(clients.length > 0) { %>
-        <div class="clientListContainer">
-            <ul class="clientList">
-                <% clients.forEach((client) => { %>
-                <li class="clientItem">
-                    <a href="#" class="domain"><%= client.domain %></a>
-                    <a href="/client/<%= client.id %>" class="btn listBtn">Manage</a>
-                </li>
-                <% }) %>
-            </ul>
+        <% if(msg.length > 0) %>
+        <% if(err) { %>
+        <div class="messageContainer error">
+            <% } else { %>
+            <div class="messageContainer success">
+                <% } %>
+                <%= msg %>
+            </div>
+            <% if(locals.clients) { %>
+            <div class="clientListContainer">
+                <ul class="clientList">
+                    <% clients.forEach((client) => { %>
+                    <li class="clientItem">
+                        <a href="#" class="domain"><%= client.domain %></a>
+                        <a href="/client/<%= client.id %>" class="btn listBtn">Manage</a>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } else { %>
+            <h2 style="text-align: center;">You don't have any clients registered</h1>
+                <% } %>
+                <a href="/client/register" class="btn">Register New Client </a>
         </div>
-        <% } else { %>
-        <h2 style="text-align: center;">You don't have any clients registered</h1>
-            <% } %>
-            <a href="/client/register" class="btn">Register New Client </a>
-    </div>
-    <%- include('../partials/footer'); %>
+        <%- include('../partials/footer'); %>
 </body>
 
 </html>
