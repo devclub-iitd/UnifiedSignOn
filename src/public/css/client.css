@@ -11,12 +11,17 @@
     list-style: none;
 }
 
+.inline-group {
+    display: flex;
+    flex-direction: column;
+}
+
 .clientItem {
+    border-bottom: 1px solid black;
+    padding: 1rem 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 0;
-    border-bottom: 1px solid black;
 }
 
 .clientItem:last-child {
@@ -66,6 +71,19 @@
 
 .roleField .inline {
     grid-template-columns: 1fr 1fr;
+}
+
+.btnRow {
+    margin: 2rem auto;
+    width: 40%;
+    min-width: 300px;
+    display: grid;
+    gap: 1rem 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.btnRow > .btn {
+    margin: 0;
 }
 
 #roleBtn {
