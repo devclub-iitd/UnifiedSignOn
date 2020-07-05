@@ -1,0 +1,51 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('../partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/client.css" />
+    <title>Clients</title>
+</head>
+
+<body>
+    <%- include('../partials/header'); %>
+    <div class="rootContainer">
+        <div class="pageTitle">
+            Client Dashboard
+            <div class="miniLine"></div>
+        </div>
+        <% if(msg.length > 0) %>
+        <% if(err) { %>
+        <div class="messageContainer error">
+            <% } else { %>
+            <div class="messageContainer success">
+                <% } %>
+                <%= msg %>
+            </div>
+            <% if(locals.clients) { %>
+            <div class="clientListContainer">
+                <ul class="clientList">
+                    <% clients.forEach((client) => { %>
+                    <li class="clientItem">
+                        <div class="inline-group">
+                            <a href="#" class="domain"><%= client.domain %></a>
+                            <a href="/client/<%= client.id %>/config" class="hLink">Download config</a>
+                        </div>
+                        <a href="/client/<%= client.id %>" class="btn listBtn">Manage</a>
+                    </li>
+                    <% }) %>
+                </ul>
+            </div>
+            <% } else { %>
+            <h2 style="text-align: center;">You don't have any clients registered</h1>
+                <% } %>
+                <div class="btnRow">
+                    <a href="/client/register" class="btn">Register New Client </a>
+                    <a href="/client/public-key" class="btn">Download public key</a>
+                </div>
+        </div>
+        <%- include('../partials/footer'); %>
+</body>
+
+</html>

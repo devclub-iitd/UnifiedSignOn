@@ -1,7 +1,29 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable no-await-in-loop */
+/* eslint-disable import/named */
 /* eslint-disable no-param-reassign */
 import jwt, { verify } from 'jsonwebtoken';
 import * as keys from '../config/keys';
-import { User, SocialAccount } from '../models/user';
+import { User, SocialAccount, Role } from '../models/user';
+
+const getUserPrivilege = (user) => {
+    let privilege = 0;
+    user.roles.forEach((role) => {
+        if (keys.r2p[role]) privilege = Math.max(privilege, keys.r2p[role]);
+    });
+    return privilege;
+};
+
+const getRoleData = async (roles) => {
+    // eslint-disable-next-line prefer-const
+    let data = [];
+    for (let index = 0; index < roles.length; index += 1) {
+        const element = roles[index];
+        const role = await Role.findOne({ name: element });
+        data.push(role);
+    }
+    return data;
+};
 
 const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     const payload = {
@@ -11,7 +33,8 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
             firstname: user.firstname,
             lastname: user.lastname,
             username: user.username,
-            role: user.role,
+            roles: user.roles,
+            privilege: getUserPrivilege(user),
             isverified: user.isverified,
         },
     };
@@ -37,6 +60,7 @@ const verifyToken = async (
     req,
     res,
     verified = true,
+    privilege = 0,
     token = null,
     refreshToken = null
 ) => {
@@ -50,7 +74,7 @@ const verifyToken = async (
             const decoded = verify(refreshToken, keys.publicKey, {
                 algorithms: ['RS256'],
             });
-            user = decoded.user;
+            user = await User.findById(decoded.user.id);
 
             // Extend the refresh token.
             createJWTCookie(user, res, keys.refreshTokenName);
@@ -58,20 +82,22 @@ const verifyToken = async (
             const decoded = verify(token, keys.publicKey, {
                 algorithms: ['RS256'],
             });
-            user = decoded.user;
+            user = await User.findById(decoded.user.id);
         }
 
-        // The user is not yet verified.
-        if (verified && !user.isverified) throw jwt.JsonWebTokenError;
+        // The user is not yet verified or lacks the privileges
+        if (
+            (verified && !user.isverified) ||
+            getUserPrivilege(user) < privilege
+        )
+            throw jwt.JsonWebTokenError;
 
         // Refresh the token cookie
         createJWTCookie(user, res);
 
-        user = await User.findById(user.id);
-        if (!user) throw jwt.JsonWebTokenError;
-
         return user;
     } catch (err) {
+        console.log(err);
         // I wasn't able to verify the token as it was invalid
         // clear the tokens
         res.clearCookie(keys.accessTokenName);
@@ -80,10 +106,53 @@ const verifyToken = async (
     }
 };
 
-const makeid = (length) => {
+const matchUserRegex = (user, regex) => {
+    let assign = true;
+    for (const [field, regexp] of Object.entries(regex)) {
+        if (user[field] && regexp) {
+            const patt = new RegExp(regexp);
+            if (!patt.test(user[field])) {
+                assign = false;
+                break;
+            }
+        } else if (regexp) {
+            assign = false;
+            break;
+        }
+    }
+    return assign;
+};
+
+const assignRoleToUsers = async (role, del = false) => {
+    const users = await User.find({});
+    for (let index = 0; index < users.length; index += 1) {
+        try {
+            const user = users[index];
+            const assign = matchUserRegex(user, role.regex);
+            if (assign && !user.roles.includes(role.name)) {
+                user.roles.push(role.name);
+                await user.save();
+            }
+
+            if ((del || !assign) && user.roles.includes(role.name)) {
+                // eslint-disable-next-line no-shadow
+                const index = user.roles.findIndex((name) => {
+                    return name === role.name;
+                });
+                user.roles.splice(index, 1);
+                await user.save();
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+};
+
+const makeid = (length, alpahnum_only = false) => {
     let result = '';
-    const characters =
-        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,./;:?><[]{}|`~!@#$%^&*()-_=+';
+    const characters = !alpahnum_only
+        ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789,./;:?><[]{}|`~!@#$%^&*()-_=+'
+        : 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     const charactersLength = characters.length;
     for (let i = 0; i < length; i += 1) {
         result += characters.charAt(
@@ -135,7 +204,7 @@ const socialAuthenticate = async (
                 email,
                 username: makeid(10),
                 password: makeid(32),
-                role: [role],
+                roles: [role],
             });
             msg = keys.profileNotFoundMsg;
         } else if (!primary_account.isverified) {
@@ -182,4 +251,13 @@ const linkSocial = async (token, provider, uid, email, done) => {
     return done(null, primary_account);
 };
 
-export { createJWTCookie, verifyToken, socialAuthenticate, linkSocial };
+export {
+    makeid,
+    createJWTCookie,
+    verifyToken,
+    socialAuthenticate,
+    linkSocial,
+    getUserPrivilege,
+    getRoleData,
+    assignRoleToUsers,
+};
