@@ -20,6 +20,7 @@
     border: 1px solid rgb(197, 197, 197);
     text-align: center;
     transition: all 200ms ease-in-out;
+    cursor: pointer;
 }
 
 .tab-item:hover {
@@ -47,7 +48,6 @@
     height: auto;
     min-width: 300px;
     margin: auto;
-    /* background-color: red; */
 }
 .formContainer form {
     width: 100%;

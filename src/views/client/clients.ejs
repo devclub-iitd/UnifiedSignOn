@@ -24,6 +24,7 @@
                 <%= msg %>
             </div>
             <% if(locals.clients) { %>
+            <% if (clients.length > 0) { %>
             <div class="clientListContainer">
                 <ul class="clientList">
                     <% clients.forEach((client) => { %>
@@ -39,7 +40,7 @@
             </div>
             <% } else { %>
             <h2 style="text-align: center;">You don't have any clients registered</h1>
-                <% } %>
+                <% }} %>
                 <div class="btnRow">
                     <a href="/client/register" class="btn">Register New Client </a>
                     <a href="/client/public-key" class="btn">Download public key</a>
