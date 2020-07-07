@@ -8,7 +8,7 @@
     <title>Login</title>
     <script>
         $(document).ready(() => {
-            
+
             if ($('.messageContainer').length > 0) {
                 setTimeout(() => {
                     $('.messageContainer').css('opacity', '0');
@@ -28,7 +28,7 @@
             const getUserDetailsSuccess = () => {
                 window.location.href = `/redirecting${window.location.search}`;
             }
-            getUserDetails(getUserDetailsSuccess, () => {});
+            getUserDetails(getUserDetailsSuccess, () => { });
 
         })
     </script>
@@ -42,13 +42,20 @@
         </div>
         <div class="miniLine"></div>
         <div class="formContainer">
-           
+
             <form action="" method="POST">
-                <input type="email" name="email" placeholder="Enter your email ..." required />
-                <input type="password" name="password" placeholder="Enter your password ..." required />
-                <input type="checkbox" style="height:20px;width:20px" id="rememberme" name="rememberme" value="true"/>
+                <div class="input-group">
+                    <input type="email" name="email" required />
+                    <label for="email">E-Mail</label>
+                    <span class="helpText">Enter a valid email</span>
+                </div>
+                <div class="input-group">
+                    <input type="password" name="password" required />
+                    <label for="password">Password</label>
+                </div>
+                <input type="checkbox" style="height:20px;width:20px" id="rememberme" name="rememberme" value="true" />
                 <label for="rememberme">Remember Me!</label>
-                <% if (typeof serviceURL !== undefined && serviceURL) { %>
+                <% if (typeof serviceURL !== 'undefined' && serviceURL) { %>
                 <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
                 <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
                 <% } %>
@@ -58,11 +65,11 @@
 
                 <p class="textParagraph">
                     <i>Don't have an account?
-                    <span id="signupBtn"><a href="/user/register">Signup...</a></span>
+                        <span id="signupBtn"><a href="/user/register">Signup...</a></span>
                     </i>
                 </p>
             </form>
-            
+
             <% if (message !== '') { %>
             <% if (error) { %>
             <div class="messageContainer error">
@@ -76,10 +83,10 @@
             <div class="socialLoginContainer">
                 <fieldset>
                     <legend>Or Sign in With</legend>
-                        <div class="kerbLogin">
-                            <h5>Kerberos (For IITD Students only)</h2>
-                                <a class="btn kerberosBtn" href="/auth/iitd/"><img src="/images/iitdlogo.png" alt="iitdLogin"></a>
-                            </div>
+                    <div class="kerbLogin">
+                        <h5>Kerberos (For IITD Students only)</h2>
+                            <a class="btn kerberosBtn" href="/auth/iitd/"><img src="/images/iitdlogo.png" alt="iitdLogin"></a>
+                    </div>
                     <div class="icon-container">
                         <a class="btn oauthBtn" id="googleLogin" href="/auth/google/"><img src="/images/Google.svg" alt=""></a>
                         <a class="btn oauthBtn" id="fbLogin" href="/auth/facebook/"><img src="/images/Facebook.svg"></a>
@@ -89,6 +96,26 @@
             </div>
         </div>
         <%- include('partials/footer'); %>
+
+        <script>
+            $('.input-group input').keyup(function () {
+                const errorSpan = $($(this).siblings('.helpText'));
+                if ($(this).val().length > 0) {
+                    if ($(this).is(':invalid')) {
+                        $(this).addClass('hasError');
+                        errorSpan.fadeIn(200);
+                    }
+                    else {
+                        $(this).addClass('hasContent');
+                        $(this).removeClass('hasError');
+                        errorSpan.fadeOut(200);
+                    }
+                } else {
+                    $(this).removeClass('hasContent hasError');
+                    errorSpan.fadeOut(200);
+                }
+            })
+        </script>
 </body>
 
 </html>
