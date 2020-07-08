@@ -10,6 +10,7 @@ import {
     makeid,
 } from '../utils/utils';
 import { Client, User, Role } from '../models/user';
+import { r2p } from '../config/keys';
 
 const router = express.Router();
 const safe = require('safe-regex');
@@ -53,6 +54,8 @@ const validateRoles = async (roles) => {
                 },
             };
         }
+
+        // Ensure role names are unique.
         if (
             await Role.findOne({
                 name: element.name,
@@ -65,6 +68,19 @@ const validateRoles = async (roles) => {
                 },
             };
         }
+
+        // Do not allow the client to take privileged role names.
+        if (Object.keys(r2p).includes(element.name)) {
+            return {
+                message: {
+                    err: true,
+                    msg: `The role name ${element.name} is reserved, Please Choose another name`,
+                },
+            };
+        }
+
+        // Check for ReDOS attacks.
+
         // eslint-disable-next-line no-unused-vars
         for (const [key, value] of Object.entries(element.regex)) {
             if (!safe(value)) {
