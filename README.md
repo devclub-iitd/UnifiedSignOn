@@ -102,6 +102,7 @@ If someone registers with an email, then we have a verification system, where a 
 Until the email-address is verified `is_active` is set to False, and only upon verification `is_active` is set to True.
 
 All log-in requests for `is_active=False` users are not authenticated, unless the account is verified.
+
 **Table 2: Role**
 ```
 role:{
