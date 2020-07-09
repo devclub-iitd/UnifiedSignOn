@@ -47,7 +47,7 @@
                 <div class="input-group">
                     <input type="email" name="email" required />
                     <label for="email">E-Mail</label>
-                    <span class="helpText">Enter a valid email</span>
+                    <span class="helpText">Please enter a valid E-Mail</span>
                 </div>
                 <div class="input-group">
                     <input type="password" name="password" required />
@@ -96,26 +96,7 @@
             </div>
         </div>
         <%- include('partials/footer'); %>
-
-        <script>
-            $('.input-group input').keyup(function () {
-                const errorSpan = $($(this).siblings('.helpText'));
-                if ($(this).val().length > 0) {
-                    if ($(this).is(':invalid')) {
-                        $(this).addClass('hasError');
-                        errorSpan.fadeIn(200);
-                    }
-                    else {
-                        $(this).addClass('hasContent');
-                        $(this).removeClass('hasError');
-                        errorSpan.fadeOut(200);
-                    }
-                } else {
-                    $(this).removeClass('hasContent hasError');
-                    errorSpan.fadeOut(200);
-                }
-            })
-        </script>
+        <script src="/js/forms.js"></script>
 </body>
 
 </html>

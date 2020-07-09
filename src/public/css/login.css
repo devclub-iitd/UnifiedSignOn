@@ -45,9 +45,9 @@ input:focus::-webkit-input-placeholder {
 
 .input-group {
     position: relative;
-    width: 100%;
+    width: 90%;
     height: 40px;
-    margin: 15px 0;
+    margin: 12px 0;
     display: flex;
     align-items: center;
 }
@@ -103,7 +103,7 @@ input:focus::-webkit-input-placeholder {
     display: none;
     position: absolute;
     bottom: -17px;
-    left: 10px;
+    right: 5px;
     font-size: 12px;
     font-weight: 600;
     color: rgb(221, 0, 0);

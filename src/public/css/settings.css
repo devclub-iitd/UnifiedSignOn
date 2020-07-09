@@ -148,9 +148,6 @@ input:focus::-webkit-input-placeholder {
 }
 
 .inline .btn {
-    width: 100%;
-    max-width: 200px;
-    margin-bottom: 2rem;
 }
 
 .detailTitle {
