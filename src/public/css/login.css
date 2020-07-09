@@ -1,6 +1,9 @@
 :root {
     --theme-color: rgba(40, 116, 255, 0.872);
+    --input-border-color: rgba(40, 115, 255, 0.514);
+    --error-color: rgba(223, 0, 0, 0.829);
 }
+
 .formContainer {
     width: 40%;
     height: auto;
@@ -16,32 +19,6 @@
     justify-content: space-around;
     align-items: center;
 }
-/* input {
-    width: 90%;
-    margin: 10px auto;
-    height: 45px;
-    line-height: 45px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    padding: 3px;
-    padding-left: 15px;
-    font-size: 12px;
-    transition: 0.2s ease-out;
-} */
-
-/* input:hover {
-    border: 1px solid var(--theme-color);
-}
-input:focus {
-    border: 1px solid var(--theme-color);
-}
-::-webkit-input-placeholder {
-    transition: 0.3s ease-out;
-}
-input:focus::-webkit-input-placeholder {
-    transform: translateX(10px);
-    opacity: 0;
-} */
 
 .input-group {
     position: relative;
@@ -77,24 +54,24 @@ input:focus::-webkit-input-placeholder {
     transform: translateY(-140%) translateX(5px);
     font-size: 12px;
     font-weight: 600;
-    color: rgba(0, 81, 231, 0.872);
+    color: var(--input-border-color);
     background: white;
 }
 
 .input-group input:focus,
 .input-group input.hasContent {
-    border: 1px solid rgba(40, 115, 255, 0.514);
+    border: 1px solid var(--input-border-color);
 }
 
 .hasError {
-    border: 1px solid rgba(255, 61, 61, 0.788) !important;
+    border: 1px solid var(--error-color) !important;
 }
 
 .hasError + label {
     transform: translateY(-140%) translateX(5px);
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 61, 61, 0.788) !important;
+    color: var(--error-color) !important;
     background: white;
 }
 
@@ -106,7 +83,24 @@ input:focus::-webkit-input-placeholder {
     right: 5px;
     font-size: 12px;
     font-weight: 600;
-    color: rgb(221, 0, 0);
+    color: var(--error-color);
+}
+
+input:hover {
+    border: 1px solid var(--input-border-color);
+}
+
+.inline {
+    margin-top: 1rem;
+    display: flex;
+    width: 140px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.inline input {
+    height: 15px;
+    width: 15px;
 }
 
 #signupBtn {

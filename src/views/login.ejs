@@ -53,8 +53,10 @@
                     <input type="password" name="password" required />
                     <label for="password">Password</label>
                 </div>
-                <input type="checkbox" style="height:20px;width:20px" id="rememberme" name="rememberme" value="true" />
-                <label for="rememberme">Remember Me!</label>
+                <div class="inline">
+                    <input type="checkbox" id="rememberme" name="rememberme" value="true" />
+                    <label for="rememberme">Remember Me!</label>
+                </div>
                 <% if (typeof serviceURL !== 'undefined' && serviceURL) { %>
                 <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
                 <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />

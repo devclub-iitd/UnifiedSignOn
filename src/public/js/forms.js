@@ -1,4 +1,4 @@
-$('.input-group input').keyup(function () {
+$('.input-group input').keyup(function validate() {
     const errorSpan = $($(this).siblings('.helpText'));
     if ($(this).val().length > 0) {
         if ($(this).is(':invalid')) {

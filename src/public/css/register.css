@@ -1,54 +1,29 @@
 :root {
     --theme-color: rgba(40, 116, 255, 0.872);
     --input-border-color: rgba(40, 115, 255, 0.514);
+    --error-color: rgba(223, 0, 0, 0.829);
 }
 .formContainer {
     width: 40%;
     height: auto;
     padding: 20px;
-    min-width: 300px;
+    min-width: 350px;
     margin: auto;
 }
 .formContainer form {
     width: 90%;
+    margin: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    margin: auto;
 }
-/* input {
-    width: 90%;
-    margin: 10px auto;
-    height: 45px;
-    line-height: 45px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    padding: 3px;
-    padding-left: 15px;
-    font-size: 12px;
-    transition: 0.2s ease-out;
-} */
-/* .inputRow {
-    margin: 10px 0px;
-    width: 90%;
-}
-.inputRow input {
-    margin: auto;
-    width: 49%;
-}
-#inputRow1 {
-    float: left;
-}
-#inputRow2 {
-    float: right;
-} */
 
 .inputRow {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
-    gap: 20px;
+    grid-column-gap: 20px;
 }
 
 .input-group {
@@ -95,14 +70,14 @@
 }
 
 .hasError {
-    border: 1px solid rgba(255, 61, 61, 0.788) !important;
+    border: 1px solid var(--error-color) !important;
 }
 
 .hasError + label {
     transform: translateY(-140%) translateX(5px);
     font-size: 12px;
     font-weight: 600;
-    color: rgba(255, 61, 61, 0.788) !important;
+    color: var(--error-color) !important;
     background: white;
 }
 
@@ -111,10 +86,10 @@
     display: none;
     position: absolute;
     bottom: -17px;
-    right: 5px;
+    right: 0;
     font-size: 12px;
     font-weight: 600;
-    color: rgb(221, 0, 0);
+    color: var(--error-color);
 }
 
 input:hover {
@@ -142,4 +117,10 @@ input:focus::-webkit-input-placeholder {
     margin-left: 5px;
     font-weight: 600;
     text-decoration: underline;
+}
+
+@media (max-width: 1100px) {
+    .helpText {
+        font-size: 10px;
+    }
 }
