@@ -28,13 +28,18 @@
     border-bottom: none;
 }
 
+.clientItem .hLink {
+    font-size: 0.9rem;
+}
+
 .listBtn {
     padding: 10px 20px;
     margin: 0;
 }
 
 .domain {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 
 .roleField {
@@ -139,5 +144,11 @@
     }
     to {
         transform: rotate(180deg);
+    }
+}
+
+@media (max-width: 700px) {
+    .domain {
+        font-size: 1rem;
     }
 }
