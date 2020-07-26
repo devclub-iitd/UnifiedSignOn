@@ -1,0 +1,12 @@
+SSO_TOKEN = 'token'
+REFRESH_TOKEN = 'rememberme'
+AUTH_URL = 'http://localhost:8000/user/login'
+REFRESH_URL = 'http://localhost:8000/auth/refresh-token'
+MAX_TTL_ALLOWED = 60 * 5
+QUERY_PARAM = 'serviceURL'
+
+EXTERNAL_USER_ROLE= 'external_user'
+IITD_USER_ROLE= 'iitd_user'
+DEVCLUB_MEMBER_ROLE = 'dc_member'
+DEVCLUB_CORE_ROLE = 'dc_core'
+ADMIN_ROLE = 'admin'

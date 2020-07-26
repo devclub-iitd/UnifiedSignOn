@@ -1,0 +1,254 @@
+:root {
+    --theme-color: rgba(40, 116, 255, 0.872);
+}
+
+.tabContainer {
+    font-size: 14px;
+    margin: 1rem 0 2.5rem;
+}
+
+.tabs {
+    list-style: none;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.tab-item {
+    height: fit-content;
+    border-radius: 500px;
+    border: 1px solid rgb(197, 197, 197);
+    text-align: center;
+    transition: all 200ms ease-in-out;
+    cursor: pointer;
+}
+
+.tab-item:hover {
+    background-color: rgb(235, 235, 235);
+    border: 1px solid rgb(199, 199, 199);
+}
+
+.tab-item.active {
+    font-weight: 600;
+    color: white;
+    border: none;
+    background-color: var(--theme-color);
+    -webkit-box-shadow: 0px 11px 10px -7px rgba(0, 0, 0, 0.59);
+    -moz-box-shadow: 0px 11px 10px -7px rgba(0, 0, 0, 0.59);
+    box-shadow: 0px 10px 10px -7px rgba(0, 0, 0, 0.5);
+}
+
+.tab-link {
+    padding: 8px 0;
+    display: block;
+}
+
+.formContainer {
+    width: 40%;
+    height: auto;
+    min-width: 300px;
+    margin: auto;
+}
+.formContainer form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+input {
+    width: 100%;
+    margin: 10px 0;
+    height: 45px;
+    line-height: 45px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 3px;
+    padding-left: 15px;
+    font-size: 12px;
+    transition: 0.2s ease-out;
+}
+
+textarea {
+    width: 100%;
+    margin: 10px 0;
+    height: 100px;
+    min-width: 100%;
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 3px;
+    padding-left: 15px;
+    font-size: 12px;
+    transition: 0.2s ease-out;
+}
+
+textarea:hover {
+    border: 1px solid var(--theme-color);
+}
+textarea:focus {
+    border: 1px solid var(--theme-color);
+}
+textarea:focus::-webkit-input-placeholder {
+    transform: translateX(10px);
+    opacity: 0;
+}
+
+.messageContainer {
+    margin-bottom: 0;
+}
+
+input:hover {
+    border: 1px solid var(--theme-color);
+}
+input:focus {
+    border: 1px solid var(--theme-color);
+}
+::-webkit-input-placeholder {
+    transition: 0.3s ease-out;
+}
+input:focus::-webkit-input-placeholder {
+    transform: translateX(10px);
+    opacity: 0;
+}
+
+.form-group {
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    width: 100%;
+}
+
+.form-group:nth-of-type(1) {
+    margin-top: 0;
+}
+
+.longLine {
+    margin: 10px 0 15px;
+    width: 100%;
+    height: 2px;
+    background-color: var(--theme-color);
+}
+
+.form-group legend {
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.inline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+    grid-column-gap: 20px;
+}
+
+.inline-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.inline .btn {
+}
+
+.detailTitle {
+    display: block;
+    color: rgba(8, 12, 19, 0.872);
+    font-weight: 600;
+}
+
+.socialLinkContainer {
+    display: none;
+    height: 580px;
+    box-sizing: border-box;
+    margin: auto;
+    width: 100%;
+    max-width: 500px;
+}
+
+.socialLinkContainer fieldset {
+    padding: 0 1.5rem;
+    border-radius: 5px;
+    border: 1px solid rgba(10, 49, 122, 0.872);
+    margin-bottom: 2rem;
+}
+
+.socialLinkContainer legend {
+    padding: 0 0.5rem 0.5rem;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.socialLinkContainer ul {
+    list-style: none;
+}
+
+.socialLink {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(10, 51, 128, 0.872);
+    padding: 1rem 0;
+}
+
+.socialLink:last-child {
+    border-bottom: none;
+}
+
+.socialIcon {
+    width: 40px;
+    min-width: 40px;
+    margin-right: 2em;
+}
+
+.socialInfo {
+    font-size: 1em;
+    font-weight: 600;
+}
+
+.btn-social {
+    box-sizing: border-box;
+    width: 100px;
+    margin: 0;
+    padding: 10px 0;
+    margin-left: auto;
+}
+
+#iitdFieldset {
+    position: relative;
+}
+
+#kerbTip {
+    position: absolute;
+    width: 20px;
+    right: 5;
+    transform: translateY(-10px);
+}
+
+#kerbTip:hover {
+    cursor: pointer;
+}
+
+#kerbInfo {
+    display: none;
+    z-index: 2;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 10px;
+    padding: 10px;
+    width: 200px;
+    font-weight: 600;
+    font-size: 10px;
+    text-align: justify;
+    position: absolute;
+    right: -30px;
+    top: -50px;
+}
+
+@media (max-width: 500px) {
+    .tabContainer {
+        font-size: 14px;
+    }
+
+    .socialLinkContainer {
+        font-size: 14px;
+    }
+}

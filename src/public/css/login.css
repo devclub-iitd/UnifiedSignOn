@@ -1,10 +1,14 @@
 :root {
     --theme-color: rgba(40, 116, 255, 0.872);
+    --input-border-color: rgba(40, 115, 255, 0.514);
+    --error-color: rgba(223, 0, 0, 0.829);
 }
+
 .formContainer {
     width: 40%;
     height: auto;
     padding: 20px;
+    padding-bottom: 0;
     min-width: 300px;
     /* background-color: red; */
     margin: auto;
@@ -15,29 +19,162 @@
     justify-content: space-around;
     align-items: center;
 }
-input {
+
+.input-group {
+    position: relative;
     width: 90%;
-    margin: 10px auto;
-    height: 45px;
-    line-height: 45px;
-    border-radius: 8px;
+    height: 40px;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+}
+
+.input-group input {
+    position: absolute;
     border: 1px solid rgba(0, 0, 0, 0.2);
-    padding: 3px;
-    padding-left: 15px;
+    border-radius: 8px;
+    padding: 10px;
+    width: 100%;
+    height: 100%;
+    transition: border 0.1s ease;
+}
+
+.input-group label {
+    position: absolute;
+    pointer-events: none;
+    left: 10px;
+    color: grey;
+    font-weight: 400;
+    font-size: 14px;
+    transition: all 0.1s ease;
+}
+
+.input-group input:focus + label,
+.input-group input.hasContent + label {
+    transform: translateY(-140%) translateX(5px);
     font-size: 12px;
-    transition: 0.2s ease-out;
+    font-weight: 600;
+    color: var(--input-border-color);
+    background: white;
+}
+
+.input-group input:focus,
+.input-group input.hasContent {
+    border: 1px solid var(--input-border-color);
+}
+
+.hasError {
+    border: 1px solid var(--error-color) !important;
+}
+
+.hasError + label {
+    transform: translateY(-140%) translateX(5px);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--error-color) !important;
+    background: white;
+}
+
+.helpText {
+    /* opacity: 0; */
+    display: none;
+    position: absolute;
+    bottom: -17px;
+    right: 5px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--error-color);
 }
 
 input:hover {
-    border: 1px solid var(--theme-color);
+    border: 1px solid var(--input-border-color);
 }
-input:focus {
-    border: 1px solid var(--theme-color);
+
+.inline {
+    margin-top: 1rem;
+    display: flex;
+    width: 140px;
+    justify-content: space-between;
+    align-items: center;
 }
-::-webkit-input-placeholder {
-    transition: 0.3s ease-out;
+
+.inline input {
+    height: 15px;
+    width: 15px;
 }
-input:focus::-webkit-input-placeholder {
-    transform: translateX(10px);
-    opacity: 0;
+
+#signupBtn {
+    color: var(--theme-color);
+    margin-left: 5px;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.socialLoginContainer {
+    width: auto;
+    margin: auto;
+    display: flex;
+}
+
+.socialLoginContainer fieldset {
+    border: 1px solid grey;
+    text-align: center;
+    border-radius: 5px;
+    padding: 1rem 1.5rem;
+    -webkit-appearance: none;
+}
+
+fieldset legend {
+    padding: 0 0.5rem;
+    font-weight: 600;
+}
+
+.icon-container {
+    justify-self: center;
+    width: fit-content;
+    display: flex;
+}
+
+.oauthBtn {
+    box-sizing: border-box;
+    margin: 1rem;
+    padding: 5px;
+    height: fit-content;
+    background-color: whitesmoke;
+    display: flex;
+    height: 60px;
+    width: 60px;
+    border: 1px solid rgba(0, 0, 139, 0.699);
+    box-shadow: unset;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+}
+
+.oauthBtn img {
+    width: 35px;
+}
+
+.kerbLogin {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    justify-content: center;
+    border-bottom: 1px solid gray;
+}
+
+.kerbLogin h5 {
+    font-weight: 600;
+}
+
+.kerberosBtn {
+    background-color: whitesmoke;
+    border: 1px solid orangered;
+    padding: 0.5rem;
+    margin: 1rem auto;
+    box-shadow: unset;
+}
+
+.kerberosBtn img {
+    width: 40px;
 }

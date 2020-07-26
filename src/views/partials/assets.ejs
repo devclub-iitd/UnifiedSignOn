@@ -1,5 +1,73 @@
-<link
-    href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600;800&display=swap"
-    rel="stylesheet"
-/>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    // Here I'm putting the code for ajax request of logout and getUserDetails
+    const displayMessage = (message) => {
+        $('.messageContainer').html(message);
+        $('.messageContainer').css('display', 'block');
+        setTimeout(() => {
+            $('.messageContainer').css('display', 'none');
+        }, 3000);
+    };
+    let loggedInUser = false;
+    const logoutUser = () => {
+        $.ajax({
+            type: 'POST',
+            url: '/profile/logout',
+            success: (res) => {
+                if (!res.err) {
+                    loggedInUser = false;
+                    location.href = '/';
+                }
+            },
+            error: (res) => {
+                const { err, message } = res;
+                if (err) {
+                    displayMessage(message);
+                }
+            },
+        });
+    };
+    // function to send an ajax request to backend
+    // responsible for getting the user details
+    const getUserDetails = (callbackSuccess, callbackFailure) => {
+        // send ajax request to backend to get user details
+        $.ajax({
+            type: 'POST',
+            url: '/profile',
+            success: (res) => {
+                // if request succeed then set user details
+                if (!res.err) {
+                    loggedInUser = true;
+                    const { user } = res;
+                    callbackSuccess(user);
+                } else {
+                    loggedInUser = false;
+                    callbackFailure('');
+                }
+            },
+            error: (res) => {
+                // if request fails
+                const { err, message } = res.responseJSON;
+                loggedInUser = false;
+                if (err) {
+                    callbackFailure(message);
+                }
+            },
+        });
+    };
+
+    const getPrivilege = (cb) => {
+        $.ajax({
+            url: '/profile/privilege',
+            type: 'POST',
+            success: (res) => {
+                cb(res.privilege);
+            },
+            error: (res) => {
+                cb(-1);
+            }
+        });
+    };
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;400;600;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="/css/master.css" />

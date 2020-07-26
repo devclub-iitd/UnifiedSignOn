@@ -105,3 +105,8 @@ dist
 .gitsecret/keys/random_seed
 !*.secret
 buid/
+
+# Mac OS
+.DS_Store
+
+.vscode/

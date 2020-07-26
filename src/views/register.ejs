@@ -1,42 +1,96 @@
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <%- include('partials/assets'); %>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="css/register.css" />
-        <title>Register</title>
-    </head>
-    <body>
-        <%- include('partials/header'); %>
-        <div class="rootContainer">
-            <div class="pageTitle">
-                Register
-            </div>
-            <div class="miniLine"></div>
-            <div class="tagLine">
-                Just a couple more things to get you started
-            </div>
-            <div class="formContainer">
-                <form action="#">
-                    <div class="inputRow">
-                        <input id="inputRow1" type="text" placeholder="First Name..." required />
-                        <input id="inputRow2" type="text" placeholder="Last Name..." required />
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/register.css" />
+    <title>Register</title>
+    <script>
+        $(document).ready(() => {
+            const getUserDetailsSuccess = () => {
+                window.location.href = `/redirecting${window.location.search}`;
+            }
+            getUserDetails(getUserDetailsSuccess, () => { });
+
+            if ($('.messageContainer').length > 0) {
+                setTimeout(() => {
+                    $('.messageContainer').css('opacity', '0');
+                }, 3000);
+            }
+            if ($('#serviceURL').length > 0) {
+                let serviceURL = $('#serviceURL').html();
+                $('#serviceURLInput').val(serviceURL);
+                $('#loginBtn a').attr('href', `/user/login?serviceURL=${serviceURL}`);
+            }
+        })
+    </script>
+</head>
+
+<body>
+    <%- include('partials/header'); %>
+    <div class="rootContainer">
+        <div class="pageTitle">
+            Register
+        </div>
+        <div class="miniLine"></div>
+        <div class="tagLine">
+            Just a couple more things to get you started
+        </div>
+        <div class="formContainer">
+            <form action="" method="POST">
+                <div class="inputRow">
+                    <div class="input-group">
+                        <input type="text" name="firstname" required />
+                        <label for="firstname">First Name</label>
                     </div>
-                    <input type="text" placeholder="Username..." required />
-                    <input type="email" placeholder="Enter your email ..." required />
-                    <input type="password" placeholder="Enter your password ..." required />
-                    <button type="submit" class="btn">
-                        Let's go
-                    </button>
-                </form>
-                <div class="messageContainer">
-                    <!-- Custom error handeler
-                        For error insert the content and add class "error"
-                        For success insert the content and add class "success"
-                    -->
+                    <div class="input-group">
+                        <input type="text" name="lastname" required />
+                        <label for="lastname">Last Name</label>
+                    </div>
                 </div>
+                <div class="input-group">
+                    <input type="text" name="username" pattern=".{6,30}" required />
+                    <label for="username">Username</label>
+                    <span class="helpText">Username must be 6 to 30 characters long</span>
+                </div>
+
+                <div class="input-group">
+                    <input type="email" name="email" required />
+                    <label for="email">E-Mail</label>
+                    <span class="helpText">Please enter a valid E-Mail</span>
+                </div>
+
+                <div class="input-group">
+                    <input type="password" name="password" required />
+                    <label for="password">Password</label>
+                </div>
+                <% if (typeof serviceURL !== undefined && serviceURL) { %>
+                <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
+                <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
+                <% } %>
+                <button type="submit" class="btn">
+                    Let's go
+                </button>
+                <p class="textParagraph">
+                    <i>Already have an account?
+                        <span id="loginBtn"><a href="/user/login">Login...</a></span>
+                    </i>
+                </p>
+            </form>
+            <% if (message !== '') { %>
+            <% if (error) { %>
+            <div class="messageContainer error">
+                <% } else { %>
+                <div class="messageContainer success">
+                    <% } %>
+                    <%= message %>
+                </div>
+                <% } %>
             </div>
         </div>
         <%- include('partials/footer'); %>
-    </body>
+        <script src="/js/forms.js"></script>
+</body>
+
 </html>

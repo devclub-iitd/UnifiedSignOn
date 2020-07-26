@@ -3,8 +3,50 @@
         <meta charset="UTF-8" />
         <%- include('partials/assets'); %>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="/css/index.css" />
         <title>Home</title>
+        <script>
+            $(document).ready(() => {
+
+                const clearDisplay = () => {
+                    // Initially no section displayed
+                    $('.userRedirecting').css('display', 'none');
+                    $('.userLoggedIn').css('display', 'none');
+                    $('.userLoggedOut').css('display', 'none');
+                    $('#userFirstName').text('');
+                    $('.userLoggedIn .userFullName').text('');
+                    $('.userLoggedIn .userEmailID').text('');
+                    $('.userLoggedIn .userUsername').text('');
+                };
+
+                clearDisplay();
+
+                const userDetailFailure = (message) => {
+                    clearDisplay();
+                    displayMessage(message);
+                    $('.userLoggedOut').css('display', 'block'); 
+                };
+
+                const userDetailSuccess = (user) => {
+                    const { firstname, lastname, email, username } = user;
+                    const userFullName = `${firstname} ${lastname}`;
+                    clearDisplay();
+                    $('#userFirstName').text(firstname);
+                    $('.userLoggedIn .userFullName').text(userFullName);
+                    $('.userLoggedIn .userEmailID').text(email);
+                    $('.userLoggedIn .userUsername').text(username);
+                    $('.userLoggedIn').css('display', 'flex');
+                }
+
+                getUserDetails(userDetailSuccess, userDetailFailure);
+                
+                $('#logoutBtn').click(() => {
+                    logoutUser();
+                });
+            });
+        </script>
     </head>
+
     <body>
         <%- include('partials/header'); %>
         <div class="rootContainer">
@@ -12,17 +54,71 @@
                 Single Sign On
             </div>
             <div class="miniLine"></div>
-            <p class="textParagraph">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Iusto ab saepe veniam,
-                nihil delectus quidem nobis commodi praesentium debitis voluptate magnam eligendi
-                odio perferendis repellendus eos est cumque sapiente impedit?
-            </p>
-            <a href="https://devclub.in/#/" target="_blank">
-                <div class="btn fixedBtn">
-                    visit devclub
+            <div class="userLoggedOut">
+                <p class="textParagraph">
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Culpa nam perspiciatis ex esse, eveniet dolorum, quam,
+                    commodi vitae sunt minima similique. Est nulla tempore
+                    distinctio et sit excepturi labore possimus.
+                </p>
+                <div
+                    class="messageContainer error"
+                    style="display: none;"
+                ></div>
+
+                <a href="https://devclub.in/#/" target="_blank">
+                    <div class="btn fixedBtn">
+                        visit devclub
+                    </div>
+                </a>
+            </div>
+            <div class="userLoggedIn">
+                <p class="textParagraph">
+                    <b>Welcome <span id="userFirstName"></span>,</b>
+                    this is your one stop account for everything Devclub
+                </p>
+                <div class="userDetailContainer">
+                    <div class="detail">
+                        <span class="detailTitle">
+                            Name:
+                        </span>
+                        <span class="detailContent userFullName"></span>
+                    </div>
+                    <div class="detailMiniLine"></div>
+                    <div class="detail">
+                        <span class="detailTitle">
+                            Email ID:
+                        </span>
+                        <span class="detailContent userEmailID"></span>
+                    </div>
+                    <div class="detailMiniLine"></div>
+                    <div class="detail">
+                        <span class="detailTitle">
+                            Username:
+                        </span>
+                        <span class="detailContent userUsername"></span>
+                    </div>
                 </div>
-            </a>
+                <div class="btnContainer">
+                    <a href="/profile/settings">
+                        <div class="btn fixedBtn">
+                            settings
+                        </div>
+                    </a>
+                    <a href="https://devclub.in/#/" target="_blank">
+                        <div class="btn fixedBtn">
+                            visit devclub
+                        </div>
+                    </a>
+                </div>
+                <div class="btn fixedBtn redBtn" id="logoutBtn">
+                    Logout
+                </div>
+            </div>
+
         </div>
-        <%- include('partials/footer.ejs'); %>
-    </body>
+    </div>
+    <%- include('partials/footer.ejs'); %>
+</body>
+
 </html>

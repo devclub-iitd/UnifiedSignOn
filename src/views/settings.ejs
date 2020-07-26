@@ -1,0 +1,170 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <%- include('partials/assets'); %>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/settings.css" />
+    <title>Settings</title>
+    <script>
+        $(document).ready(() => {
+            $('.tab-item').click(function () {
+                $('.tab-item').removeClass('active');
+                $(this).addClass('active');
+                $('.tab-content').hide();
+                $(`#${$(this).data('toggle')}`).fadeIn(200);
+            });
+
+            $('#kerbTip').hover(() => {
+                $('#kerbInfo').fadeIn(300);
+            }, () => {
+                $('#kerbInfo').fadeOut(100);
+            });
+
+            const getUserDetailsSuccess = (user) => {
+                $('input[name="firstName"]').val(user.firstname);
+                $('input[name="lastName"]').val(user.lastname);
+                $('input[name="newUsername"]').val(user.username);
+            }
+            const getUserDetailsFailure = (message) => {
+                window.location.href = '/';
+            }
+
+            getUserDetails(getUserDetailsSuccess, getUserDetailsFailure);
+
+            if ($('.messageContainer').length > 0) {
+                setTimeout(() => {
+                    $('.messageContainer').fadeOut(200)
+                }, 4000);
+            }
+
+            $.ajax({
+                method: 'GET',
+                url: '/profile/connections',
+                success: (data, status, a) => {
+                    const connections = data.connections
+                    if (connections) {
+                        connections.forEach((connection) => {
+                            $(`#${connection.provider} > h4`).text('Connected')
+                            $(`#${connection.provider} > a`).addClass('redBtn')
+                            $(`#${connection.provider} > a`).text('Disconnect')
+                            $(`#${connection.provider} > a`).attr('href', '')
+                            $(`#${connection.provider} > a`).on('click', (e) => {
+                                e.preventDefault();
+                                $.ajax({
+                                    method: 'POST',
+                                    url: `/profile/disconnect/${connection.provider}`,
+                                    success: (data, status, a) => {
+                                        location.reload();
+                                    }
+                                })
+                            })
+                        })
+                    }
+                },
+                error: (a, msg, errorThrown) => { console.error(errorThrown); }
+            })
+        });
+    </script>
+</head>
+
+<body>
+    <%- include('partials/header'); %>
+    <div class="rootContainer">
+        <div class="pageTitle">
+            Settings
+        </div>
+        <div class="miniLine"></div>
+        <% if (messages) { %>
+        <% messages.forEach( (msg) => { %>
+        <% if (msg.message !== '') { %>
+        <% if (msg.error) { %>
+        <div class="messageContainer error">
+            <% } else { %>
+            <div class="messageContainer success">
+                <% } %>
+                <%= msg.message %>
+            </div>
+            <% } %>
+            <% })} %>
+            <div class="formContainer">
+                <div class="tabContainer">
+                    <ul class="tabs">
+                        <li class="tab-item active" data-toggle="generalForm"><span class="tab-link">General</span></li>
+                        <li class="tab-item" data-toggle="socialForm"><span class="tab-link">Social</span></li>
+                        <li class="tab-item"><span class="tab-link">Email</span></li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="generalForm">
+                    <form action="/profile/settings" method="POST">
+                        <div class="form-group">
+                            <legend>Personal Information <div class="long-line"></div>
+                            </legend>
+                            <div class="longLine"></div>
+                            <div class="inline">
+                                <div class="inline-group">
+                                    <span class="detailTitle">First Name</span>
+                                    <input type="text" name="firstName" placeholder="First Name" id="firstName" tabindex="1">
+                                </div>
+                                <div class="inline-group">
+                                    <span class="detailTitle">Last Name</span>
+                                    <input type="text" name="lastName" placeholder="Last Name" id="lastName" tabindex="2">
+                                </div>
+                            </div>
+                            <span class="detailTitle">Username</span>
+                            <input type="text" name="newUsername" placeholder="Enter new Username" id="newUsername" autocomplete="username" tabindex="3">
+                        </div>
+                        <div class="form-group">
+                            <legend>Update Password <div class="long-line"></div>
+                            </legend>
+                            <div class="longLine"></div>
+                            <span class="detailTitle">New Password</span>
+                            <input type="password" name="newPassword" autocomplete="new-password" placeholder="Enter new Password" id="newPassword" tabindex="4">
+                            <span class="detailTitle">Current Password</span>
+                            <input type="password" name="password" placeholder="Enter current Password" id="password" tabindex="5">
+                        </div>
+                        <button type="submit" class="btn">
+                            Update!
+                        </button>
+                    </form>
+                </div>
+                <div class="socialLinkContainer tab-content" id="socialForm">
+                    <fieldset id="iitdFieldset">
+                        <img src="/images/info.svg" alt="kerberosInfo" id="kerbTip">
+                        <legend>IITD Kerberos</legend>
+                        <ul>
+                            <li id="iitd" class="socialLink">
+                                <img src="/images/iitdlogo.png" alt="" class="socialIcon">
+                                <h4 class="socialInfo">Not currently linked</h4>
+                                <a class="btn btn-social" href="/auth/iitd">Connect</a>
+                                <figcaption id="kerbInfo">Kerberos is an open authorization system provided by IIT Delhi to its students for proving their identity as an IIT Delhi student.</figcaption>
+                            </li>
+                        </ul>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Social</legend>
+                        <ul>
+                            <li id="facebook" class="socialLink">
+                                <img src="/images/Facebook.svg" alt="fbIcon" class="socialIcon">
+                                <h4 class="socialInfo">Not currently linked</h4>
+                                <a class="btn btn-social" href="/auth/facebook">Connect</a>
+                            </li>
+                            <li id="github" class="socialLink">
+                                <img src="/images/Github.svg" alt="githubIcon" class="socialIcon">
+                                <h4 class="socialInfo">Not currently linked</h4>
+                                <a class="btn btn-social" href="/auth/github">Connect</a>
+                            </li>
+                            <li id="google" class="socialLink">
+                                <img src="/images/Google.svg" alt="googleIcon" class="socialIcon">
+                                <h4 class="socialInfo">Not currently linked</h4>
+                                <a class="btn btn-social" href="/auth/google">Connect</a>
+                            </li>
+                        </ul>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+        <%- include('partials/footer'); %>
+</body>
+
+</html>

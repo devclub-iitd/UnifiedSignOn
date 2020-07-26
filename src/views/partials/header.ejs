@@ -14,14 +14,47 @@
                     About
                 </div>
             </a>
-            <a href="/user/login">
+            <a href="/client" id="clientBtn" style="display: none;">
                 <div class="headerBtn">
-                    Login
+                    Client
                 </div>
             </a>
-            <a href="/user/register">
+            <script>
+                $(document).ready(() => {
+                    const userDetailSuccess = (user) => {
+                        $('#headerLoginBtn .headerBtn').html('Logout');
+                        $('#headerLoginBtn').attr('href', '/');
+                        $('#headerLoginBtn').css('display', 'block');
+                        $('#headerLoginBtn').click(() => {
+                            logoutUser();
+                        });
+                    };
+
+                    const userDetailFailure = () => {
+                        $('#headerLoginBtn').css('display', 'block');
+                        if (window.location.href.indexOf('register') > 0) {
+                            $('#headerLoginBtn').css('display', 'none');
+                        }
+                        if (window.location.href.indexOf('login') > 0) {
+                            const query = window.location.search;
+                            $('#headerLoginBtn').attr(
+                                'href',
+                                `/user/login${query}`
+                            );
+                        }
+                    };
+                    getUserDetails(userDetailSuccess, userDetailFailure);
+
+                    getPrivilege((priv) => {
+                        if (priv >= 2) {
+                            $('#clientBtn').css('display', 'block');
+                        }
+                    });
+                });
+            </script>
+            <a href="/user/login" id="headerLoginBtn" style="display: none;">
                 <div class="headerBtn">
-                    Register
+                    Login
                 </div>
             </a>
         </div>

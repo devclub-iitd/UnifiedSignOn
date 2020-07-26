@@ -1,34 +1,57 @@
+/* eslint-disable import/named */
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import User from '../models/user';
-import { secretkey } from '../config/keys';
+import { createJWTCookie } from '../utils/utils';
+import { refreshTokenName } from '../config/keys';
+import { User } from '../models/user';
 
 const router = express.Router();
 
 router.get('/login', (req, res) => {
-    res.render('login');
+    /*
+    TODO - 
+        1. ADD A CHECK FOR THE CASE WHEN AUTH HAS FAILED AND 
+        USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
+        PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
+        OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
+
+        2. Create a utils function to check validity of serviceURLs
+    */
+
+    // make sure serviceURL already has `http://` prepended
+    // this is the responsibility of the client server.
+    const { serviceURL } = req.query;
+
+    // We should pass the service URL as well to the login page.
+    // we pass the error handeling data to page
+    res.render('login', { message: '', error: false, serviceURL });
 });
 
 router.get('/register', (req, res) => {
-    res.render('register');
+    const { serviceURL } = req.query;
+    res.render('register', { message: '', error: false, serviceURL });
 });
 
 router.post('/login', async (req, res, next) => {
     try {
-        // pull out the service URL
-        const { serviceURL } = req.query;
-
-        const { email, password } = req.body;
-
+        const { email, password, serviceURL, rememberme } = req.body;
         // try to find the user in the database
         const user = await User.findOne({ email });
-
         // this means user doesn't exists, so throw an error TODO: add correct status to return
         if (!user) {
-            return res
-                .status(400)
-                .json({ msg: 'Not a registered email address' });
+            return res.render('login', {
+                message: 'Not a registered email address',
+                error: true,
+                serviceURL,
+            });
+        }
+
+        if (!user.isverified) {
+            return res.render('login', {
+                message: 'Your account is not verified',
+                error: true,
+                serviceURL,
+            });
         }
 
         // Compare passwords
@@ -36,60 +59,61 @@ router.post('/login', async (req, res, next) => {
 
         // Incorrect password
         if (!isMatch) {
-            return res
-                .status(400)
-                .json({ msg: 'Password seems to be incorrect' });
+            return res.render('login', {
+                message: 'Password seems to be incorrect',
+                error: true,
+                serviceURL,
+            });
         }
 
-        const payload = {
-            user: {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-            },
-            iss: 'auth.devclub.in',
-        };
-
-        // create a token
-        const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10,
-        });
-
-        // Set the token in the header
-        res.setHeader('x-auth-token', token);
-
-        if (serviceURL) {
-            return res.redirect(`http://${serviceURL}`);
+        createJWTCookie(user, res);
+        if (rememberme === 'true') {
+            createJWTCookie(user, res, refreshTokenName);
         }
 
-        // where to redirect now, for now to SSO homepage
-        return res.redirect('/');
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
+        }
+
+        res.redirect(`/redirecting`);
     } catch (err) {
         next(err);
     }
 });
 
 router.post('/register', async (req, res) => {
-    const { firstname, lastname, username, email, password } = req.body;
+    const {
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+        serviceURL,
+    } = req.body;
 
+    // TODO: ADD A USERNAME CHECK AS WELL, THAT ALSO HAS TO BE UNIQUE
     try {
         // try to find the user in the database
         let user = await User.findOne({ email });
 
         // User already exists
         if (user) {
-            return res
-                .status(400)
-                .json({ msg: 'User already exists with same email' });
+            return res.render('register', {
+                message: 'User already exists with same email',
+                error: true,
+                serviceURL,
+            });
         }
 
         // Create a new user of type `User`
         user = new User({
-            first_name: firstname,
-            last_name: lastname,
+            firstname,
+            lastname,
             username,
             email,
             password,
+            isverified: true,
         });
 
         // encrypt the password using bcrypt
@@ -101,25 +125,21 @@ router.post('/register', async (req, res) => {
         // Save the updated the user in database
         await user.save();
 
-        // Create payload to create a token
-        const payload = {
-            user: {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-            },
-            iss: 'auth.devclub.in',
-        };
+        createJWTCookie(user, res);
 
-        // create a token
-        const token = jwt.sign(payload, secretkey, {
-            expiresIn: 60 * 10,
-        });
-
-        // Return the token
-        return res.status(200).json({ token });
+        if (typeof serviceURL !== 'undefined' && serviceURL) {
+            // render homepage to store token and then redirect with serviceURL
+            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
+        }
+        // set the token
+        res.redirect(`/redirecting`);
     } catch (err) {
         console.log(err);
+        res.render('register', {
+            message: 'WHOOPS!! A server error occured, please try again later',
+            error: true,
+            serviceURL,
+        });
     }
 });
 
