@@ -1,6 +1,13 @@
 version: '3.4'
 
 services:
+    database:
+        image: '${REGISTRY_NAME}mongo:latest'
+        volumes:
+            - casidb:/data/db
+        networks:
+            - 'internal'
+        restart: 'unless-stopped'
     CASI:
         build: .
         image: '${REGISTRY_NAME}devclubiitd/casi:0.1'
@@ -20,6 +27,12 @@ services:
             - ./.env
         environment:
             - VIRTUAL_HOST
+            - MONGODB_URI_LOCAL
+        depends_on:
+            - database
+
+volumes:
+    casidb:
 
 networks:
     reverseproxy:

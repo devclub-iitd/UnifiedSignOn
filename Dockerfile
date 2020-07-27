@@ -5,6 +5,7 @@ WORKDIR /code
 
 RUN apt-get update
 RUN npm install -g nodemon
+RUN apt-get install netcat -y
 
 COPY package*.json ./
 
