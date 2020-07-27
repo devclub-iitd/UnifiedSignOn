@@ -53,6 +53,7 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
         secure: false, // set to true if your using https
         httpOnly: true,
         sameSite: 'lax',
+        domain: 'devclub.in',
     });
 };
 
