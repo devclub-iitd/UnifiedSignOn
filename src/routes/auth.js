@@ -88,7 +88,7 @@ router.get('/iitd', (req, res) => {
     );
 });
 
-router.get('/auth/iitd/confirm', async (req, res) => {
+router.get('/iitd/confirm', async (req, res) => {
     try {
         const { access_token } = (
             await axios.post('https://oauth.iitd.ac.in/resource.php', {
