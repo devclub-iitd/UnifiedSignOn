@@ -27,7 +27,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: `https://auth.devclub.in/auth/google/callback`,
+            callbackURL: `http://auth.devclub.in/auth/google/callback`,
             passReqToCallback: true,
         },
         async (req, accessToken, refreshToken, googleProfile, done) => {
@@ -66,7 +66,7 @@ passport.use(
         {
             clientID: process.env.FACEBOOK_CLIENT_ID,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-            callbackURL: `https://auth.devclub.in/auth/facebook/callback`,
+            callbackURL: `http://auth.devclub.in/auth/facebook/callback`,
             profileFields: ['id', 'displayName', 'email'],
             enableProof: true,
             passReqToCallback: true,
@@ -102,7 +102,7 @@ passport.use(
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: `https://auth.devclub.in/auth/github/callback`,
+            callbackURL: `http://auth.devclub.in/auth/github/callback`,
             scope: ['user:email'],
             passReqToCallback: true,
         },
