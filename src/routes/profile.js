@@ -52,7 +52,7 @@ router.post('/delete', async (req, res) => {
         });
         await user.remove();
 
-        res.clearCookie(accessTokenName,{
+        res.clearCookie(accessTokenName, {
             domain: 'devclub.in',
         });
         return res.status(200).json({
