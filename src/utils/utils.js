@@ -101,8 +101,12 @@ const verifyToken = async (
         console.log(err);
         // I wasn't able to verify the token as it was invalid
         // clear the tokens
-        res.clearCookie(keys.accessTokenName);
-        res.clearCookie(keys.refreshTokenName);
+        res.clearCookie(keys.accessTokenName, {
+            domain: 'devclub.in',
+        });
+        res.clearCookie(keys.refreshTokenName, {
+            domain: 'devclub.in',
+        });
         throw err;
     }
 };
