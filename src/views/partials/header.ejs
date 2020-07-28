@@ -14,9 +14,14 @@
                     About
                 </div>
             </a>
+            <a href="/client" id="clientBtn" style="display: none;">
+                <div class="headerBtn">
+                    Client
+                </div>
+            </a>
             <script>
                 $(document).ready(() => {
-                    const userDetailSuccess = () => {
+                    const userDetailSuccess = (user) => {
                         $('#headerLoginBtn .headerBtn').html('Logout');
                         $('#headerLoginBtn').attr('href', '/');
                         $('#headerLoginBtn').css('display', 'block');
@@ -39,6 +44,12 @@
                         }
                     };
                     getUserDetails(userDetailSuccess, userDetailFailure);
+
+                    getPrivilege((priv) => {
+                        if (priv >= 2) {
+                            $('#clientBtn').css('display', 'block');
+                        }
+                    });
                 });
             </script>
             <a href="/user/login" id="headerLoginBtn" style="display: none;">

@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
+import client from './routes/client';
 import * as keys from './config/keys';
 
 import { socialAuthenticate, linkSocial } from './utils/utils';
@@ -26,7 +27,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: `http://localhost:${process.env.PORT}/auth/google/callback`,
+            callbackURL: `http://auth.devclub.in/auth/google/callback`,
             passReqToCallback: true,
         },
         async (req, accessToken, refreshToken, googleProfile, done) => {
@@ -65,7 +66,7 @@ passport.use(
         {
             clientID: process.env.FACEBOOK_CLIENT_ID,
             clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-            callbackURL: `http://localhost:${process.env.PORT}/auth/facebook/callback`,
+            callbackURL: `http://auth.devclub.in/auth/facebook/callback`,
             profileFields: ['id', 'displayName', 'email'],
             enableProof: true,
             passReqToCallback: true,
@@ -101,7 +102,7 @@ passport.use(
         {
             clientID: process.env.GITHUB_CLIENT_ID,
             clientSecret: process.env.GITHUB_CLIENT_SECRET,
-            callbackURL: `http://localhost:${process.env.PORT}/auth/github/callback`,
+            callbackURL: `http://auth.devclub.in/auth/github/callback`,
             scope: ['user:email'],
             passReqToCallback: true,
         },
@@ -193,6 +194,7 @@ app.get('/about', (req, res) => {
 app.use('/user', user);
 app.use('/auth', auth);
 app.use('/profile', profile);
+app.use('/client', client);
 
 const port = process.env.PORT;
 

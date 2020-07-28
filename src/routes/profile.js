@@ -1,5 +1,6 @@
+/* eslint-disable import/named */
 import express from 'express';
-import { verifyToken } from '../utils/utils';
+import { verifyToken, getUserPrivilege } from '../utils/utils';
 import { accessTokenName, refreshTokenName } from '../config/keys';
 import settingsRoutes from './settings';
 import { SocialAccount } from '../models/user';
@@ -24,8 +25,12 @@ router.post('/', async (req, res) => {
 
 router.post('/logout', (req, res) => {
     try {
-        res.clearCookie(accessTokenName);
-        res.clearCookie(refreshTokenName);
+        res.clearCookie(accessTokenName, {
+            domain: 'devclub.in',
+        });
+        res.clearCookie(refreshTokenName, {
+            domain: 'devclub.in',
+        });
         return res.json({
             err: false,
             message: 'Logged out successfully',
@@ -47,7 +52,9 @@ router.post('/delete', async (req, res) => {
         });
         await user.remove();
 
-        res.clearCookie(accessTokenName);
+        res.clearCookie(accessTokenName, {
+            domain: 'devclub.in',
+        });
         return res.status(200).json({
             err: false,
             msg: 'Account Deleted Successfully',
@@ -103,6 +110,16 @@ router.post('/disconnect/:provider', async (req, res) => {
             err: true,
             msg: 'Error, token not valid',
         });
+    }
+});
+
+router.post('/privilege', async (req, res) => {
+    try {
+        const user = await verifyToken(req, res);
+        const privilege = getUserPrivilege(user);
+        return res.status(200).json({ privilege });
+    } catch (error) {
+        return res.status(401).send();
     }
 });
 export default router;

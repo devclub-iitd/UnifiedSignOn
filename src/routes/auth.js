@@ -20,7 +20,7 @@ router.post('/refresh-token', async (req, res) => {
     const token = req.body[accessTokenName];
     const refreshToken = req.body[refreshTokenName];
     try {
-        const user = await verifyToken(req, res, true, token, refreshToken);
+        const user = await verifyToken(req, res, true, 0, token, refreshToken);
         return res.status(200).json({
             user,
         });
@@ -62,7 +62,7 @@ router.get(
             failureRedirect: '/user/login',
         })(req, res, next);
     },
-    (req, res) => {
+    async (req, res) => {
         createJWTCookie(req.user, res);
         if (req.authInfo.message === profileNotFoundMsg) {
             return res.render('confirm');
@@ -88,7 +88,7 @@ router.get('/iitd', (req, res) => {
     );
 });
 
-router.get('/auth/iitd/confirm', async (req, res) => {
+router.get('/iitd/confirm', async (req, res) => {
     try {
         const { access_token } = (
             await axios.post('https://oauth.iitd.ac.in/resource.php', {
@@ -112,8 +112,8 @@ router.get('/auth/iitd/confirm', async (req, res) => {
         ) => {
             if (!err || !user) return response.status(500);
 
-            if (!user.role.includes('iitd_user')) {
-                user.role.push('iitd_user');
+            if (!user.roles.includes('iitd_user')) {
+                user.roles.push('iitd_user');
                 await user.save();
             }
             createJWTCookie(user, response);
