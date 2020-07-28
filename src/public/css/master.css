@@ -23,7 +23,6 @@ body {
 /* HEADER */
 .header {
     width: 100%;
-    height: 60px;
     line-height: 60px;
     background-color: var(--theme-color);
     position: fixed;
@@ -31,12 +30,17 @@ body {
     top: 0px;
     box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.2);
     color: white;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     backdrop-filter: blur(3px);
     -webkit-backdrop-filter: blur(3px);
 }
+
+.mainNav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .headerTitle {
     margin-left: 20px;
 }
@@ -44,11 +48,11 @@ body {
     font-weight: 200;
 }
 .navCont {
+    height: fit-content;
     display: flex;
     margin-left: auto;
     margin-right: 20px;
     align-items: center;
-    height: 60px;
 }
 .headerBtn {
     height: 20px;
@@ -64,7 +68,42 @@ body {
     background-color: rgba(240, 240, 240, 0.15);
 }
 
-@media screen and (max-width: 705px) {
+#menuBtn {
+    cursor: pointer;
+    display: none;
+    width: 30px;
+    height: 20px;
+    filter: invert();
+}
+
+.collapseNav {
+    display: flex;
+    flex-direction: row;
+}
+
+.collapse {
+    display: none;
+    padding-bottom: 10px;
+    flex-direction: column;
+}
+
+.collapse .headerBtn {
+    margin: 10px 20px;
+    border: none;
+    padding: 0;
+}
+
+@media screen and (max-width: 805px) {
+    .collapseNav {
+        display: none;
+    }
+
+    #menuBtn {
+        display: block;
+    }
+}
+
+@media screen and (max-width: 500px) {
     .headerTitle span {
         display: none;
     }
@@ -95,8 +134,10 @@ body {
 }
 .footerLogo {
     background-color: #e6e6e6;
-    padding: 60px;
+    padding: 40px;
     width: 80%;
+    max-height: 300px;
+    max-width: 300px;
     border-radius: 10px;
 }
 .footerSectionDetails {
