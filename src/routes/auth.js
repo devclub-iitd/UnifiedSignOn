@@ -1,15 +1,21 @@
 import express from 'express';
+import { verify } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import {
     verifyToken,
     createJWTCookie,
     socialAuthenticate,
+    sendVerificationEmail,
+    sendPassResetEmail,
 } from '../utils/utils';
 import {
     accessTokenName,
     refreshTokenName,
     profileNotFoundMsg,
     accountExists,
+    publicKey,
 } from '../config/keys';
+import { User } from '../models/user';
 
 const router = express.Router();
 const passport = require('passport');
@@ -29,6 +35,90 @@ router.post('/refresh-token', async (req, res) => {
             err: true,
             msg: 'Error, token not valid',
         });
+    }
+});
+
+router.get('/email/verify/token', async (req, res) => {
+    try {
+        const { token } = req.query;
+        const decoded = await verify(token, publicKey, {
+            algorithms: ['RS256'],
+        });
+        const user = await User.findById(decoded.id);
+        user.isverified = true;
+        await user.save();
+        res.status(200).send('Account Verified!!');
+    } catch (error) {
+        console.log(error);
+        res.clearCookie(accessTokenName);
+        res.clearCookie(refreshTokenName);
+        res.status(500).send(
+            'Account could not be verified. Please try again later!'
+        );
+    }
+});
+
+router.get('/email/verify', (req, res) => {
+    res.render('email_verify');
+});
+
+router.post('/email/verify', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({
+            email,
+        });
+        if (!user) return res.status(500).send('Email Address not registered');
+        if (user.isverified) {
+            return res
+                .status(400)
+                .send(
+                    'Your account is already verified, Please login to continue'
+                );
+        }
+        sendVerificationEmail(user);
+        return res
+            .status(200)
+            .send('A verification email has been sent to your inbox!');
+    } catch (error) {
+        res.status(500).send('Email Address not registered');
+    }
+});
+
+router.get('/password/reset/token', async (req, res) => {
+    try {
+        const { token } = req.query;
+        const decoded = await verify(token, publicKey, {
+            algorithms: ['RS256'],
+        });
+        const user = await User.findById(decoded.id);
+        user.password = await bcrypt.hash(decoded.newPass, 10);
+        await user.save();
+        res.status(200).send('Password reset successfully!');
+    } catch (error) {
+        console.log(error);
+        res.clearCookie(accessTokenName);
+        res.clearCookie(refreshTokenName);
+        res.status(500).send('Invalid Token. Please try again later!');
+    }
+});
+router.get('/password/reset', (req, res) => {
+    res.render('pass_forgot');
+});
+router.post('/password/reset', async (req, res) => {
+    try {
+        const { email, newPass } = req.body;
+        const user = await User.findOne({
+            email,
+        });
+        if (!user) return res.status(500).send('Email Address not registered');
+        if (!newPass) return res.status(400).send('New Password not supplied');
+        sendPassResetEmail(user, newPass);
+        return res
+            .status(200)
+            .send('A password reset email has been sent to your inbox!');
+    } catch (error) {
+        res.status(500).send('Email Address not registered');
     }
 });
 
