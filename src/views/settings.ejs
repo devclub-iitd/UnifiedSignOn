@@ -21,6 +21,12 @@
                 $('#kerbInfo').fadeOut(100);
             });
 
+            $('#kerbTip').hover(() => {
+                $('#kerbInfo').fadeIn(300);
+            }, () => {
+                $('#kerbInfo').fadeOut(100);
+            });
+
             const getUserDetailsSuccess = (user) => {
                 $('input[name="firstName"]').val(user.firstname);
                 $('input[name="lastName"]').val(user.lastname);
