@@ -1,3 +1,14 @@
+<div class="rootPageLoader">
+    <div class="pageTitle">
+        Loading ...
+    </div>
+    <div class="rootPageLoaderTagline">
+        Crunching some data, please wait
+    </div>
+    <div class="rootPageLoaderAnimationContainer">
+        <div class="rootPageLoaderAnimator"></div>
+    </div>
+</div>
 <nav>
     <div class="header">
         <div class="mainNav">
@@ -29,7 +40,7 @@
                         </div>
                     </a>
                 </div>
-                <img src="/images/menu.svg" id="menuBtn">
+                <img src="/images/menu.svg" id="menuBtn" />
             </div>
         </div>
         <div class="collapse">
@@ -52,6 +63,18 @@
     </div>
     <script>
         $(document).ready(() => {
+            const closeRootLoaderPage = () => {
+                $('.rootPageLoader').animate(
+                    {
+                        opacity: '0',
+                        top: '20px',
+                    },
+                    700,
+                    () => {
+                        $('.rootPageLoader').css('display', 'none');
+                    }
+                );
+            };
             const userDetailSuccess = (user) => {
                 $('.LoginBtn .headerBtn').html('Logout');
                 $('.LoginBtn').attr('href', '/');
@@ -59,6 +82,7 @@
                 $('.LoginBtn').click(() => {
                     logoutUser();
                 });
+                closeRootLoaderPage();
             };
 
             const userDetailFailure = () => {
@@ -68,11 +92,9 @@
                 }
                 if (window.location.href.indexOf('login') > 0) {
                     const query = window.location.search;
-                    $('.LoginBtn').attr(
-                        'href',
-                        `/user/login${query}`
-                    );
+                    $('.LoginBtn').attr('href', `/user/login${query}`);
                 }
+                closeRootLoaderPage();
             };
             getUserDetails(userDetailSuccess, userDetailFailure);
 
@@ -85,6 +107,5 @@
                 $('.collapse').fadeToggle(200);
             });
         });
-
     </script>
 </nav>

@@ -107,6 +107,7 @@ input:hover {
 #signupBtn {
     color: var(--theme-color);
     margin-left: 5px;
+    margin-top: 10px;
     font-weight: 600;
     text-decoration: underline;
 }
