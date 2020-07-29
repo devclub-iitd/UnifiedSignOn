@@ -51,7 +51,7 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     // set the cookie with token with the same age as that of token
     res.cookie(tokenName, token, {
         maxAge: exp * 1000, // in milli seconds
-        secure: false, // set to true if your using https
+        secure: true, // set to true if your using https
         httpOnly: true,
         sameSite: 'lax',
         domain: 'devclub.in',
@@ -128,7 +128,7 @@ const sendVerificationEmail = async (user) => {
             subject: 'Account Verification',
             html: `<h3>Click here to verify your account</h3>
               <p>
-                  <a href = "http://localhost:8000/auth/email/verify/token/?token=${token}"> Click Here </a>
+                  <a href = "https://auth.devclub.in/auth/email/verify/token/?token=${token}"> Click Here </a>
               </p>`,
             secret: process.env.MAILER_TOKEN,
         });
@@ -154,7 +154,7 @@ const sendPassResetEmail = async (user, newPass) => {
             subject: 'Password Reset',
             html: `<h3>Click here to reset password for your account</h3>
               <p>
-                  <a href = "http://localhost:8000/auth/password/reset/token/?token=${token}"> Click Here </a>
+                  <a href = "https://auth.devclub.in/auth/password/reset/token/?token=${token}"> Click Here </a>
               </p>`,
             secret: process.env.MAILER_TOKEN,
         });
