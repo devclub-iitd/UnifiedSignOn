@@ -358,7 +358,7 @@ a {
 
 .hLink {
     text-decoration: underline;
-    color: royalblue;
+    color: var(--theme-color);
     font-weight: 600;
 }
 .messageContainer {

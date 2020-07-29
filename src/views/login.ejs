@@ -8,10 +8,9 @@
     <title>Login</title>
     <script>
         $(document).ready(() => {
-
             if ($('.messageContainer').length > 0) {
                 setTimeout(() => {
-                    $('.messageContainer').css('opacity', '0');
+                    $('.messageContainer').fadeOut(200);
                 }, 3000);
             }
             let serviceURL = '';
@@ -41,10 +40,9 @@
         </div>
         <div class="miniLine"></div>
         <div class="formContainer">
-
             <form action="" method="POST">
                 <div class="input-group">
-                    <input type="email" name="email" required />
+                    <input type="email" name="email" required autofocus />
                     <label for="email">E-Mail</label>
                     <span class="helpText">Please enter a valid E-Mail</span>
                 </div>
@@ -63,14 +61,7 @@
                 <button type="submit" class="btn">
                     Let's go
                 </button>
-
-                <p class="textParagraph">
-                    <i>Don't have an account?
-                        <span id="signupBtn"><a href="/user/register">Signup now</a></span>
-                    </i>
-                </p>
             </form>
-
             <% if (message !== '') { %>
             <% if (error) { %>
             <div class="messageContainer error">
@@ -80,6 +71,11 @@
                     <%= message %>
                 </div>
                 <% } %>
+            </div>
+            <div class="btnRow">
+                <a href="/auth/password/reset" class="btn invertBtn">Forgot Password?</a>
+
+                <a href="/user/register" class="btn invertBtn">Signup now</a>
             </div>
             <div class="socialLoginContainer">
                 <fieldset>

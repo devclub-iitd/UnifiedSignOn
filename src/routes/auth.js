@@ -68,20 +68,28 @@ router.post('/email/verify', async (req, res) => {
         const user = await User.findOne({
             email,
         });
-        if (!user) return res.status(500).send('Email Address not registered');
+        if (!user)
+            return res.render('email_verify', {
+                message: 'Email Address not registered',
+                error: true,
+            });
         if (user.isverified) {
-            return res
-                .status(400)
-                .send(
-                    'Your account is already verified, Please login to continue'
-                );
+            return res.render('email_verify', {
+                message:
+                    'Your account is already verified, Please login to continue',
+                error: true,
+            });
         }
         sendVerificationEmail(user);
-        return res
-            .status(200)
-            .send('A verification email has been sent to your inbox!');
+        return res.render('email_verify', {
+            message: 'A verification email has been sent to your inbox!',
+            error: true,
+        });
     } catch (error) {
-        res.status(500).send('Email Address not registered');
+        res.render('email_verify', {
+            message: 'Email Address not registered',
+            error: true,
+        });
     }
 });
 
@@ -111,14 +119,25 @@ router.post('/password/reset', async (req, res) => {
         const user = await User.findOne({
             email,
         });
-        if (!user) return res.status(500).send('Email Address not registered');
-        if (!newPass) return res.status(400).send('New Password not supplied');
+        if (!user)
+            return res.render('pass_forgot', {
+                message: 'Email Address not registered',
+                error: true,
+            });
+        if (!newPass)
+            return res.render('pass_forgot', {
+                message: 'New Password not supplied',
+                error: true,
+            });
         sendPassResetEmail(user, newPass);
         return res
             .status(200)
             .send('A password reset email has been sent to your inbox!');
     } catch (error) {
-        res.status(500).send('Email Address not registered');
+        res.render('pass_forgot', {
+            message: 'Email Address not registered',
+            error: true,
+        });
     }
 });
 
