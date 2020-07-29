@@ -203,3 +203,7 @@ fieldset legend {
 .kerberosBtn img {
     width: 40px;
 }
+
+.messageContainer {
+    padding: 10px;
+}
