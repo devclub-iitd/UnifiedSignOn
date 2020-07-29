@@ -8,11 +8,11 @@
     <title>Login</title>
     <script>
         $(document).ready(() => {
-            if ($('.messageContainer').length > 0) {
-                setTimeout(() => {
-                    $('.messageContainer').fadeOut(200);
-                }, 3000);
-            }
+            // if ($('.messageContainer').length > 0) {
+            //     setTimeout(() => {
+            //         $('.messageContainer').fadeOut(200);
+            //     }, 3000);
+            // }
             let serviceURL = '';
             if ($('#serviceURL').length > 0) {
                 serviceURL = $('#serviceURL').html();
@@ -40,7 +40,7 @@
         </div>
         <div class="miniLine"></div>
         <div class="formContainer">
-            <form action="" method="POST">
+            <form action="/user/login" method="POST">
                 <div class="input-group">
                     <input type="email" name="email" required autofocus />
                     <label for="email">E-Mail</label>
@@ -62,20 +62,19 @@
                     Let's go
                 </button>
             </form>
-            <% if (message !== '') { %>
-            <% if (error) { %>
-            <div class="messageContainer error">
-                <% } else { %>
-                <div class="messageContainer success">
-                    <% } %>
-                    <%= message %>
-                </div>
+        </div>
+        <% if (message !== '') { %>
+        <% if (error) { %>
+        <div class="messageContainer error">
+            <% } else { %>
+            <div class="messageContainer success">
                 <% } %>
+                <%- message %>
             </div>
+            <% } %>
             <div class="btnRow">
                 <a href="/auth/password/reset" class="btn invertBtn">Forgot Password?</a>
-
-                <a href="/user/register" class="btn invertBtn">Signup now</a>
+                <a href="/user/register" class="btn invertBtn">Signup now!</a>
             </div>
             <div class="socialLoginContainer">
                 <fieldset>

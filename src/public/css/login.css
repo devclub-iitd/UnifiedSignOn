@@ -113,6 +113,12 @@ input:hover {
     text-decoration: underline;
 }
 
+#verify {
+    color: white;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
 .btnRow {
     margin: 0 auto 2rem;
     width: min-content;

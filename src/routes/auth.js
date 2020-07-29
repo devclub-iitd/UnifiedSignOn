@@ -130,9 +130,10 @@ router.post('/password/reset', async (req, res) => {
                 error: true,
             });
         sendPassResetEmail(user, newPass);
-        return res
-            .status(200)
-            .send('A password reset email has been sent to your inbox!');
+        return res.render('pass_forgot', {
+            message: 'A password reset email has been sent to your inbox!',
+            error: false,
+        });
     } catch (error) {
         res.render('pass_forgot', {
             message: 'Email Address not registered',
