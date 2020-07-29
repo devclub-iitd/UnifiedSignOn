@@ -5,9 +5,9 @@
 }
 
 .formContainer {
+    box-sizing: border-box;
     width: 40%;
     height: auto;
-    padding: 20px;
     padding-bottom: 0;
     min-width: 300px;
     /* background-color: red; */

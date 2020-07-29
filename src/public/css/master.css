@@ -363,7 +363,6 @@ a {
 }
 .messageContainer {
     box-sizing: border-box;
-    padding: 10px;
     width: 300px;
     text-align: center;
     color: white;
