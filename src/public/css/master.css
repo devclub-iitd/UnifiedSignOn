@@ -142,7 +142,7 @@ body {
     height: fit-content;
     display: flex;
     margin-left: auto;
-    margin-right: 20px;
+    margin-right: 10px;
     align-items: center;
 }
 .headerBtn {
@@ -164,9 +164,6 @@ body {
 #menuBtn {
     cursor: pointer;
     display: none;
-    width: 30px;
-    height: 20px;
-    filter: invert();
 }
 
 .collapseNav {

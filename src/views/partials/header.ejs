@@ -40,7 +40,11 @@
                         </div>
                     </a>
                 </div>
-                <img src="/images/menu.svg" id="menuBtn" />
+                <button class="hamburger hamburger--collapse" type="button" id="menuBtn">
+                    <span class="hamburger-box">
+                        <span class="hamburger-inner"></span>
+                    </span>
+                </button>
             </div>
         </div>
         <div class="collapse">
@@ -103,8 +107,9 @@
                     $('#clientBtn').css('display', 'block');
                 }
             });
-            $('#menuBtn').click(() => {
+            $('#menuBtn').click(function () {
                 $('.collapse').fadeToggle(200);
+                $(this).toggleClass('is-active');
             });
         });
     </script>
