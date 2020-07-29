@@ -20,6 +20,89 @@ body {
     outline: none;
     font-family: 'Raleway', sans-serif;
 }
+/* HEADER LOADER (WHILE WAITING FOR REQUEST FOR CHECKING USER IS LOGGED IN OR NOT) */
+.rootPageLoader {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    position: fixed;
+    top: 0px;
+    z-index: 10001;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.rootPageLoader .pageTitle {
+    margin: 0px;
+    margin-bottom: 10px;
+}
+.rootPageLoaderTagLine {
+    font-style: italic;
+    margin-top: 15px;
+    font-weight: 200;
+    font-size: 20px;
+}
+.rootPageLoaderAnimationContainer {
+    width: 150px;
+    height: 20px;
+    margin-top: 40px;
+    position: relative;
+}
+.rootPageLoaderAnimator {
+    position: absolute;
+    width: 10px;
+    height: 6px;
+    border-radius: 4px;
+    left: 0px;
+    background-color: var(--theme-color);
+    animation: slideAnimation 2.5s infinite;
+}
+@keyframes slideAnimation {
+    0% {
+        width: 10px;
+        left: 0px;
+    }
+    25% {
+        width: 100px;
+        left: 25px;
+    }
+    50% {
+        left: 140px;
+        width: 10px;
+    }
+    75% {
+        width: 100px;
+        left: 25px;
+    }
+    100% {
+        width: 10px;
+        left: 0px;
+    }
+}
+@-webkit-keyframes slideAnimation {
+    0% {
+        width: 10px;
+        left: 0px;
+    }
+    25% {
+        width: 40px;
+        left: 55px;
+    }
+    50% {
+        right: 0px;
+        width: 10px;
+    }
+    75% {
+        width: 40px;
+        left: 55px;
+    }
+    100% {
+        width: 10px;
+        left: 0px;
+    }
+}
+
 /* HEADER */
 .header {
     width: 100%;
@@ -44,8 +127,16 @@ body {
 .headerTitle {
     margin-left: 20px;
 }
+.headerTitle a h2 {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
 .headerTitle span {
-    font-weight: 200;
+    margin-left: 6px;
+    font-size: 20px;
+    font-weight: 400;
 }
 .navCont {
     height: fit-content;
@@ -65,7 +156,9 @@ body {
     margin: 0px 10px;
 }
 .headerBtn:hover {
-    background-color: rgba(240, 240, 240, 0.15);
+    color: var(--theme-color);
+    border-radius: 4px;
+    background-color: white;
 }
 
 #menuBtn {
@@ -152,13 +245,23 @@ body {
     margin-left: 20px;
 }
 .projectList li {
-    margin-top: 4px;
-    font-weight: 200;
+    margin: 8px 0px;
+    transition: 0.1s ease-out;
+    position: relative;
+    width: 140px;
+}
+.projectList li::before {
+    content: '';
+    background-color: #f05431;
+    width: 0px;
+    height: 2px;
+    position: absolute;
+    left: 0px;
+    bottom: -4px;
     transition: 0.1s ease-out;
 }
-.projectList li:hover {
-    color: #f05431;
-    letter-spacing: 1.5px;
+.projectList li:hover::before {
+    width: 60px;
 }
 
 .credits {
@@ -220,7 +323,7 @@ a {
 .btn {
     padding: 15px 40px;
     font-size: 11px;
-    font-weight: 200;
+    font-weight: 600;
     text-transform: uppercase;
     cursor: pointer;
     border-radius: 5px;
@@ -237,7 +340,7 @@ a {
     text-align: center;
     font-size: 12px;
     letter-spacing: 1.2px;
-    font-weight: 400;
+    font-weight: 600;
     margin-bottom: 0px;
 }
 .redBtn {
@@ -245,6 +348,10 @@ a {
 }
 .btn:hover {
     box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.4);
+}
+.invertBtn {
+    color: var(--theme-color);
+    background-color: white;
 }
 
 .hLink {
