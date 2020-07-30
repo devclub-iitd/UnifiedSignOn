@@ -3,6 +3,7 @@
 /* eslint-disable import/named */
 /* eslint-disable no-param-reassign */
 import jwt, { verify } from 'jsonwebtoken';
+import axios from 'axios';
 import * as keys from '../config/keys';
 import { User, SocialAccount, Role } from '../models/user';
 
@@ -50,7 +51,7 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     // set the cookie with token with the same age as that of token
     res.cookie(tokenName, token, {
         maxAge: exp * 1000, // in milli seconds
-        secure: false, // set to true if your using https
+        secure: true, // set to true if your using https
         httpOnly: true,
         sameSite: 'lax',
         domain: 'devclub.in',
@@ -108,6 +109,58 @@ const verifyToken = async (
             domain: 'devclub.in',
         });
         throw err;
+    }
+};
+
+const sendVerificationEmail = async (user) => {
+    try {
+        const payload = {
+            id: user.id,
+            email: user.email,
+        };
+        const token = jwt.sign(payload, keys.privateKey, {
+            expiresIn: 3600,
+            issuer: keys.iss,
+            algorithm: 'RS256',
+        });
+        const response = await axios.post(process.env.MAILER_URL, {
+            to: user.email,
+            subject: 'Account Verification',
+            html: `<h3>Click here to verify your account</h3>
+              <p>
+                  <a href = "https://auth.devclub.in/auth/email/verify/token/?token=${token}"> Click Here </a>
+              </p>`,
+            secret: process.env.MAILER_TOKEN,
+        });
+        console.log(response.data);
+    } catch (error) {
+        console.log(error);
+    }
+};
+const sendPassResetEmail = async (user, newPass) => {
+    try {
+        const payload = {
+            id: user.id,
+            email: user.email,
+            newPass,
+        };
+        const token = jwt.sign(payload, keys.privateKey, {
+            expiresIn: 3600,
+            issuer: keys.iss,
+            algorithm: 'RS256',
+        });
+        const response = await axios.post(process.env.MAILER_URL, {
+            to: user.email,
+            subject: 'Password Reset',
+            html: `<h3>Click here to reset password for your account</h3>
+              <p>
+                  <a href = "https://auth.devclub.in/auth/password/reset/token/?token=${token}"> Click Here </a>
+              </p>`,
+            secret: process.env.MAILER_TOKEN,
+        });
+        console.log(response.data);
+    } catch (error) {
+        console.log(error);
     }
 };
 
@@ -265,4 +318,6 @@ export {
     getUserPrivilege,
     getRoleData,
     assignRoleToUsers,
+    sendVerificationEmail,
+    sendPassResetEmail,
 };
