@@ -8,7 +8,6 @@
     <title>Home</title>
     <script>
         $(document).ready(() => {
-
             const clearDisplay = () => {
                 // Initially no section displayed
                 $('.userRedirecting').css('display', 'none');
@@ -19,15 +18,12 @@
                 $('.userLoggedIn .userEmailID').text('');
                 $('.userLoggedIn .userUsername').text('');
             };
-
             clearDisplay();
-
             const userDetailFailure = (message) => {
                 clearDisplay();
                 displayMessage(message);
                 $('.userLoggedOut').css('display', 'block');
             };
-
             const userDetailSuccess = (user) => {
                 const { firstname, lastname, email, username } = user;
                 const userFullName = `${firstname} ${lastname}`;
@@ -38,9 +34,7 @@
                 $('.userLoggedIn .userUsername').text(username);
                 $('.userLoggedIn').css('display', 'flex');
             }
-
             getUserDetails(userDetailSuccess, userDetailFailure);
-
             $('#logoutBtn').click(() => {
                 logoutUser();
             });

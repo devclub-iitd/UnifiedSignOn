@@ -1,7 +1,7 @@
 /* eslint-disable import/named */
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { createJWTCookie } from '../utils/utils';
+import { createJWTCookie, sendVerificationEmail } from '../utils/utils';
 import { refreshTokenName } from '../config/keys';
 import { User } from '../models/user';
 
@@ -48,7 +48,8 @@ router.post('/login', async (req, res, next) => {
 
         if (!user.isverified) {
             return res.render('login', {
-                message: 'Your account is not verified',
+                message:
+                    'Your account is not verified. Can\'t login? <a href="/auth/email/verify" id="verify">Verify Email</a>',
                 error: true,
                 serviceURL,
             });
@@ -113,7 +114,7 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password,
-            isverified: true,
+            isverified: false,
         });
 
         // encrypt the password using bcrypt
@@ -124,15 +125,12 @@ router.post('/register', async (req, res) => {
 
         // Save the updated the user in database
         await user.save();
-
-        createJWTCookie(user, res);
-
-        if (typeof serviceURL !== 'undefined' && serviceURL) {
-            // render homepage to store token and then redirect with serviceURL
-            return res.redirect(`/redirecting?serviceURL=${serviceURL}`);
-        }
-        // set the token
-        res.redirect(`/redirecting`);
+        sendVerificationEmail(user);
+        res.render('register', {
+            message: 'A verification email has been sent to your inbox!',
+            error: false,
+            serviceURL,
+        });
     } catch (err) {
         console.log(err);
         res.render('register', {

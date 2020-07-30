@@ -1,15 +1,21 @@
 import express from 'express';
+import { verify } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import {
     verifyToken,
     createJWTCookie,
     socialAuthenticate,
+    sendVerificationEmail,
+    sendPassResetEmail,
 } from '../utils/utils';
 import {
     accessTokenName,
     refreshTokenName,
     profileNotFoundMsg,
     accountExists,
+    publicKey,
 } from '../config/keys';
+import { User } from '../models/user';
 
 const router = express.Router();
 const passport = require('passport');
@@ -28,6 +34,110 @@ router.post('/refresh-token', async (req, res) => {
         return res.status(401).json({
             err: true,
             msg: 'Error, token not valid',
+        });
+    }
+});
+
+router.get('/email/verify/token', async (req, res) => {
+    try {
+        const { token } = req.query;
+        const decoded = await verify(token, publicKey, {
+            algorithms: ['RS256'],
+        });
+        const user = await User.findById(decoded.id);
+        user.isverified = true;
+        await user.save();
+        res.status(200).send('Account Verified!!');
+    } catch (error) {
+        console.log(error);
+        res.clearCookie(accessTokenName);
+        res.clearCookie(refreshTokenName);
+        res.status(500).send(
+            'Account could not be verified. Please try again later!'
+        );
+    }
+});
+
+router.get('/email/verify', (req, res) => {
+    res.render('email_verify');
+});
+
+router.post('/email/verify', async (req, res) => {
+    try {
+        const { email } = req.body;
+        const user = await User.findOne({
+            email,
+        });
+        if (!user)
+            return res.render('email_verify', {
+                message: 'Email Address not registered',
+                error: true,
+            });
+        if (user.isverified) {
+            return res.render('email_verify', {
+                message:
+                    'Your account is already verified, Please login to continue',
+                error: true,
+            });
+        }
+        sendVerificationEmail(user);
+        return res.render('email_verify', {
+            message: 'A verification email has been sent to your inbox!',
+            error: true,
+        });
+    } catch (error) {
+        res.render('email_verify', {
+            message: 'Email Address not registered',
+            error: true,
+        });
+    }
+});
+
+router.get('/password/reset/token', async (req, res) => {
+    try {
+        const { token } = req.query;
+        const decoded = await verify(token, publicKey, {
+            algorithms: ['RS256'],
+        });
+        const user = await User.findById(decoded.id);
+        user.password = await bcrypt.hash(decoded.newPass, 10);
+        await user.save();
+        res.status(200).send('Password reset successfully!');
+    } catch (error) {
+        console.log(error);
+        res.clearCookie(accessTokenName);
+        res.clearCookie(refreshTokenName);
+        res.status(500).send('Invalid Token. Please try again later!');
+    }
+});
+router.get('/password/reset', (req, res) => {
+    res.render('pass_forgot');
+});
+router.post('/password/reset', async (req, res) => {
+    try {
+        const { email, newPass } = req.body;
+        const user = await User.findOne({
+            email,
+        });
+        if (!user)
+            return res.render('pass_forgot', {
+                message: 'Email Address not registered',
+                error: true,
+            });
+        if (!newPass)
+            return res.render('pass_forgot', {
+                message: 'New Password not supplied',
+                error: true,
+            });
+        sendPassResetEmail(user, newPass);
+        return res.render('pass_forgot', {
+            message: 'A password reset email has been sent to your inbox!',
+            error: false,
+        });
+    } catch (error) {
+        res.render('pass_forgot', {
+            message: 'Email Address not registered',
+            error: true,
         });
     }
 });
