@@ -3,9 +3,16 @@
 /* eslint-disable import/named */
 /* eslint-disable no-param-reassign */
 import jwt, { verify } from 'jsonwebtoken';
-import axios from 'axios';
 import * as keys from '../config/keys';
 import { User, SocialAccount, Role } from '../models/user';
+
+const HttpsProxyAgent = require('https-proxy-agent');
+
+const axiosDefaultConfig = {
+    proxy: false,
+    httpsAgent: new HttpsProxyAgent('http://devclub.iitd.ac.in:3128'),
+};
+const axios = require('axios').create(axiosDefaultConfig);
 
 const getUserPrivilege = (user) => {
     let privilege = 0;
