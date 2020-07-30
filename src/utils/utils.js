@@ -3,7 +3,6 @@
 /* eslint-disable import/named */
 /* eslint-disable no-param-reassign */
 import jwt, { verify } from 'jsonwebtoken';
-import axios from 'axios';
 import * as keys from '../config/keys';
 import { User, SocialAccount, Role } from '../models/user';
 
