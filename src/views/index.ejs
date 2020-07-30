@@ -5,7 +5,7 @@
     <%- include('partials/assets'); %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/css/index.css" />
-    <title>Home</title>
+    <title>CASI | Home</title>
     <script>
         $(document).ready(() => {
             const clearDisplay = () => {
@@ -44,8 +44,16 @@
 
 <body>
     <%- include('partials/header'); %>
-    <div class="rootContainer" style="padding-bottom: 200px; background-image: url('/images/background.png'); background-size: cover; background-repeat: no-repeat; background-position-y: 160px;">
-        <div class="pageTitle" style="font-size: 2rem; margin-top: 60px;">
+    <div 
+        class="rootContainer rootContainerFull"
+        style="
+            background-image: url('/images/background.png');
+            background-size: cover; 
+            background-repeat: no-repeat; 
+            background-position-y: 200px;
+            background-position-x: -150px;
+        ">
+        <div class="pageTitle">
             Common Account Sign In
         </div>
         <div class="miniLine"></div>
@@ -73,15 +81,14 @@
             <div class="messageContainer error" style="display: none;"></div>
 
             <a href="/user/login">
-                <div class="btn invertBtn fixedBtn" style="margin-top: 80px;">
+                <div class="btn invertBtn fixedBtn actionBtn">
                     Login Now!
                 </div>
             </a>
-            <!-- <img src="/images/background.png" id="homeBackgroundImage" alt="flowCover"> -->
         </div>
         <div class="userLoggedIn">
             <p class="textParagraph">
-                <b>Welcome <span id="userFirstName"></span>,</b>
+                <b>Welcome <span id="userFirstName" style="display: inline;"></span>,</b>
                 this is your one stop account for everything Devclub
             </p>
             <div class="userDetailContainer">
@@ -122,7 +129,6 @@
                 Logout
             </div>
         </div>
-    </div>
     </div>
     <%- include('partials/footer.ejs'); %>
 </body>

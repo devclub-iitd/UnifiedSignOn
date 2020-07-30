@@ -5,12 +5,15 @@
     <%- include('partials/assets'); %>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/login.css">
-    <title>CASI - Verify Email</title>
+    <<<<<<< HEAD <title>CASI - Verify Email</title>
+        =======
+        <title>CASI | Verify Email</title>
+        >>>>>>> d4e5d230efe2f8b2f74fabe99f1dd40746ddb0c2
 </head>
 
 <body>
     <%- include('partials/header'); %>
-    <div class="rootContainer">
+    <div class="rootContainer rootContainerFull">
         <div class="pageTitle">Verify Email</div>
         <div class="miniLine"></div>
         <% if (locals.message) { %>
@@ -22,7 +25,7 @@
                 <%= message %>
             </div>
             <% } %>
-            <div class="formContainer">
+            <div class="formContainer" style="margin: 10px auto;">
                 <form action="/auth/email/verify" method="POST">
                     <div class="input-group">
                         <input type="email" name="email" required />
