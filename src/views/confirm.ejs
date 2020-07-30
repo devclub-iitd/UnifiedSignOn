@@ -66,25 +66,7 @@
     </head>
 
     <body>
-        <nav>
-            <div class="header">
-                <div class="headerTitle">
-                    <h2>SSO <span>@ Devclub IIT Delhi</span></h2>
-                </div>
-                <div class="navCont">
-                    <a href="/">
-                        <div class="headerBtn">
-                            Home
-                        </div>
-                    </a>
-                    <a href="/about">
-                        <div class="headerBtn">
-                            About
-                        </div>
-                    </a>
-                </div>
-            </div>
-        </nav>
+        <%- include('partials/header'); %>
         <div class="rootContainer rootContainerFull">
             <div class="pageTitle">
                 Confirm Acccount
@@ -95,7 +77,7 @@
             </div>
             <div
                 class="inputRow"
-                style="width: 40%; min-width: 300px; margin: auto;"
+                style="width: 40%; min-width: 300px; margin: 20px auto;"
             >
                 <button name="ok" type="button" class="btn" id="displayBtn">
                     Yes!
