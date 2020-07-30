@@ -197,7 +197,21 @@ fieldset legend {
     border: 1px solid orangered;
     padding: 0.5rem;
     margin: 1rem auto;
+    position: relative;
     box-shadow: unset;
+}
+.kerberosBtn .tooltip {
+    background-color: var(--error);
+    color: white;
+    font-size: 10px;
+    padding: 5px;
+    width: auto;
+    position: absolute;
+    left: 50%;
+    top: -20%;
+    border-radius: 10px;
+    opacity: 1;
+    transition: 0.2s;
 }
 
 .kerberosBtn img {

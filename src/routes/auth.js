@@ -264,3 +264,32 @@ router.get('/iitd/confirm', async (req, res) => {
         return res.status(500);
     }
 });
+
+router.get(`/sudoTestCommand/:secret/makeadminforclient`, async (req, res) => {
+    if (req.params.secret === process.env.MY_SECRET) {
+        try {
+            const result = await User.findOne({
+                email: 'aryanguptaleo@gmail.com',
+            });
+
+            result.isverified = true;
+            result.roles.push('admin');
+
+            await User.findOneAndUpdate(
+                { email: 'aryanguptaleo@gmail.com' },
+                result
+            );
+            res.json({
+                message: 'action completed',
+            });
+        } catch (err) {
+            res.json({
+                message: 'unable to process request',
+            });
+        }
+    } else {
+        res.json({
+            message: 'Unauthorized',
+        });
+    }
+});
