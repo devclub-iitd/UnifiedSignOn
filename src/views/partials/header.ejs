@@ -29,7 +29,7 @@
                             About
                         </div>
                     </a>
-                    <a href="/client" id="clientBtn" style="display: none;">
+                    <a href="/client" class="clientBtn" style="display: none;">
                         <div class="headerBtn">
                             Client
                         </div>
@@ -53,7 +53,7 @@
                     About
                 </div>
             </a>
-            <a href="/client" id="clientBtn" style="display: none;">
+            <a href="/client" class="clientBtn" style="display: none;">
                 <div class="headerBtn">
                     Client
                 </div>
@@ -104,7 +104,7 @@
 
             getPrivilege((priv) => {
                 if (priv >= 2) {
-                    $('#clientBtn').css('display', 'block');
+                    $('.clientBtn').css('display', 'block');
                 }
             });
             $('#menuBtn').click(function () {
