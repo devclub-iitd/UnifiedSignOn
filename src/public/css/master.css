@@ -298,9 +298,22 @@ body {
     font-weight: 600;
 }
 
-.credits {
-    font-size: 1rem;
-    font-weight: 600;
+.projectList a[aria-disabled='true'] {
+    color: rgb(167, 167, 167);
+    pointer-events: none;
+}
+
+#privacy {
+    margin-left: auto;
+    margin-right: 30px;
+    color: white;
+    padding: 10px;
+    transition: all 200ms ease-in-out;
+}
+
+#privacy:hover {
+    background: white;
+    color: black;
 }
 
 /* ROOT CONTAINER */
@@ -326,12 +339,6 @@ body {
     background-repeat: no-repeat;
     background-position-y: 200px;
     background-position-x: -150px;
-}
-
-.bg-blur {
-    height: 100%;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
 }
 
 .heroContainer {

@@ -10,7 +10,7 @@
 
 <body>
     <%- include('../partials/header'); %>
-    <div class="rootContainer rootContainerFull">
+    <div class="rootContainer rootContainerFull bg-wave">
         <div class="pageTitle">
             Client Dashboard
             <div class="miniLine"></div>
@@ -42,8 +42,8 @@
             <h2 style="text-align: center;">You don't have any clients registered</h1>
                 <% }} %>
                 <div class="btnRow">
-                    <a href="/client/register" class="btn">Register New Client </a>
-                    <a href="/client/public-key" class="btn">Download public key</a>
+                    <a href="/client/register" class="btn invertBtn">Register New Client </a>
+                    <a href="/client/public-key" class="btn invertBtn">Download public key</a>
                 </div>
         </div>
         <%- include('../partials/footer'); %>

@@ -4,7 +4,9 @@
     border: 1px solid black;
     border-radius: 10px;
     width: 40%;
-    min-width: 400px;
+    min-width: 300px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .clientList {
