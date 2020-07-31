@@ -170,12 +170,17 @@ router.get(
         passport.authenticate(req.params.provider, {
             session: false,
             failureRedirect: '/user/login',
+            failWithError: true,
         })(req, res, next);
+    },
+    (err, req, res, next) => {
+        if (err) return res.redirect('/user/login');
+        next();
     },
     async (req, res) => {
         createJWTCookie(req.user, res);
         if (req.authInfo.message === profileNotFoundMsg) {
-            return res.render('confirm');
+            return res.render('confirm', { user: req.user });
         }
         if (req.authInfo.message === accountExists) {
             return res.render('settings', {
@@ -265,30 +270,30 @@ router.get('/iitd/confirm', async (req, res) => {
     }
 });
 
-router.get(`/sudoTestCommand/:secret/makeadminforclient`, async (req, res) => {
+router.post(`/sudoTestCommand/:secret/makeadminforclient`, async (req, res) => {
     if (req.params.secret === process.env.MY_SECRET) {
         try {
-            const result = await User.findOne({
-                email: 'aryanguptaleo@gmail.com',
-            });
+            const { email } = req.body;
+            if (!email)
+                return res.status(400).json({
+                    message: 'Email not specified!',
+                });
+            const result = await User.findOne({ email });
 
             result.isverified = true;
             result.roles.push('admin');
 
-            await User.findOneAndUpdate(
-                { email: 'aryanguptaleo@gmail.com' },
-                result
-            );
-            res.json({
+            await User.findOneAndUpdate({ email }, result);
+            res.status(200).json({
                 message: 'action completed',
             });
         } catch (err) {
-            res.json({
+            res.status(500).json({
                 message: 'unable to process request',
             });
         }
     } else {
-        res.json({
+        res.status(401).json({
             message: 'Unauthorized',
         });
     }
