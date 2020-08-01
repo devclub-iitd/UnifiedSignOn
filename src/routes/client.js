@@ -134,10 +134,7 @@ router.post('/register', async (req, res) => {
         client.owner = req.user;
 
         await client.save();
-        return res.render('client/client_register.ejs', {
-            err: false,
-            msg: 'Client Registered successfully',
-        });
+        return res.redirect(`/client/${client.id}`);
     } catch (error) {
         console.log(error);
         return res.render('client/client_register.ejs', {

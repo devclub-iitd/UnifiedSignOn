@@ -15,11 +15,6 @@
             <div class="headerTitle">
                 <a href="/">
                     <h2>
-                        <!-- <img
-                            src="/images/dcLogoWhite.png"
-                            alt=""
-                            id="devclubIcon"
-                        /> -->
                         CASI
                         <span>@ DevClub IIT Delhi</span>
                     </h2>
@@ -42,11 +37,7 @@
                             Client
                         </div>
                     </a>
-                    <a
-                        href="/user/login"
-                        class="LoginBtn"
-                        style="display: none;"
-                    >
+                    <a href="/user/login" class="LoginBtn" style="display: none;">
                         <div class="headerBtn">
                             Login
                         </div>
@@ -54,18 +45,10 @@
                 </div>
                 <div id="collapsedHomeButtonContainer">
                     <a href="/">
-                        <img
-                            src="/images/homeIcon.svg"
-                            id="collapsedHomeButtonIcon"
-                            alt="Home"
-                        />
+                        <img src="/images/homeIcon.svg" id="collapsedHomeButtonIcon" alt="Home" />
                     </a>
                 </div>
-                <button
-                    class="hamburger hamburger--collapse"
-                    type="button"
-                    id="menuBtn"
-                >
+                <button class="hamburger hamburger--collapse" type="button" id="menuBtn">
                     <span class="hamburger-box">
                         <span class="hamburger-inner"></span>
                     </span>
@@ -129,7 +112,7 @@
 
             getPrivilege((priv) => {
                 if (priv >= 2) {
-                    $('#clientBtn').css('display', 'block');
+                    $('.clientBtn').css('display', 'block');
                 }
             });
             $('#menuBtn').click(function () {

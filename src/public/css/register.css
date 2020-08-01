@@ -92,6 +92,24 @@
     color: var(--error-color);
 }
 
+.password-strength {
+    width: 100%;
+}
+
+.bar {
+    width: 0;
+    height: 5px;
+    margin-bottom: 5px;
+    border-radius: 50px;
+    transition: all 100ms ease-out;
+}
+
+#strength-summary {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgb(63, 63, 63);
+}
+
 input:hover {
     border: 1px solid var(--input-border-color);
 }
@@ -102,16 +120,6 @@ input:hover {
     margin-bottom: 2rem;
 }
 
-/* input:focus {
-    border: 1px solid var(--theme-color);
-}
-::-webkit-input-placeholder {
-    transition: 0.3s ease-out;
-}
-input:focus::-webkit-input-placeholder {
-    transform: translateX(10px);
-    opacity: 0;
-} */
 #loginBtn {
     color: var(--theme-color);
     margin-left: 5px;

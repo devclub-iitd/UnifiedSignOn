@@ -62,8 +62,13 @@
                 </div>
 
                 <div class="input-group">
-                    <input type="password" name="password" required />
+                    <input type="password" name="password" required autocomplete="new-password" />
                     <label for="password">Password</label>
+                </div>
+
+                <div class="password-strength">
+                    <div class="bar"></div>
+                    <p id="strength-summary"></p>
                 </div>
                 <% if (typeof serviceURL !== undefined && serviceURL) { %>
                 <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
@@ -91,6 +96,7 @@
         </div>
         <%- include('partials/footer'); %>
         <script src="/js/forms.js"></script>
+        <script src="/js/passStrength.js"></script>
 </body>
 
 </html>

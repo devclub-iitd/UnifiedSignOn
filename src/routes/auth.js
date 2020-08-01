@@ -47,14 +47,12 @@ router.get('/email/verify/token', async (req, res) => {
         const user = await User.findById(decoded.id);
         user.isverified = true;
         await user.save();
-        res.status(200).send('Account Verified!!');
+        res.render('account_verified');
     } catch (error) {
         console.log(error);
         res.clearCookie(accessTokenName);
         res.clearCookie(refreshTokenName);
-        res.status(500).send(
-            'Account could not be verified. Please try again later!'
-        );
+        res.render('account_verified', { error: true });
     }
 });
 
@@ -102,12 +100,20 @@ router.get('/password/reset/token', async (req, res) => {
         const user = await User.findById(decoded.id);
         user.password = await bcrypt.hash(decoded.newPass, 10);
         await user.save();
-        res.status(200).send('Password reset successfully!');
+        res.render('login', {
+            message: 'Password reset successfully!',
+            error: false,
+            serviceURL: '',
+        });
     } catch (error) {
         console.log(error);
         res.clearCookie(accessTokenName);
         res.clearCookie(refreshTokenName);
-        res.status(500).send('Invalid Token. Please try again later!');
+        res.render('login', {
+            message: 'Invalid Token. Please try resetting your password again',
+            error: true,
+            serviceURL: '',
+        });
     }
 });
 router.get('/password/reset', (req, res) => {

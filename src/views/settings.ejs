@@ -21,12 +21,6 @@
                 $('#kerbInfo').fadeOut(100);
             });
 
-            $('#kerbTip').hover(() => {
-                $('#kerbInfo').fadeIn(300);
-            }, () => {
-                $('#kerbInfo').fadeOut(100);
-            });
-
             const getUserDetailsSuccess = (user) => {
                 $('input[name="firstName"]').val(user.firstname);
                 $('input[name="lastName"]').val(user.lastname);
@@ -98,7 +92,6 @@
                     <ul class="tabs">
                         <li class="tab-item active" data-toggle="generalForm"><span class="tab-link">General</span></li>
                         <li class="tab-item" data-toggle="socialForm"><span class="tab-link">Social</span></li>
-                        <li class="tab-item"><span class="tab-link">Email</span></li>
                     </ul>
                 </div>
                 <div class="tab-content" id="generalForm">
@@ -129,9 +122,12 @@
                             <span class="detailTitle">Current Password</span>
                             <input type="password" name="password" placeholder="Enter current Password" id="password" tabindex="5">
                         </div>
-                        <button type="submit" class="btn">
-                            Update!
-                        </button>
+                        <div class="btnContainer">
+                            <button type="submit" class="btn">
+                                Update!
+                            </button>
+                            <a href="/" class="btn invertBtn">Go Back</a>
+                        </div>
                     </form>
                 </div>
                 <div class="socialLinkContainer tab-content" id="socialForm">
@@ -141,8 +137,8 @@
                         <ul>
                             <li id="iitd" class="socialLink">
                                 <img src="/images/iitdlogo.png" alt="" class="socialIcon">
-                                <h4 class="socialInfo">Not currently linked</h4>
-                                <a class="btn btn-social" href="/auth/iitd">Connect</a>
+                                <h4 class="socialInfo">Coming Soon</h4>
+                                <a class="btn btn-social" href="#" aria-disabled="true">Connect</a>
                                 <figcaption id="kerbInfo">Kerberos is an open authorization system provided by IIT Delhi to its students for proving their identity as an IIT Delhi student.</figcaption>
                             </li>
                         </ul>
