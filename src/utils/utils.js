@@ -130,7 +130,7 @@ const sendVerificationEmail = async (user) => {
             issuer: keys.iss,
             algorithm: 'RS256',
         });
-        const response = await axios.post(process.env.MAILER_URL, {
+        await axios.post(process.env.MAILER_URL, {
             to: user.email,
             subject: 'Account Verification',
             html: `<h3>Click here to verify your account</h3>
@@ -139,7 +139,6 @@ const sendVerificationEmail = async (user) => {
               </p>`,
             secret: process.env.MAILER_TOKEN,
         });
-        console.log(response.data);
     } catch (error) {
         console.log(error);
     }
@@ -156,7 +155,7 @@ const sendPassResetEmail = async (user, newPass) => {
             issuer: keys.iss,
             algorithm: 'RS256',
         });
-        const response = await axios.post(process.env.MAILER_URL, {
+        await axios.post(process.env.MAILER_URL, {
             to: user.email,
             subject: 'Password Reset',
             html: `<h3>Click here to reset password for your account</h3>
@@ -165,7 +164,6 @@ const sendPassResetEmail = async (user, newPass) => {
               </p>`,
             secret: process.env.MAILER_TOKEN,
         });
-        console.log(response.data);
     } catch (error) {
         console.log(error);
     }
