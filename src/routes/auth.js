@@ -161,12 +161,14 @@ router.get('/facebook', (req, res, next) => {
     passport.authenticate('facebook', {
         authType: 'rerequest',
         state: req.query.serviceURL,
+        scope: 'email',
     })(req, res, next);
 });
 
 router.get('/github', (req, res, next) => {
     passport.authenticate('github', {
         state: req.query.serviceURL,
+        scope: 'user:email',
     })(req, res, next);
 });
 
