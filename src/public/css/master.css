@@ -308,12 +308,16 @@ body {
     margin-right: 30px;
     color: white;
     padding: 10px;
+    color: orangered;
+    border: 2px solid orangered;
+    border-radius: 10px;
+    font-size: 0.7rem;
     transition: all 200ms ease-in-out;
 }
 
 #privacy:hover {
-    background: white;
-    color: black;
+    background: orangered;
+    color: white;
 }
 
 /* ROOT CONTAINER */
