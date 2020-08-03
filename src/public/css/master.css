@@ -352,11 +352,12 @@ body {
 .secText {
     color: rgb(82, 82, 82);
     font-weight: 600;
-    line-height: 2rem;
+    line-height: 3rem;
     text-align: center;
 }
 
 .heroContainer > a {
+    margin-top: 3rem;
     -webkit-box-shadow: 0px 0px 30px -10px rgba(0, 0, 0, 0.75);
     -moz-box-shadow: 0px 0px 30px -10px rgba(0, 0, 0, 0.75);
     box-shadow: 0px 0px 30px -10px rgba(0, 0, 0, 0.75);
@@ -479,5 +480,13 @@ a {
 @media (max-width: 500px) {
     .secText {
         line-height: 3rem;
+    }
+
+    .heroContainer > a {
+        margin-top: 4rem;
+    }
+
+    .heroContainer {
+        padding: 1rem;
     }
 }
