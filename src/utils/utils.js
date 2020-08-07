@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable import/named */
@@ -178,7 +179,7 @@ const matchUserRegex = (user, regex) => {
                 assign = false;
                 break;
             }
-        } else if (regexp) {
+        } else if (regexp && field[0] !== '$') {
             assign = false;
             break;
         }
@@ -186,8 +187,8 @@ const matchUserRegex = (user, regex) => {
     return assign;
 };
 
-const assignRoleToUsers = async (role, del = false) => {
-    const users = await User.find({});
+const assignRoleToUsers = async (role, del = false, users = null) => {
+    if (!users) users = await User.find({});
     for (let index = 0; index < users.length; index += 1) {
         try {
             const user = users[index];
