@@ -11,13 +11,14 @@
     <%- include('partials/header'); %>
     <div class="bg-wave" style="height: 100vh;">
         <div class="heroContainer">
-            <div class="pageTitle" style="margin: 0;">Your account has been verified</div>
-            <h3 class="secText">Let's get rolling, shall we?</h3>
-            <a href="/user/login" class="btn fixedBtn invertBtn">Login now!</a>
             <% if(locals.error) { %>
             <div class="pageTitle" style="margin: 0;">Your account could not be verified</div>
             <h3 class="secText">Please try again :(</h3>
             <a href="/auth/email/verify" class="btn fixedBtn invertBtn">Verify Email</a>
+            <% } else { %>
+            <div class="pageTitle" style="margin: 0;">Your account has been verified</div>
+            <h3 class="secText">Let's get rolling, shall we?</h3>
+            <a href="/user/login" class="btn fixedBtn invertBtn">Login now!</a>
             <% } %>
         </div>
     </div>
