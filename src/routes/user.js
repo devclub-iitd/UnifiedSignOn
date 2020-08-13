@@ -127,6 +127,10 @@ router.post('/register', async (req, res) => {
         // update the password to encrypted one
         user.password = await bcrypt.hash(user.password, salt);
 
+        // check if user has a kerberos email
+        if (RegExp('iitd[.]ac[.]in$').test(email)) {
+            user.roles.push('iitd_user');
+        }
         // Save the updated the user in database
         await user.save();
 
@@ -139,7 +143,6 @@ router.post('/register', async (req, res) => {
                 await assignRoleToUsers(role, false, [user]);
             }
         };
-
         addRoles(user);
         sendVerificationEmail(user);
         res.render('register', {

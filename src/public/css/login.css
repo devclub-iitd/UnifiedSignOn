@@ -136,9 +136,11 @@ input:hover {
 }
 
 .socialLoginContainer {
+    position: relative;
     width: auto;
     margin: auto;
     display: flex;
+    pointer-events: none;
 }
 
 .socialLoginContainer fieldset {
@@ -200,15 +202,15 @@ fieldset legend {
     position: relative;
     box-shadow: unset;
 }
-.kerberosBtn .tooltip {
-    background-color: var(--error);
+.tooltip {
+    background-color: var(--error) !important;
     color: white;
     font-size: 10px;
     padding: 5px;
     width: auto;
     position: absolute;
-    left: 50%;
-    top: -20%;
+    left: -30px;
+    top: 0;
     border-radius: 10px;
     opacity: 1;
     transition: 0.2s;
