@@ -97,7 +97,6 @@ router.post('/register', async (req, res) => {
         serviceURL,
     } = req.body;
 
-    // TODO: ADD A USERNAME CHECK AS WELL, THAT ALSO HAS TO BE UNIQUE
     try {
         // try to find the user in the database
         let user = await User.findOne({ email });
@@ -106,6 +105,14 @@ router.post('/register', async (req, res) => {
         if (user) {
             return res.render('register', {
                 message: 'User already exists with same email',
+                error: true,
+                serviceURL,
+            });
+        }
+
+        if (await User.findOne({ username })) {
+            return res.render('register', {
+                message: 'A user already exists with same username',
                 error: true,
                 serviceURL,
             });
