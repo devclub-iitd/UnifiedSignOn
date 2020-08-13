@@ -77,15 +77,12 @@
                 <a href="/user/register" class="btn invertBtn">Signup now!</a>
             </div>
             <div class="socialLoginContainer">
-                <fieldset>
+                <fieldset style="filter:grayscale(1);">
                     <legend>Or Sign in With</legend>
                     <div class="kerbLogin">
                         <h5>Kerberos (For IITD Students only)</h2>
                             <a style="pointer-events: none; border-color: black;" class="btn kerberosBtn">
                                 <img style="filter: grayscale(1);" src="/images/iitdlogo.png" alt="iitdLogin">
-                                <div class="tooltip">
-                                    Coming soon
-                                </div>
                             </a>
                     </div>
                     <div class="icon-container">
@@ -94,6 +91,9 @@
                         <a class="btn oauthBtn" id="githubLogin" href="/auth/github/"><img src="/images/Github.svg" alt=""></a>
                     </div>
                 </fieldset>
+                <div class="tooltip">
+                    Coming soon
+                </div>
             </div>
         </div>
         <%- include('partials/footer'); %>
