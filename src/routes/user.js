@@ -1,9 +1,13 @@
 /* eslint-disable import/named */
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { createJWTCookie, sendVerificationEmail } from '../utils/utils';
+import {
+    createJWTCookie,
+    sendVerificationEmail,
+    assignRoleToUsers,
+} from '../utils/utils';
 import { refreshTokenName } from '../config/keys';
-import { User } from '../models/user';
+import { User, Role } from '../models/user';
 
 const router = express.Router();
 
@@ -125,6 +129,18 @@ router.post('/register', async (req, res) => {
 
         // Save the updated the user in database
         await user.save();
+
+        // eslint-disable-next-line no-shadow
+        const addRoles = async (user) => {
+            const roles = await Role.find({});
+            for (let index = 0; index < roles.length; index += 1) {
+                const role = roles[index];
+                // eslint-disable-next-line no-await-in-loop
+                await assignRoleToUsers(role, false, [user]);
+            }
+        };
+
+        addRoles(user);
         sendVerificationEmail(user);
         res.render('register', {
             message: 'A verification email has been sent to your inbox!',
