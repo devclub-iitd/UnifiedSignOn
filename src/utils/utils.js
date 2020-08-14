@@ -134,10 +134,11 @@ const sendVerificationEmail = async (user) => {
         await axios.post(process.env.MAILER_URL, {
             to: user.email,
             subject: 'Account Verification',
-            html: `<h3>Click here to verify your account</h3>
+            html: `<h3>Welcome to DevClub CASI!</h3>
               <p>
-                  <a href = "https://auth.devclub.in/auth/email/verify/token/?token=${token}"> Click Here </a>
-              </p>`,
+                  <a href = "https://auth.devclub.in/auth/email/verify/token/?token=${token}">Please click here to verify your email</a>
+              </p>
+              <p style="font-size:0.7rem;color:grey;"><b>Note</b> : This email is only valid for an hour, after which it will expire</p>`,
             secret: process.env.MAILER_TOKEN,
         });
     } catch (error) {
@@ -159,10 +160,12 @@ const sendPassResetEmail = async (user, newPass) => {
         await axios.post(process.env.MAILER_URL, {
             to: user.email,
             subject: 'Password Reset',
-            html: `<h3>Click here to reset password for your account</h3>
+            html: `<h3>Reset your DevClub CASI password</h3>
               <p>
-                  <a href = "https://auth.devclub.in/auth/password/reset/token/?token=${token}"> Click Here </a>
-              </p>`,
+                  <a href = "https://auth.devclub.in/auth/password/reset/token/?token=${token}">Please click here to confirm your password reset</a>
+              </p>
+              
+              <p style="font-size:0.7rem;color:grey;"><b>Note</b> : This email is only valid for an hour, after which it will expire</p>`,
             secret: process.env.MAILER_TOKEN,
         });
     } catch (error) {

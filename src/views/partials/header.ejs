@@ -91,7 +91,8 @@
                 $('.LoginBtn .headerBtn').html('Logout');
                 $('.LoginBtn').attr('href', '/');
                 $('.LoginBtn').css('display', 'block');
-                $('.LoginBtn').click(() => {
+                $('.LoginBtn').click((e) => {
+                    e.preventDefault();
                     logoutUser();
                 });
                 closeRootLoaderPage();
