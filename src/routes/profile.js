@@ -14,7 +14,7 @@ router.post('/', async (req, res) => {
 
     try {
         const user = await verifyToken(req, res);
-        delete user.password;
+        user.password = undefined;
         return res.status(200).json({ user });
     } catch (error) {
         return res.status(401).json({
