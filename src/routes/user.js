@@ -146,7 +146,8 @@ router.post('/register', async (req, res) => {
         addRoles(user);
         sendVerificationEmail(user);
         res.render('register', {
-            message: 'A verification email has been sent to your inbox!',
+            message:
+                "A verification email has been sent to your inbox! Make sure to check your spam folder in case you can't find it",
             error: false,
             serviceURL,
         });
