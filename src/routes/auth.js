@@ -7,6 +7,7 @@ import {
     socialAuthenticate,
     sendVerificationEmail,
     sendPassResetEmail,
+    linkSocial,
 } from '../utils/utils';
 import {
     accessTokenName,
@@ -19,8 +20,14 @@ import { User } from '../models/user';
 
 const router = express.Router();
 const passport = require('passport');
-const axios = require('axios');
+const HttpsProxyAgent = require('https-proxy-agent');
 
+const axiosDefaultConfig = {
+    proxy: false,
+    httpsAgent: new HttpsProxyAgent('http://devclub.iitd.ac.in:3128'),
+};
+const axios = require('axios').create(axiosDefaultConfig);
+const qs = require('qs');
 // post route to check validity of tokens, clients will hit this route.
 router.post('/refresh-token', async (req, res) => {
     const token = req.body[accessTokenName];
@@ -213,37 +220,48 @@ router.get('/iitd', (req, res) => {
 
 router.get('/iitd/confirm', async (req, res) => {
     try {
-        const { access_token } = (
-            await axios.post('https://oauth.iitd.ac.in/resource.php', {
-                client_id: process.env.IITD_CLIENT_ID,
-                client_secret: process.env.IITD_CLIENT_SECRET,
-                grant_type: 'authorization_code',
-                code: req.query.code,
-            })
-        ).data;
-        const userData = (
-            await axios.post('https://oauth.iitd.ac.in/resource.php', {
+        // console.log('Code: ', req.query.code);
+        const res1 = await axios.post('https://oauth.iitd.ac.in/token.php', {
+            client_id: process.env.IITD_CLIENT_ID,
+            client_secret: process.env.IITD_CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code: req.query.code,
+        });
+        const { access_token } = res1.data;
+        // console.log('Recieved access token: ', access_token);
+
+        const res2 = await axios.post(
+            'https://oauth.iitd.ac.in/resource.php',
+            qs.stringify({
                 access_token,
-            })
-        ).data;
+            }),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            }
+        );
+        const userData = res2.data;
+        // console.log('Recieved User Data: ', userData);
         const iitdCallback = async (
             err = null,
             user = null,
-            authInfo,
-            request = req,
-            response = res
+            authInfo = null
         ) => {
-            if (!err || !user) return response.status(500);
+            if (err || !user) {
+                console.log(err, user);
+                return res.sendStatus(500);
+            }
 
             if (!user.roles.includes('iitd_user')) {
                 user.roles.push('iitd_user');
                 await user.save();
             }
-            createJWTCookie(user, response);
-            if (req.authInfo.message === profileNotFoundMsg) {
-                return res.render('confirm');
+            createJWTCookie(user, res);
+            if (authInfo && authInfo.message === profileNotFoundMsg) {
+                return res.render('confirm', { user });
             }
-            if (req.authInfo.message === accountExists) {
+            if (authInfo && authInfo.message === accountExists) {
                 return res.render('settings', {
                     messages: [
                         {
@@ -253,28 +271,36 @@ router.get('/iitd/confirm', async (req, res) => {
                     ],
                 });
             }
-            const { serviceURL } = request.query;
+            const { state } = req.query;
 
-            if (typeof serviceURL !== 'undefined' && serviceURL) {
+            if (typeof state !== 'undefined' && state && state !== 'xyz') {
                 // render homepage to store token and then redirect with serviceURL
-                return response.redirect(
-                    `/redirecting?serviceURL=${serviceURL}`
-                );
+                return res.redirect(`/redirecting?serviceURL=${state}`);
             }
-            return response.redirect('/');
+            return res.redirect('/');
         };
-        return socialAuthenticate(
-            'iitd',
-            iitdCallback,
-            userData.uniqueiitd,
-            userData.name,
-            '',
-            userData.email,
-            'iitd_user'
-        );
+        try {
+            return await linkSocial(
+                req.cookies[accessTokenName],
+                'iitd',
+                userData.uniqueiitd,
+                userData.email,
+                iitdCallback
+            );
+        } catch (error) {
+            return socialAuthenticate(
+                'iitd',
+                iitdCallback,
+                userData.uniqueiitd,
+                userData.name,
+                '',
+                userData.email,
+                'iitd_user'
+            );
+        }
     } catch (error) {
         console.log(error);
-        return res.status(500);
+        return res.sendStatus(500);
     }
 });
 

@@ -38,32 +38,33 @@
                 }, 4000);
             }
 
-            // $.ajax({
-            //     method: 'GET',
-            //     url: '/profile/connections',
-            //     success: (data, status, a) => {
-            //         const connections = data.connections
-            //         if (connections) {
-            //             connections.forEach((connection) => {
-            //                 $(`#${connection.provider} > h4`).text('Connected')
-            //                 $(`#${connection.provider} > a`).addClass('redBtn')
-            //                 $(`#${connection.provider} > a`).text('Disconnect')
-            //                 $(`#${connection.provider} > a`).attr('href', '')
-            //                 $(`#${connection.provider} > a`).on('click', (e) => {
-            //                     e.preventDefault();
-            //                     $.ajax({
-            //                         method: 'POST',
-            //                         url: `/profile/disconnect/${connection.provider}`,
-            //                         success: (data, status, a) => {
-            //                             location.reload();
-            //                         }
-            //                     })
-            //                 })
-            //             })
-            //         }
-            //     },
-            //     error: (a, msg, errorThrown) => { console.error(errorThrown); }
-            // })
+            $.ajax({
+                method: 'GET',
+                url: '/profile/connections',
+                success: (data, status, a) => {
+                    const connections = data.connections
+                    if (connections) {
+                        connections.forEach((connection) => {
+                            $(`#${connection.provider} > h4`).text('Connected')
+                            $(`#${connection.provider} > a`).addClass('redBtn')
+                            $(`#${connection.provider} > a`).text('Disconnect')
+                            $(`#${connection.provider} > a`).attr('href', '')
+                            $(`#${connection.provider} > a`).on('click', (e) => {
+                                alert(1);
+                                e.preventDefault();
+                                $.ajax({
+                                    method: 'POST',
+                                    url: `/profile/disconnect/${connection.provider}`,
+                                    success: (data, status, a) => {
+                                        location.reload();
+                                    }
+                                })
+                            })
+                        })
+                    }
+                },
+                error: (a, msg, errorThrown) => { console.error(errorThrown); }
+            })
         });
     </script>
 </head>
@@ -138,7 +139,7 @@
                             <li id="iitd" class="socialLink">
                                 <img src="/images/iitdlogo.png" alt="" class="socialIcon">
                                 <h4 class="socialInfo">Coming Soon</h4>
-                                <!-- <a class="btn btn-social" href="#" aria-disabled="true">Connect</a> -->
+                                <a class="btn btn-social" href="/auth/iitd">Connect</a>
                                 <figcaption id="kerbInfo">Kerberos is an open authorization system provided by IIT Delhi to its students for proving their identity as an IIT Delhi student.</figcaption>
                             </li>
                         </ul>
@@ -149,17 +150,17 @@
                             <li id="facebook" class="socialLink">
                                 <img src="/images/Facebook.svg" alt="fbIcon" class="socialIcon">
                                 <h4 class="socialInfo">Not currently linked</h4>
-                                <!-- <a class="btn btn-social" href="/auth/facebook">Connect</a> -->
+                                <a class="btn btn-social" href="/auth/facebook">Connect</a>
                             </li>
                             <li id="github" class="socialLink">
                                 <img src="/images/Github.svg" alt="githubIcon" class="socialIcon">
                                 <h4 class="socialInfo">Not currently linked</h4>
-                                <!-- <a class="btn btn-social" href="/auth/github">Connect</a> -->
+                                <a class="btn btn-social" href="/auth/github">Connect</a>
                             </li>
                             <li id="google" class="socialLink">
                                 <img src="/images/Google.svg" alt="googleIcon" class="socialIcon">
                                 <h4 class="socialInfo">Not currently linked</h4>
-                                <!-- <a class="btn btn-social" href="/auth/google">Connect</a> -->
+                                <a class="btn btn-social" href="/auth/google">Connect</a>
                             </li>
                         </ul>
                     </fieldset>
