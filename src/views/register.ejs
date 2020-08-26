@@ -16,7 +16,7 @@
             if ($('.messageContainer').length > 0) {
                 setTimeout(() => {
                     $('.messageContainer').css('opacity', '0');
-                }, 3000);
+                }, 20000);
             }
             if ($('#serviceURL').length > 0) {
                 let serviceURL = $('#serviceURL').html();
@@ -37,61 +37,61 @@
         <div class="tagLine">
             Just a couple more things to get you started
         </div>
-        <div class="formContainer">
-            <form action="" method="POST">
-                <div class="inputRow">
-                    <div class="input-group">
-                        <input type="text" name="firstname" required />
-                        <label for="firstname">First Name</label>
-                    </div>
-                    <div class="input-group">
-                        <input type="text" name="lastname" required />
-                        <label for="lastname">Last Name</label>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <input type="text" name="username" pattern=".{6,30}" required />
-                    <label for="username">Username</label>
-                    <span class="helpText">Username must be 6 to 30 characters long</span>
-                </div>
-
-                <div class="input-group">
-                    <input type="email" name="email" required />
-                    <label for="email">E-Mail</label>
-                    <span class="helpText">Please enter a valid E-Mail</span>
-                </div>
-
-                <div class="input-group">
-                    <input type="password" name="password" required autocomplete="new-password" />
-                    <label for="password">Password</label>
-                </div>
-
-                <div class="password-strength">
-                    <div class="bar"></div>
-                    <p id="strength-summary"></p>
-                </div>
-                <% if (typeof serviceURL !== undefined && serviceURL) { %>
-                <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
-                <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
+        <% if (message !== '') { %>
+        <% if (error) { %>
+        <div class="messageContainer error">
+            <% } else { %>
+            <div class="messageContainer success">
                 <% } %>
-                <button type="submit" class="btn">
-                    Let's go
-                </button>
-                <p class="textParagraph">
-                    <i>Already have an account?
-                        <span id="loginBtn"><a href="/user/login">Login...</a></span>
-                    </i>
-                </p>
-            </form>
-            <% if (message !== '') { %>
-            <% if (error) { %>
-            <div class="messageContainer error">
-                <% } else { %>
-                <div class="messageContainer success">
+                <%= message %>
+            </div>
+            <% } %>
+            <div class="formContainer">
+                <form action="" method="POST">
+                    <div class="inputRow">
+                        <div class="input-group">
+                            <input type="text" name="firstname" required />
+                            <label for="firstname">First Name</label>
+                        </div>
+                        <div class="input-group">
+                            <input type="text" name="lastname" required />
+                            <label for="lastname">Last Name</label>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" name="username" pattern=".{6,30}" required />
+                        <label for="username">Username</label>
+                        <span class="helpText">Username must be 6 to 30 characters long</span>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="email" name="email" required />
+                        <label for="email">E-Mail</label>
+                        <span class="helpText">Please enter a valid E-Mail</span>
+                    </div>
+
+                    <div class="input-group">
+                        <input type="password" name="password" required autocomplete="new-password" />
+                        <label for="password">Password</label>
+                    </div>
+
+                    <div class="password-strength">
+                        <div class="bar"></div>
+                        <p id="strength-summary"></p>
+                    </div>
+                    <% if (typeof serviceURL !== undefined && serviceURL) { %>
+                    <div class="hiddenElement" id="serviceURL"><%= serviceURL %></div>
+                    <input type="text" name="serviceURL" id="serviceURLInput" style="display: none;" />
                     <% } %>
-                    <%= message %>
-                </div>
-                <% } %>
+                    <button type="submit" class="btn">
+                        Let's go
+                    </button>
+                    <p class="textParagraph">
+                        <i>Already have an account?
+                            <span id="loginBtn"><a href="/user/login">Login...</a></span>
+                        </i>
+                    </p>
+                </form>
             </div>
         </div>
         <%- include('partials/footer'); %>
