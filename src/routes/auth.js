@@ -213,8 +213,12 @@ router.get(
 );
 
 router.get('/iitd', (req, res) => {
+    const { serviceURL } = req.query;
+    let state;
+    if (!serviceURL) state = 'xyz';
+    else state = serviceURL;
     return res.redirect(
-        `https://oauth.iitd.ac.in/authorize.php?response_type=code&client_id=${process.env.IITD_CLIENT_ID}&state=xyz`
+        `https://oauth.iitd.ac.in/authorize.php?response_type=code&client_id=${process.env.IITD_CLIENT_ID}&state=${state}`
     );
 });
 
@@ -283,7 +287,7 @@ router.get('/iitd/confirm', async (req, res) => {
             return await linkSocial(
                 req.cookies[accessTokenName],
                 'iitd',
-                userData.uniqueiitd,
+                userData.uniqueiitdid,
                 userData.email,
                 iitdCallback
             );
@@ -291,7 +295,7 @@ router.get('/iitd/confirm', async (req, res) => {
             return socialAuthenticate(
                 'iitd',
                 iitdCallback,
-                userData.uniqueiitd,
+                userData.uniqueiitdid,
                 userData.name,
                 '',
                 userData.email,
