@@ -50,6 +50,7 @@
                             $(`#${connection.provider} > a`).text('Disconnect')
                             $(`#${connection.provider} > a`).attr('href', '')
                             $(`#${connection.provider} > a`).on('click', (e) => {
+                                alert(1);
                                 e.preventDefault();
                                 $.ajax({
                                     method: 'POST',

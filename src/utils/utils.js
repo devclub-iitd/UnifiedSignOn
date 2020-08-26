@@ -236,7 +236,8 @@ const socialAuthenticate = async (
     firstname,
     lastname,
     email,
-    role = 'external_user'
+    role = 'external_user',
+    entry_num = ''
 ) => {
     try {
         let msg = '';
@@ -269,9 +270,10 @@ const socialAuthenticate = async (
                 firstname,
                 lastname,
                 email,
-                username: makeid(10),
+                username: makeid(10, true),
                 password: makeid(32),
                 roles: [role],
+                entry_num,
             });
             msg = keys.profileNotFoundMsg;
         } else if (!primary_account.isverified) {
