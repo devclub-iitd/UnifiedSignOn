@@ -140,7 +140,6 @@ input:hover {
     width: auto;
     margin: auto;
     display: flex;
-    pointer-events: none;
 }
 
 .socialLoginContainer fieldset {
