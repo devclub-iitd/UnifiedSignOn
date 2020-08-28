@@ -229,6 +229,20 @@ const makeid = (length, alpahnum_only = false) => {
     return result;
 };
 
+// eslint-disable-next-line no-shadow
+const addRoles = async (user) => {
+    try {
+        const roles = await Role.find({});
+        for (let index = 0; index < roles.length; index += 1) {
+            const role = roles[index];
+            // eslint-disable-next-line no-await-in-loop
+            await assignRoleToUsers(role, false, [user]);
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 const socialAuthenticate = async (
     provider,
     done,
@@ -276,6 +290,7 @@ const socialAuthenticate = async (
                 entry_num,
             });
             msg = keys.profileNotFoundMsg;
+            addRoles(primary_account);
         } else if (!primary_account.isverified) {
             msg = keys.profileNotFoundMsg;
             console.log('Found an unverified user with the same email address');
@@ -331,4 +346,5 @@ export {
     assignRoleToUsers,
     sendVerificationEmail,
     sendPassResetEmail,
+    addRoles,
 };
