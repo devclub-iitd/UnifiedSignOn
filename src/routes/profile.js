@@ -27,10 +27,10 @@ router.post('/', async (req, res) => {
 router.post('/logout', (req, res) => {
     try {
         res.clearCookie(accessTokenName, {
-            domain: 'devclub.in',
+            // domain: 'devclub.in',
         });
         res.clearCookie(refreshTokenName, {
-            domain: 'devclub.in',
+            // domain: 'devclub.in',
         });
         return res.json({
             err: false,
@@ -54,7 +54,7 @@ router.post('/delete', async (req, res) => {
         await user.remove();
 
         res.clearCookie(accessTokenName, {
-            domain: 'devclub.in',
+            // domain: 'devclub.in',
         });
         return res.status(200).json({
             err: false,

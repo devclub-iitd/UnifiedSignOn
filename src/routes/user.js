@@ -1,11 +1,7 @@
 /* eslint-disable import/named */
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import {
-    createJWTCookie,
-    sendVerificationEmail,
-    addRoles,
-} from '../utils/utils';
+import { createJWTCookie, addRoles } from '../utils/utils';
 import { refreshTokenName } from '../config/keys';
 import { User } from '../models/user';
 
@@ -125,7 +121,7 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password,
-            isverified: false,
+            isverified: true,
         });
 
         // encrypt the password using bcrypt
@@ -142,7 +138,7 @@ router.post('/register', async (req, res) => {
         await user.save();
 
         addRoles(user);
-        sendVerificationEmail(user);
+        // sendVerificationEmail(user);
         res.render('register', {
             message:
                 "A verification email has been sent to your inbox! Make sure to check your spam folder in case you can't find it",
