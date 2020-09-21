@@ -140,14 +140,18 @@ input:hover {
     width: auto;
     margin: auto;
     display: flex;
+    -webkit-box-shadow: 5px 5px 16px -4px rgba(0, 0, 0, 0.61);
+    -moz-box-shadow: 5px 5px 16px -4px rgba(0, 0, 0, 0.61);
+    box-shadow: 5px 5px 16px -4px rgba(0, 0, 0, 0.61);
 }
 
 .socialLoginContainer fieldset {
     border: 1px solid grey;
     text-align: center;
     border-radius: 5px;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.5rem 0;
     -webkit-appearance: none;
+    background-color: white;
 }
 
 fieldset legend {
@@ -159,11 +163,12 @@ fieldset legend {
     justify-self: center;
     width: fit-content;
     display: flex;
+    padding: 1.5rem 0;
 }
 
 .oauthBtn {
     box-sizing: border-box;
-    margin: 1rem;
+    margin: auto 1rem;
     padding: 5px;
     height: fit-content;
     background-color: whitesmoke;
@@ -184,7 +189,7 @@ fieldset legend {
 .kerbLogin {
     display: flex;
     flex-direction: column;
-    margin: auto;
+    margin: 1rem auto auto;
     justify-content: center;
     border-bottom: 1px solid gray;
 }
