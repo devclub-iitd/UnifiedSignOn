@@ -1,3 +1,4 @@
+// This is a debug version of SSO
 import express from 'express';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
