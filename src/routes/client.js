@@ -104,6 +104,12 @@ router.post('/register', async (req, res) => {
     try {
         const { domain, description } = req.body;
         let { custom_roles } = req.body;
+        const default_role = {
+            name: makeid(8, true),
+            regex: {
+                email: '.*',
+            },
+        };
         if (!custom_roles) custom_roles = [];
 
         const { message } = await validateRoles(custom_roles);
@@ -121,9 +127,12 @@ router.post('/register', async (req, res) => {
             });
             await assignRoleToUsers(role);
         }
+        await assignRoleToUsers(default_role);
         const client = new Client({
             domain,
             description,
+            access_token: makeid(64, true),
+            default_role: default_role.name,
         });
         // eslint-disable-next-line prefer-const
         let role_names = [];
@@ -183,11 +192,14 @@ router.get('/:id/config', async (req, res) => {
             path.resolve(__dirname, '../config/conf-vars')
         );
         vars += '\n';
+        vars += `CLIENT_ACCESS_TOKEN = '${client.access_token}'\n\n`;
+
         client.custom_roles.forEach((role) => {
             vars += `${role
                 .toUpperCase()
                 .replace(' ', '_')}_ROLE = '${role}'\n`;
         });
+        vars += `\nDEFAULT_CLIENT_ROLE = ${client.default_role}`;
 
         const randomFile = path.resolve(__dirname, `./${makeid(10, true)}`);
         fs.writeFileSync(randomFile, vars);

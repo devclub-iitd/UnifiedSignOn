@@ -7,6 +7,7 @@ import user from './routes/user';
 import auth from './routes/auth';
 import profile from './routes/profile';
 import client from './routes/client';
+import api from './routes/api';
 import * as keys from './config/keys';
 
 import { socialAuthenticate, linkSocial } from './utils/utils';
@@ -180,6 +181,7 @@ app.use('/user', user);
 app.use('/auth', auth);
 app.use('/profile', profile);
 app.use('/client', client);
+app.use('/api', api);
 
 app.get('/privacy-policy', (req, res) => {
     res.render('privacy_policy');
