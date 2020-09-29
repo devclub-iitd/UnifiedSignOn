@@ -192,14 +192,15 @@ router.get('/:id/config', async (req, res) => {
             path.resolve(__dirname, '../config/conf-vars')
         );
         vars += '\n';
-        vars += `CLIENT_ACCESS_TOKEN = '${client.access_token}'\n\n`;
+        vars += `CLIENT_ID = '${client.id}'\n`;
+        vars += `CLIENT_ACCESS_TOKEN = '${client.access_token}'\n`;
 
         client.custom_roles.forEach((role) => {
             vars += `${role
                 .toUpperCase()
                 .replace(' ', '_')}_ROLE = '${role}'\n`;
         });
-        vars += `\nDEFAULT_CLIENT_ROLE = ${client.default_role}`;
+        vars += `\nDEFAULT_CLIENT_ROLE = '${client.default_role}'`;
 
         const randomFile = path.resolve(__dirname, `./${makeid(10, true)}`);
         fs.writeFileSync(randomFile, vars);

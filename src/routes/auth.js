@@ -1,5 +1,5 @@
 import express from 'express';
-import { verify } from 'jsonwebtoken';
+import { verify, decode } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {
     verifyToken,
@@ -16,7 +16,7 @@ import {
     accountExists,
     publicKey,
 } from '../config/keys';
-import { User } from '../models/user';
+import { Client, User } from '../models/user';
 
 const router = express.Router();
 const passport = require('passport');
@@ -305,6 +305,43 @@ router.get('/iitd/confirm', async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
+    }
+});
+
+router.get('/clientVerify', async (req, res) => {
+    const { q } = req.query;
+
+    try {
+        const user = await verifyToken(req, res);
+        const { clientId } = decode(q).data;
+        const client = await Client.findById(clientId);
+        if (!client) {
+            return res.status(400).json({
+                err: true,
+                msg: 'No client found',
+            });
+        }
+
+        verify(q, client.access_token, {
+            algorithms: ['HS256'],
+        });
+
+        const token = createJWTCookie(user, res);
+        res.cookie('_token', token, {
+            httpOnly: false,
+            domain: 'devclub.in',
+            secure: true,
+        });
+        return res.status(200).json({
+            err: false,
+            msg: 'Client verified successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({
+            err: true,
+            msg: 'Unauthorized Client',
+        });
     }
 });
 
