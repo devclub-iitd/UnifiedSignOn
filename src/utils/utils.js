@@ -64,6 +64,7 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
         sameSite: 'lax',
         domain: 'devclub.in',
     });
+    return token;
 };
 
 const verifyToken = async (
