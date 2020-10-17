@@ -100,7 +100,10 @@ router.post('/', async (req, res) => {
                 res.render('settings', { messages });
             } else {
                 // If the validation was successful, update the user and create a new JWT for the updated credentials
-                res.clearCookie(accessTokenName);
+                res.clearCookie(accessTokenName, {
+                    domain:
+                        process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+                });
                 await createJWTCookie(user, res);
                 res.render('settings', { messages });
             }
