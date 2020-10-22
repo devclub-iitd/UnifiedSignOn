@@ -84,6 +84,12 @@ const clientSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    access_token: {
+        type: String,
+    },
+    default_role: {
+        type: String,
+    },
     custom_roles: {
         type: [String],
     },

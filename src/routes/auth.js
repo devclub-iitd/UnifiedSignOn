@@ -1,5 +1,5 @@
 import express from 'express';
-import { verify } from 'jsonwebtoken';
+import { verify, decode } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {
     verifyToken,
@@ -16,7 +16,7 @@ import {
     accountExists,
     publicKey,
 } from '../config/keys';
-import { User } from '../models/user';
+import { Client, User } from '../models/user';
 
 const router = express.Router();
 const passport = require('passport');
@@ -24,7 +24,10 @@ const HttpsProxyAgent = require('https-proxy-agent');
 
 const axiosDefaultConfig = {
     proxy: false,
-    httpsAgent: new HttpsProxyAgent('http://devclub.iitd.ac.in:3128'),
+    httpsAgent:
+        process.env.NODE_ENV !== 'DEV'
+            ? new HttpsProxyAgent('http://devclub.iitd.ac.in:3128')
+            : null,
 };
 const axios = require('axios').create(axiosDefaultConfig);
 const qs = require('qs');
@@ -34,6 +37,7 @@ router.post('/refresh-token', async (req, res) => {
     const refreshToken = req.body[refreshTokenName];
     try {
         const user = await verifyToken(req, res, true, 0, token, refreshToken);
+        user.password = undefined;
         return res.status(200).json({
             user,
         });
@@ -57,8 +61,12 @@ router.get('/email/verify/token', async (req, res) => {
         res.render('account_verified');
     } catch (error) {
         console.log(error);
-        res.clearCookie(accessTokenName);
-        res.clearCookie(refreshTokenName);
+        res.clearCookie(accessTokenName, {
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+        });
+        res.clearCookie(refreshTokenName, {
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+        });
         res.render('account_verified', { error: true });
     }
 });
@@ -114,8 +122,12 @@ router.get('/password/reset/token', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        res.clearCookie(accessTokenName);
-        res.clearCookie(refreshTokenName);
+        res.clearCookie(accessTokenName, {
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+        });
+        res.clearCookie(refreshTokenName, {
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+        });
         res.render('login', {
             message: 'Invalid Token. Please try resetting your password again',
             error: true,
@@ -305,6 +317,43 @@ router.get('/iitd/confirm', async (req, res) => {
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
+    }
+});
+
+router.get('/clientVerify', async (req, res) => {
+    const { q } = req.query;
+
+    try {
+        const user = await verifyToken(req, res);
+        const { clientId } = decode(q).data;
+        const client = await Client.findById(clientId);
+        if (!client) {
+            return res.status(400).json({
+                err: true,
+                msg: 'No client found',
+            });
+        }
+
+        verify(q, client.access_token, {
+            algorithms: ['HS256'],
+        });
+
+        const token = createJWTCookie(user, res);
+        res.cookie('_token', token, {
+            httpOnly: false,
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            secure: process.env.NODE_ENV !== 'DEV',
+        });
+        return res.status(200).json({
+            err: false,
+            msg: 'Client verified successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({
+            err: true,
+            msg: 'Unauthorized Client',
+        });
     }
 });
 

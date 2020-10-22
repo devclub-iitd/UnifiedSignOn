@@ -27,6 +27,24 @@ router.use(async (req, res, next) => {
     }
 });
 
+const verifyClientOwner = async (req, res, next) => {
+    try {
+        const client = await Client.findById(req.params.id);
+        const owner = await User.findById(client.owner);
+        if (JSON.stringify(req.user) === JSON.stringify(owner)) {
+            next();
+        } else {
+            throw Error('Unauthorized access');
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(401).render('client/clients.ejs', {
+            err: true,
+            msg: 'This client does not belong to you',
+        });
+    }
+};
+
 router.get('/', async (req, res) => {
     const clients = await Client.find({ owner: req.user });
     res.render('client/clients', { clients, err: false, msg: '' });
@@ -104,6 +122,12 @@ router.post('/register', async (req, res) => {
     try {
         const { domain, description } = req.body;
         let { custom_roles } = req.body;
+        const default_role = {
+            name: makeid(8, true),
+            regex: {
+                email: '.*',
+            },
+        };
         if (!custom_roles) custom_roles = [];
 
         const { message } = await validateRoles(custom_roles);
@@ -121,9 +145,12 @@ router.post('/register', async (req, res) => {
             });
             await assignRoleToUsers(role);
         }
+        await assignRoleToUsers(default_role);
         const client = new Client({
             domain,
             description,
+            access_token: makeid(64, true),
+            default_role: default_role.name,
         });
         // eslint-disable-next-line prefer-const
         let role_names = [];
@@ -144,17 +171,9 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', verifyClientOwner, async (req, res) => {
     try {
         const client = await Client.findById(req.params.id);
-        const owner = await User.findById(client.owner);
-        if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
-            return res.render('client/clients.ejs', {
-                err: true,
-                msg: 'This client does not belong to you',
-            });
-        }
-
         const roles = await getRoleData(client.custom_roles);
         return res.render('client/client_page.ejs', {
             client_data: client,
@@ -168,26 +187,22 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.get('/:id/config', async (req, res) => {
+router.get('/:id/config', verifyClientOwner, async (req, res) => {
     try {
         const client = await Client.findById(req.params.id);
-        const owner = await User.findById(client.owner);
-        if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
-            return res.render('client/clients.ejs', {
-                err: true,
-                msg: 'This client does not belong to you',
-            });
-        }
-
         let vars = fs.readFileSync(
             path.resolve(__dirname, '../config/conf-vars')
         );
         vars += '\n';
+        vars += `CLIENT_ID = '${client.id}'\n`;
+        vars += `CLIENT_ACCESS_TOKEN = '${client.access_token}'\n`;
+
         client.custom_roles.forEach((role) => {
             vars += `${role
                 .toUpperCase()
                 .replace(' ', '_')}_ROLE = '${role}'\n`;
         });
+        vars += `\nDEFAULT_CLIENT_ROLE = '${client.default_role}'\n`;
 
         const randomFile = path.resolve(__dirname, `./${makeid(10, true)}`);
         fs.writeFileSync(randomFile, vars);
@@ -203,17 +218,9 @@ router.get('/:id/config', async (req, res) => {
     }
 });
 
-router.post('/:id/update', async (req, res) => {
+router.post('/:id/update', verifyClientOwner, async (req, res) => {
     try {
         const client = await Client.findById(req.params.id);
-        const owner = await User.findById(client.owner);
-        if (JSON.stringify(req.user) !== JSON.stringify(owner)) {
-            return res.status(401).json({
-                err: true,
-                msg: 'This client does not belong to you',
-            });
-        }
-
         const { domain, description } = req.body;
         let { custom_roles, new_roles, delete_roles } = req.body;
         if (domain) client.domain = domain;
@@ -282,6 +289,41 @@ router.post('/:id/update', async (req, res) => {
         return res.status(200).json({
             err: false,
             msg: 'Client Updated Successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            err: true,
+            msg: 'Whoops! A server error occured',
+        });
+    }
+});
+
+router.post('/:id/delete', verifyClientOwner, async (req, res) => {
+    try {
+        const client = await Client.findById(req.params.id);
+        await assignRoleToUsers(
+            {
+                name: client.default_role,
+                regex: {
+                    email: '.*',
+                },
+            },
+            true
+        );
+        const roles = client.custom_roles;
+        for (let i = 0; i < roles.length; i += 1) {
+            const r = roles[i];
+            const role = await Role.findOne({
+                name: r,
+            });
+            await assignRoleToUsers(role, true);
+            await role.remove();
+        }
+        await client.remove();
+        return res.status(200).json({
+            err: false,
+            msg: 'Client Deleted Successfully!',
         });
     } catch (error) {
         console.log(error);

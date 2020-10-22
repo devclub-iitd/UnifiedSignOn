@@ -11,7 +11,10 @@ const HttpsProxyAgent = require('https-proxy-agent');
 
 const axiosDefaultConfig = {
     proxy: false,
-    httpsAgent: new HttpsProxyAgent('http://devclub.iitd.ac.in:3128'),
+    httpsAgent:
+        process.env.NODE_ENV !== 'DEV'
+            ? new HttpsProxyAgent('http://devclub.iitd.ac.in:3128')
+            : null,
 };
 const axios = require('axios').create(axiosDefaultConfig);
 
@@ -59,11 +62,12 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     // set the cookie with token with the same age as that of token
     res.cookie(tokenName, token, {
         maxAge: exp * 1000, // in milli seconds
-        // secure: true, // set to true if you are using https
+        secure: process.env.NODE_ENV !== 'DEV', // set to true if you are using https
         httpOnly: true,
         sameSite: 'lax',
-        // domain: 'devclub.in',
+        domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
     });
+    return token;
 };
 
 const verifyToken = async (
@@ -111,10 +115,10 @@ const verifyToken = async (
         // I wasn't able to verify the token as it was invalid
         // clear the tokens
         res.clearCookie(keys.accessTokenName, {
-            // domain: 'devclub.in',
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
         });
         res.clearCookie(keys.refreshTokenName, {
-            // domain: 'devclub.in',
+            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
         });
         throw err;
     }
