@@ -21,6 +21,14 @@
                 $('#kerbInfo').fadeOut(100);
             });
 
+            $('#modalBtn').click(() => {
+                $('.deleteModalBg').fadeIn(250);
+            });
+
+            $('#closeModal').click(() => {
+                $('.deleteModalBg').fadeOut(250);
+            })
+
             const getUserDetailsSuccess = (user) => {
                 $('input[name="firstName"]').val(user.firstname);
                 $('input[name="lastName"]').val(user.lastname);
@@ -69,6 +77,7 @@
 </head>
 
 <body>
+
     <%- include('partials/header'); %>
     <div class="rootContainer">
         <div class="pageTitle">
@@ -92,6 +101,7 @@
                     <ul class="tabs">
                         <li class="tab-item active" data-toggle="generalForm"><span class="tab-link">General</span></li>
                         <li class="tab-item" data-toggle="socialForm"><span class="tab-link">Social</span></li>
+                        <li class="tab-item" data-toggle="accountForm"><span class="tab-link">Account</span></li>
                     </ul>
                 </div>
                 <div class="tab-content" id="generalForm">
@@ -137,6 +147,7 @@
                         <ul>
                             <li id="iitd" class="socialLink">
                                 <img src="/images/iitdlogo.png" alt="" class="socialIcon">
+                                <h4 class="socialInfo">Not currently linked</h4>
                                 <a class="btn btn-social" href="#">Connect</a>
                                 <figcaption id="kerbInfo">Kerberos is an open authorization system provided by IIT Delhi to its students for proving their identity as an IIT Delhi student.</figcaption>
                             </li>
@@ -163,9 +174,28 @@
                         </ul>
                     </fieldset>
                 </div>
+                <div class="tab-content" id="accountForm" style="display: none;">
+                    <li class="socialLink">
+                        <h4 class="socialInfo">Delete Account</h4>
+                        <button type="button" class="btn redBtn btn-social" id="modalBtn">Delete</button>
+                    </li>
+                </div>
+            </div>
+        </div>
+        <div class="deleteModalBg">
+            <div class="deleteModal">
+                <div class="modalContent">
+                    <p>Are you sure you want to delete your account?</p>
+                    <b>This action cannot be reverted!</b>
+                </div>
+                <div class="modalFooter">
+                    <button type="button" class="btn" id="closeModal">Cancel</button>
+                    <a href="/profile/delete" class="btn redBtn">Delete</a>
+                </div>
             </div>
         </div>
         <%- include('partials/footer'); %>
+
 </body>
 
 </html>
