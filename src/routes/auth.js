@@ -15,6 +15,7 @@ import {
     profileNotFoundMsg,
     accountExists,
     publicKey,
+    noRedirectState,
 } from '../config/keys';
 import { Client, User } from '../models/user';
 
@@ -215,7 +216,7 @@ router.get(
 router.get('/iitd', (req, res) => {
     const { serviceURL } = req.query;
     let state;
-    if (!serviceURL) state = 'xyz';
+    if (!serviceURL) state = noRedirectState;
     else state = serviceURL;
     return res.redirect(
         `https://oauth.iitd.ac.in/authorize.php?response_type=code&client_id=${process.env.IITD_CLIENT_ID}&state=${state}`
@@ -277,7 +278,7 @@ router.get('/iitd/confirm', async (req, res) => {
             }
             const { state } = req.query;
 
-            if (typeof state !== 'undefined' && state && state !== 'xyz') {
+            if (typeof state !== 'undefined' && state) {
                 // render homepage to store token and then redirect with serviceURL
                 return res.redirect(`/redirecting?serviceURL=${state}`);
             }
