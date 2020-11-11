@@ -195,6 +195,7 @@ router.get(
     },
     async (req, res) => {
         createJWTCookie(req.user, res);
+        createJWTCookie(req.user, res, refreshTokenName);
         if (req.authInfo.message === profileNotFoundMsg) {
             return res.render('confirm', { user: req.user });
         }
@@ -263,6 +264,7 @@ router.get('/iitd/confirm', async (req, res) => {
                 await user.save();
             }
             createJWTCookie(user, res);
+            createJWTCookie(user, res, refreshTokenName);
             if (authInfo && authInfo.message === profileNotFoundMsg) {
                 return res.render('confirm', { user });
             }
