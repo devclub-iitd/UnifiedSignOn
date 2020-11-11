@@ -47,6 +47,24 @@ const verifyClientOwner = async (req, res, next) => {
 
 router.get('/', async (req, res) => {
     const clients = await Client.find({ owner: req.user });
+    if (req.query.msg) {
+        let err = '';
+        switch (req.query.err) {
+            case 'false':
+                err = false;
+                break;
+            case 'true':
+                err = true;
+                break;
+            default:
+                err = '';
+        }
+        return res.render('client/clients', {
+            clients,
+            err,
+            msg: req.query.msg,
+        });
+    }
     res.render('client/clients', { clients, err: false, msg: '' });
 });
 
@@ -321,10 +339,7 @@ router.post('/:id/delete', verifyClientOwner, async (req, res) => {
             await role.remove();
         }
         await client.remove();
-        return res.status(200).json({
-            err: false,
-            msg: 'Client Deleted Successfully!',
-        });
+        return res.redirect('/client?err=false&msg=Client+deleted+succesfully');
     } catch (error) {
         console.log(error);
         return res.status(500).json({
