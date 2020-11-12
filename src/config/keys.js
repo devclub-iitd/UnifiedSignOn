@@ -16,6 +16,8 @@ export const profileNotFoundMsg = 'Create a new account';
 export const accountExists =
     'An account is already linked with that account, Please try linking another one.';
 
+export const noRedirectState = 'xyz';
+
 // Role to Privilege
 export const r2p = {
     external_user: 0,

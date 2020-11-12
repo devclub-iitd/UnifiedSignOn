@@ -15,6 +15,7 @@ import {
     profileNotFoundMsg,
     accountExists,
     publicKey,
+    noRedirectState,
 } from '../config/keys';
 import { Client, User } from '../models/user';
 
@@ -206,6 +207,7 @@ router.get(
     },
     async (req, res) => {
         createJWTCookie(req.user, res);
+        createJWTCookie(req.user, res, refreshTokenName);
         if (req.authInfo.message === profileNotFoundMsg) {
             return res.render('confirm', { user: req.user });
         }
@@ -227,7 +229,7 @@ router.get(
 router.get('/iitd', (req, res) => {
     const { serviceURL } = req.query;
     let state;
-    if (!serviceURL) state = 'xyz';
+    if (!serviceURL) state = noRedirectState;
     else state = serviceURL;
     return res.redirect(
         `https://oauth.iitd.ac.in/authorize.php?response_type=code&client_id=${process.env.IITD_CLIENT_ID}&state=${state}`
@@ -274,6 +276,7 @@ router.get('/iitd/confirm', async (req, res) => {
                 await user.save();
             }
             createJWTCookie(user, res);
+            createJWTCookie(user, res, refreshTokenName);
             if (authInfo && authInfo.message === profileNotFoundMsg) {
                 return res.render('confirm', { user });
             }
@@ -289,7 +292,7 @@ router.get('/iitd/confirm', async (req, res) => {
             }
             const { state } = req.query;
 
-            if (typeof state !== 'undefined' && state && state !== 'xyz') {
+            if (typeof state !== 'undefined' && state) {
                 // render homepage to store token and then redirect with serviceURL
                 return res.redirect(`/redirecting?serviceURL=${state}`);
             }
