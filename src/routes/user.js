@@ -1,7 +1,11 @@
 /* eslint-disable import/named */
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import { createJWTCookie, addRoles } from '../utils/utils';
+import {
+    createJWTCookie,
+    sendVerificationEmail,
+    addRoles,
+} from '../utils/utils';
 import { refreshTokenName } from '../config/keys';
 import { User } from '../models/user';
 
@@ -14,7 +18,6 @@ router.get('/login', (req, res) => {
         USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
         PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
         OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
-
         2. Create a utils function to check validity of serviceURLs
     */
 
@@ -121,7 +124,7 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password,
-            isverified: true,
+            isverified: false,
         });
 
         // encrypt the password using bcrypt
@@ -138,7 +141,7 @@ router.post('/register', async (req, res) => {
         await user.save();
 
         addRoles(user);
-        // sendVerificationEmail(user);
+        sendVerificationEmail(user);
         res.render('register', {
             message:
                 "A verification email has been sent to your inbox! Make sure to check your spam folder in case you can't find it",
