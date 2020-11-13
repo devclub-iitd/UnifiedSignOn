@@ -157,6 +157,10 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+app.get('/healthz', (req, res) => {
+    res.send('Ok, Healthy!');
+});
+
 // middleware page used for redirecting and handeling the user token on our end
 app.get('/redirecting', (req, res) => {
     const { serviceURL } = req.query;

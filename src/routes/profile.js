@@ -60,10 +60,14 @@ router.post('/delete', async (req, res) => {
             });
 
             if (superAdmins.length === 0) {
-                return res.status(500).json({
-                    err: true,
-                    msg:
-                        'There is presently no superadmin to which the ownership of your clients can be transferred. Hence account deletion aborted',
+                return res.status(500).render('settings', {
+                    messages: [
+                        {
+                            message:
+                                'There is presently no superadmin to which the ownership of your clients can be transferred. Hence account deletion aborted',
+                            error: true,
+                        },
+                    ],
                 });
             }
             const superAdmin = superAdmins[0];
@@ -83,10 +87,7 @@ router.post('/delete', async (req, res) => {
         res.clearCookie(accessTokenName, {
             domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
         });
-        return res.status(200).json({
-            err: false,
-            msg: 'Account Deleted Successfully',
-        });
+        return res.redirect('/');
     } catch (error) {
         // now send a response
         return res.status(401).json({
