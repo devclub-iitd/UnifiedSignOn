@@ -11,7 +11,7 @@
     list-style: none;
     display: grid;
     grid-gap: 20px;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
 }
 
 .tab-item {
@@ -159,6 +159,7 @@ input:focus::-webkit-input-placeholder {
     box-sizing: border-box;
     margin: auto;
     width: 100%;
+    font-size: 12px;
     max-width: 500px;
 }
 
@@ -214,6 +215,12 @@ input:focus::-webkit-input-placeholder {
     background: rgb(77, 77, 77);
 }
 
+#accountForm .socialLink {
+    border: 1.5px solid rgb(255, 95, 95);
+    padding: 1rem;
+    border-radius: 10px;
+}
+
 #iitdFieldset {
     position: relative;
 }
@@ -245,12 +252,27 @@ input:focus::-webkit-input-placeholder {
     top: -50px;
 }
 
+@media (max-width: 1000px) {
+    .btn-social {
+        transform: scale(0.9);
+    }
+}
+
 @media (max-width: 500px) {
     .tabContainer {
         font-size: 14px;
     }
 
     .socialLinkContainer {
-        font-size: 14px;
+        font-size: 10px;
+    }
+
+    .deleteModal {
+        font-size: 13px;
+        width: 300px;
+    }
+
+    .deleteModal .btn {
+        transform: scale(0.8);
     }
 }

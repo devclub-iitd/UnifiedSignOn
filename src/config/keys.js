@@ -25,4 +25,5 @@ export const r2p = {
     dc_member: 2,
     dc_core: 3,
     admin: 4,
+    superadmin: 5,
 };

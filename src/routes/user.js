@@ -18,7 +18,6 @@ router.get('/login', (req, res) => {
         USER HAS BEEN REDIRECTED TO THE LOGIN PAGE
         PERHAPS PASS THE CORRESPONDING ERROR MESSAGE AND THEN RENDER PAGE
         OR THE URL QUERY CONTAINS THE SERVICE URL, YOU COULD REDIRECT TO THAT
-
         2. Create a utils function to check validity of serviceURLs
     */
 
