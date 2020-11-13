@@ -190,7 +190,10 @@
                 </div>
                 <div class="modalFooter">
                     <button type="button" class="btn" id="closeModal">Cancel</button>
-                    <a href="/profile/delete" class="btn redBtn">Delete</a>
+                    <form action="/profile/delete" method="POST">
+                        <button type="submit" class="btn redBtn">Delete</button>
+                    </form>
+                    
                 </div>
             </div>
         </div>
