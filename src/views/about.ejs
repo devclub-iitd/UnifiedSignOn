@@ -47,7 +47,7 @@
                 </div>
             </a>
         </div>
-        <a href="/user/login">
+        <a href="/user/login" id="aboutLogin">
             <div class="btn fixedBtn">
                 Login Now!
             </div>
@@ -55,5 +55,15 @@
     </div>
     <%- include('partials/footer.ejs'); %>
 </body>
+<script>
+    const getUserDetailsSuccess = (user) => {
+        $('#aboutLogin').css('display', 'none');
+    }
+    const getUserDetailsFailure = (message) => {
+        window.location.href = '/';
+    }
+
+    getUserDetails(getUserDetailsSuccess, getUserDetailsFailure);
+</script>
 
 </html>
