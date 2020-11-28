@@ -110,5 +110,3 @@ buid/
 .DS_Store
 
 .vscode/
-src/config/private.pem
-src/config/public.pem
