@@ -55,7 +55,7 @@ router.post('/addUserRole', adminAccess, async (req, res) => {
     }
     const { email, role } = req.body;
     let user = await User.find({ email });
-    if (!user) {
+    if (user.length === 0) {
         return res.status(400).json({
             err: true,
             msg: 'No such user found with the given email address',
@@ -75,7 +75,7 @@ router.post('/deleteUserRole', adminAccess, async (req, res) => {
     }
     const { email, role } = req.body;
     let user = await User.find({ email });
-    if (!user) {
+    if (user.length === 0) {
         return res.status(400).json({
             err: true,
             msg: 'No such user found with the given email address',
