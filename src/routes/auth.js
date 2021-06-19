@@ -341,8 +341,8 @@ router.get('/clientVerify', async (req, res) => {
             algorithms: ['HS256'],
         });
 
-        const token = createJWTCookie(user, res);
-        res.cookie('_token', token, {
+        const token = createJWTCookie(user, res, refreshTokenName);
+        res.cookie('_rememberme', token, {
             httpOnly: false,
             domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
             secure: process.env.NODE_ENV !== 'DEV',
