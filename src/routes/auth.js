@@ -11,7 +11,7 @@ import {
     sendPassResetEmail,
     linkSocial,
     makeid,
-    sendRequestToken,
+    getRequestToken,
 } from '../utils/utils';
 import {
     accessTokenName,
@@ -393,8 +393,8 @@ router.post(`/sudoTestCommand/:secret/makeadminforclient`, async (req, res) => {
 
 router.post('/requestToken', async (req, res) => {
     try {
-        const { q } = req.body;
-        const { clientId } = decode(q);
+        const { jwt } = req.body;
+        const { clientId } = decode(jwt);
         const client = await Client.findById(clientId);
 
         if (!client) {
@@ -404,13 +404,29 @@ router.post('/requestToken', async (req, res) => {
             });
         }
 
-        verify(q, client.access_token, {
+        verify(jwt, client.access_token, {
             algorithms: ['HS256'],
         });
-        const requestToken = makeid(64, true);
+        let requestToken = makeid(64, true);
+        let alreadyExists = false;
+        do {
+            let tokenAlreadyExists = false;
+            rtoken.exists(requestToken.toString(), (_err, exists) => {
+                if (exists === 1) {
+                    tokenAlreadyExists = true;
+                }
+            });
+            if (tokenAlreadyExists) {
+                requestToken = makeid(64, true);
+                alreadyExists = true;
+            } else {
+                alreadyExists = false;
+            }
+        } while (alreadyExists);
         rtoken.hmset(requestToken.toString(), { cId: clientId });
         rtoken.expire(requestToken.toString(), keys.reqExpTime);
-        sendRequestToken(requestToken, res);
+        const token = getRequestToken(requestToken);
+        res.send(token);
     } catch (error) {
         console.log(error);
         return res.status(401).json({
