@@ -1,6 +1,7 @@
 import express from 'express';
 import { verify, decode } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import util from 'util';
 import rtoken from '../data/resourceToken';
 import * as keys from '../config/keys';
 import {
@@ -407,22 +408,14 @@ router.post('/requestToken', async (req, res) => {
         verify(jwt, client.access_token, {
             algorithms: ['HS256'],
         });
-        let requestToken = makeid(64, true);
-        let alreadyExists = false;
-        do {
-            let tokenAlreadyExists = false;
-            rtoken.exists(requestToken.toString(), (_err, exists) => {
-                if (exists === 1) {
-                    tokenAlreadyExists = true;
-                }
-            });
-            if (tokenAlreadyExists) {
-                requestToken = makeid(64, true);
-                alreadyExists = true;
-            } else {
-                alreadyExists = false;
-            }
-        } while (alreadyExists);
+        rtoken.exists = util.promisify(rtoken.exists);
+        let requestToken;
+        let exists = 1;
+        while (exists) {
+            requestToken = makeid(64, true);
+            // eslint-disable-next-line no-await-in-loop
+            exists = await rtoken.exists(requestToken.toString());
+        }
         rtoken.hmset(requestToken.toString(), { cId: clientId });
         rtoken.expire(requestToken.toString(), keys.reqExpTime);
         const token = getRequestToken(requestToken);
@@ -435,5 +428,20 @@ router.post('/requestToken', async (req, res) => {
         });
     }
 });
+
+// api route to check whether the above route works or not
+
+// router.post('/checkFunction', async (req, res) => {
+//     let { requestToken } = req.body;
+//     let exists = 1;
+//     rtoken.exists = util.promisify(rtoken.exists);
+//     while (exists) {
+//         // eslint-disable-next-line no-await-in-loop
+//         exists = await rtoken.exists(requestToken.toString());
+//         requestToken = makeid(64, true);
+//         console.log(exists);
+//     }
+//     res.send(requestToken);
+// });
 
 export default router;
