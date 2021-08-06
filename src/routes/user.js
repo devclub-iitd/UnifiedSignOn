@@ -124,7 +124,7 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password,
-            isverified: false,
+            isverified: process.env.NODE_ENV === 'DEV',
         });
 
         // encrypt the password using bcrypt
@@ -141,7 +141,11 @@ router.post('/register', async (req, res) => {
         await user.save();
 
         addRoles(user);
-        sendVerificationEmail(user);
+
+        if (process.env.NODE_ENV !== 'DEV') {
+            sendVerificationEmail(user);
+        }
+
         res.render('register', {
             message:
                 "A verification email has been sent to your inbox! Make sure to check your spam folder in case you can't find it",
