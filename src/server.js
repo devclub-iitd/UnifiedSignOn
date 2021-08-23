@@ -8,6 +8,7 @@ import auth from './routes/auth';
 import profile from './routes/profile';
 import client from './routes/client';
 import api from './routes/api';
+import tests from './tests/tests';
 import * as keys from './config/keys';
 
 import { socialAuthenticate, linkSocial } from './utils/utils';
@@ -191,6 +192,9 @@ app.use('/profile', profile);
 app.use('/client', client);
 app.use('/api', api);
 
+if (process.env.NODE_ENV === 'DEV') {
+    app.use('/test', tests);
+}
 app.get('/privacy-policy', (req, res) => {
     res.render('privacy_policy');
 });

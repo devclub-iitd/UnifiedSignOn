@@ -429,19 +429,39 @@ router.post('/requestToken', async (req, res) => {
     }
 });
 
-// api route to check whether the above route works or not
-
-// router.post('/checkFunction', async (req, res) => {
-//     let { requestToken } = req.body;
-//     let exists = 1;
-//     rtoken.exists = util.promisify(rtoken.exists);
-//     while (exists) {
-//         // eslint-disable-next-line no-await-in-loop
-//         exists = await rtoken.exists(requestToken.toString());
-//         requestToken = makeid(64, true);
-//         console.log(exists);
-//     }
-//     res.send(requestToken);
-// });
+router.get('/verifyRToken', async (req, res) => {
+    try {
+        console.log('here');
+        const { q } = req.query;
+        const { requestToken } = decode(q);
+        rtoken.exists = util.promisify(rtoken.exists);
+        rtoken.hget = util.promisify(rtoken.hget);
+        const exists = await rtoken.exists(requestToken.toString());
+        console.log(exists);
+        if (!exists) {
+            return res.status(401).json({
+                err: true,
+                msg: 'Session Expired',
+            });
+        }
+        const user = await verifyToken(req, res);
+        const clientId = await rtoken.hget(requestToken.toString(), 'cId');
+        rtoken.hmset(requestToken.toString(), {
+            cId: clientId,
+            uId: user._id.toString(),
+        });
+        rtoken.expire(requestToken.toString(), keys.reqExpTime);
+        return res.status(200).json({
+            err: false,
+            msg: 'User authenticated successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({
+            err: true,
+            msg: 'Unauthorized Client',
+        });
+    }
+});
 
 export default router;
