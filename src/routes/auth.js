@@ -446,6 +446,18 @@ router.get('/verifyRToken', async (req, res) => {
         }
         const user = await verifyToken(req, res);
         const clientId = await rtoken.hget(requestToken.toString(), 'cId');
+        const client = await Client.findById(clientId);
+
+        if (!client) {
+            return res.status(400).json({
+                err: true,
+                msg: 'No client found',
+            });
+        }
+
+        verify(requestToken, client.access_token, {
+            algorithms: ['HS256'],
+        });
         rtoken.hmset(requestToken.toString(), {
             cId: clientId,
             uId: user._id.toString(),
