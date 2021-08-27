@@ -1,6 +1,9 @@
 import express from 'express';
 import { verify, decode } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
+import util from 'util';
+import rtoken from '../data/resourceToken';
+import * as keys from '../config/keys';
 import {
     verifyToken,
     createJWTCookie,
@@ -8,6 +11,8 @@ import {
     sendVerificationEmail,
     sendPassResetEmail,
     linkSocial,
+    makeid,
+    getRequestToken,
 } from '../utils/utils';
 import {
     accessTokenName,
@@ -167,8 +172,6 @@ router.post('/password/reset', async (req, res) => {
         });
     }
 });
-
-export default router;
 
 router.get('/google', (req, res, next) => {
     passport.authenticate('google', {
@@ -388,3 +391,89 @@ router.post(`/sudoTestCommand/:secret/makeadminforclient`, async (req, res) => {
         });
     }
 });
+
+router.post('/requestToken', async (req, res) => {
+    try {
+        const { jwt } = req.body;
+        const { clientId } = decode(jwt);
+        const client = await Client.findById(clientId);
+
+        if (!client) {
+            return res.status(400).json({
+                err: true,
+                msg: 'No client found',
+            });
+        }
+
+        verify(jwt, client.access_token, {
+            algorithms: ['HS256'],
+        });
+        rtoken.exists = util.promisify(rtoken.exists);
+        let requestToken;
+        let exists = 1;
+        while (exists) {
+            requestToken = makeid(64, true);
+            // eslint-disable-next-line no-await-in-loop
+            exists = await rtoken.exists(requestToken.toString());
+        }
+        rtoken.hmset(requestToken.toString(), { cId: clientId });
+        rtoken.expire(requestToken.toString(), keys.reqExpTime);
+        const token = getRequestToken(requestToken);
+        res.send(token);
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({
+            err: true,
+            msg: 'Unauthorized Client',
+        });
+    }
+});
+
+router.get('/verifyRToken', async (req, res) => {
+    try {
+        console.log('here');
+        const { q } = req.query;
+        const { requestToken } = decode(q);
+        rtoken.exists = util.promisify(rtoken.exists);
+        rtoken.hget = util.promisify(rtoken.hget);
+        const exists = await rtoken.exists(requestToken.toString());
+        console.log(exists);
+        if (!exists) {
+            return res.status(401).json({
+                err: true,
+                msg: 'Session Expired',
+            });
+        }
+        const user = await verifyToken(req, res);
+        const clientId = await rtoken.hget(requestToken.toString(), 'cId');
+        const client = await Client.findById(clientId);
+
+        if (!client) {
+            return res.status(400).json({
+                err: true,
+                msg: 'No client found',
+            });
+        }
+
+        verify(requestToken, client.access_token, {
+            algorithms: ['HS256'],
+        });
+        rtoken.hmset(requestToken.toString(), {
+            cId: clientId,
+            uId: user._id.toString(),
+        });
+        rtoken.expire(requestToken.toString(), keys.reqExpTime);
+        return res.status(200).json({
+            err: false,
+            msg: 'User authenticated successfully',
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({
+            err: true,
+            msg: 'Unauthorized Client',
+        });
+    }
+});
+
+export default router;
