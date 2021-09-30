@@ -13,6 +13,7 @@ import {
     linkSocial,
     makeid,
     getRequestToken,
+    createAuthToken,
 } from '../utils/utils';
 import {
     accessTokenName,
@@ -431,13 +432,11 @@ router.post('/requestToken', async (req, res) => {
 
 router.get('/verifyRToken', async (req, res) => {
     try {
-        console.log('here');
         const { q } = req.query;
         const { requestToken } = decode(q);
         rtoken.exists = util.promisify(rtoken.exists);
         rtoken.hget = util.promisify(rtoken.hget);
         const exists = await rtoken.exists(requestToken.toString());
-        console.log(exists);
         if (!exists) {
             return res.status(401).json({
                 err: true,
@@ -455,7 +454,7 @@ router.get('/verifyRToken', async (req, res) => {
             });
         }
 
-        verify(requestToken, client.access_token, {
+        verify(requestToken, keys.privateKey, {
             algorithms: ['HS256'],
         });
         rtoken.hmset(requestToken.toString(), {
@@ -468,7 +467,48 @@ router.get('/verifyRToken', async (req, res) => {
             msg: 'User authenticated successfully',
         });
     } catch (error) {
-        console.log(error);
+        return res.status(401).json({
+            err: true,
+            msg: 'Unauthorized Client',
+        });
+    }
+});
+
+router.post('/getToken', async (req, res) => {
+    try {
+        const { token } = req.body;
+        const { requestToken } = decode(token);
+        rtoken.exists = util.promisify(rtoken.exists);
+        rtoken.hget = util.promisify(rtoken.hget);
+        const exists = await rtoken.exists(requestToken.toString());
+        if (!exists) {
+            return res.status(401).json({
+                err: true,
+                msg: 'Session Expired',
+            });
+        }
+
+        const clientId = await rtoken.hget(requestToken.toString(), 'cId');
+        const userId = await rtoken.hget(requestToken.toString(), 'uId');
+        const client = await Client.findById(clientId);
+
+        if (!client) {
+            return res.status(400).json({
+                err: true,
+                msg: 'No client found',
+            });
+        }
+
+        verify(requestToken, keys.privateKey, {
+            algorithms: ['HS256'],
+        });
+
+        const user = await User.findById(userId);
+
+        const authToken = createAuthToken(user);
+
+        res.send(authToken);
+    } catch (error) {
         return res.status(401).json({
             err: true,
             msg: 'Unauthorized Client',

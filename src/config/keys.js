@@ -3,7 +3,8 @@ const path = require('path');
 
 export const expTime = 60 * 20;
 export const rememberTime = 60 * 60 * 24 * 2;
-export const reqExpTime = 60;
+export const reqExpTime = 600;
+export const authExpTime = 2700000;
 export const accessTokenName = 'token';
 export const refreshTokenName = 'rememberme';
 export const iss = 'auth.devclub.in';
