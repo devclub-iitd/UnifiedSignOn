@@ -1,6 +1,10 @@
 const fs = require('fs');
 const path = require('path');
 
+require('dotenv').config({
+    path: `${__dirname}/../../.env`,
+});
+
 export const expTime = 60 * 20;
 export const rememberTime = 60 * 60 * 24 * 2;
 export const reqExpTime = 60;
@@ -19,6 +23,7 @@ export const accountExists =
     'An account is already linked with that account, Please try linking another one.';
 
 export const noRedirectState = 'xyz';
+export const isDev = process.env.NODE_ENV === 'DEV';
 
 // Role to Privilege
 export const r2p = {

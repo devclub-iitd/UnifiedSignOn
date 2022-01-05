@@ -13,10 +13,6 @@ import * as keys from './config/keys';
 
 import { socialAuthenticate, linkSocial } from './utils/utils';
 
-require('dotenv').config({
-    path: `${__dirname}/../.env`,
-});
-
 const app = express();
 
 const passport = require('passport');
@@ -192,7 +188,7 @@ app.use('/profile', profile);
 app.use('/client', client);
 app.use('/api', api);
 
-if (process.env.NODE_ENV === 'DEV') {
+if (keys.isDev) {
     app.use('/test', tests);
 }
 app.get('/privacy-policy', (req, res) => {

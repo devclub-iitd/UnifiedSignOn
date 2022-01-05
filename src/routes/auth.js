@@ -2,7 +2,7 @@ import express from 'express';
 import { verify, decode } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import util from 'util';
-import rtoken from '../data/resourceToken';
+import rtoken from '../config/redis';
 import * as keys from '../config/keys';
 import {
     verifyToken,
@@ -24,19 +24,10 @@ import {
     noRedirectState,
 } from '../config/keys';
 import { Client, User } from '../models/user';
+import axios from '../config/axios';
 
 const router = express.Router();
 const passport = require('passport');
-const HttpsProxyAgent = require('https-proxy-agent');
-
-const axiosDefaultConfig = {
-    proxy: false,
-    httpsAgent:
-        process.env.NODE_ENV !== 'DEV'
-            ? new HttpsProxyAgent('http://devclub.iitd.ac.in:3128')
-            : null,
-};
-const axios = require('axios').create(axiosDefaultConfig);
 const qs = require('qs');
 // post route to check validity of tokens, clients will hit this route.
 router.post('/refresh-token', async (req, res) => {
@@ -69,10 +60,10 @@ router.get('/email/verify/token', async (req, res) => {
     } catch (error) {
         console.log(error);
         res.clearCookie(accessTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !keys.isDev ? 'devclub.in' : null,
         });
         res.clearCookie(refreshTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !keys.isDev ? 'devclub.in' : null,
         });
         res.render('account_verified', { error: true });
     }
@@ -130,10 +121,10 @@ router.get('/password/reset/token', async (req, res) => {
     } catch (error) {
         console.log(error);
         res.clearCookie(accessTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !keys.isDev ? 'devclub.in' : null,
         });
         res.clearCookie(refreshTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !keys.isDev ? 'devclub.in' : null,
         });
         res.render('login', {
             message: 'Invalid Token. Please try resetting your password again',
@@ -348,8 +339,8 @@ router.get('/clientVerify', async (req, res) => {
         const token = createJWTCookie(user, res, refreshTokenName);
         res.cookie('_rememberme', token, {
             httpOnly: false,
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
-            secure: process.env.NODE_ENV !== 'DEV',
+            domain: !keys.isDev ? 'devclub.in' : null,
+            secure: !keys.isDev,
         });
         return res.status(200).json({
             err: false,

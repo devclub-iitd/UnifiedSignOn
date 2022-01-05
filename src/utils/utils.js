@@ -6,17 +6,7 @@
 import jwt, { verify } from 'jsonwebtoken';
 import * as keys from '../config/keys';
 import { User, SocialAccount, Role } from '../models/user';
-
-const HttpsProxyAgent = require('https-proxy-agent');
-
-const axiosDefaultConfig = {
-    proxy: false,
-    httpsAgent:
-        process.env.NODE_ENV !== 'DEV'
-            ? new HttpsProxyAgent('http://devclub.iitd.ac.in:3128')
-            : null,
-};
-const axios = require('axios').create(axiosDefaultConfig);
+import axios from '../config/axios';
 
 const getUserPrivilege = (user) => {
     let privilege = 0;
@@ -67,10 +57,10 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
     // set the cookie with token with the same age as that of token
     res.cookie(tokenName, token, {
         maxAge: exp * 1000, // in milli seconds
-        secure: process.env.NODE_ENV !== 'DEV', // set to true if you are using https
+        secure: !keys.isDev, // set to true if you are using https
         httpOnly: true,
         sameSite: 'lax',
-        domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+        domain: !keys.isDev ? 'devclub.in' : null,
     });
     return token;
 };
@@ -120,10 +110,10 @@ const verifyToken = async (
         // I wasn't able to verify the token as it was invalid
         // clear the tokens
         res.clearCookie(keys.accessTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !keys.isDev ? 'devclub.in' : null,
         });
         res.clearCookie(keys.refreshTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !keys.isDev ? 'devclub.in' : null,
         });
         throw err;
     }

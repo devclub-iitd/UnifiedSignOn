@@ -2,12 +2,24 @@ version: '3.4'
 
 services:
     database:
-        image: '${REGISTRY_NAME}mongo:latest'
+        image: '${REGISTRY_NAME}mongo:4.2-bionic'
         volumes:
             - casidb:/data/db
         networks:
             - 'internal'
         restart: 'unless-stopped'
+    redis:
+        image: '${REGISTRY_NAME}redis:6.2-alpine'
+        restart: always
+        networks:
+            - 'internal'
+        ports:
+            - '6379:6379'
+        env_file:
+            - './.env'
+        command: redis-server --loglevel warning --requirepass ${REDIS_PASS}
+        volumes:
+            - casi_redis:/data
     CASI:
         build: .
         image: '${REGISTRY_NAME}devclubiitd/casi:0.1'
@@ -30,9 +42,11 @@ services:
             - MONGODB_URI_LOCAL
         depends_on:
             - database
+            - redis
 
 volumes:
     casidb:
+    casi_redis:
 
 networks:
     reverseproxy:

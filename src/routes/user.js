@@ -6,7 +6,7 @@ import {
     sendVerificationEmail,
     addRoles,
 } from '../utils/utils';
-import { refreshTokenName } from '../config/keys';
+import { isDev, refreshTokenName } from '../config/keys';
 import { User } from '../models/user';
 
 const router = express.Router();
@@ -124,7 +124,7 @@ router.post('/register', async (req, res) => {
             username,
             email,
             password,
-            isverified: process.env.NODE_ENV === 'DEV',
+            isverified: isDev,
         });
 
         // encrypt the password using bcrypt
@@ -142,7 +142,7 @@ router.post('/register', async (req, res) => {
 
         addRoles(user);
 
-        if (process.env.NODE_ENV !== 'DEV') {
+        if (!isDev) {
             sendVerificationEmail(user);
         }
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import util from 'util';
-import rtoken from '../data/resourceToken';
+import rtoken from '../config/redis';
 import { makeid } from '../utils/utils';
 
 const router = express.Router();

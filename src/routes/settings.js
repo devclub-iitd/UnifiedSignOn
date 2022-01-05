@@ -1,7 +1,7 @@
 /* eslint-disable import/named */
 import bcrypt from 'bcryptjs';
 import { SocialAccount } from '../models/user';
-import { accessTokenName } from '../config/keys';
+import { accessTokenName, isDev } from '../config/keys';
 import { createJWTCookie, verifyToken } from '../utils/utils';
 
 const router = require('express').Router();
@@ -101,8 +101,7 @@ router.post('/', async (req, res) => {
             } else {
                 // If the validation was successful, update the user and create a new JWT for the updated credentials
                 res.clearCookie(accessTokenName, {
-                    domain:
-                        process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+                    domain: !isDev ? 'devclub.in' : null,
                 });
                 await createJWTCookie(user, res);
                 res.render('settings', { messages });

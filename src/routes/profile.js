@@ -2,7 +2,7 @@
 /* eslint-disable import/named */
 import express from 'express';
 import { verifyToken, getUserPrivilege } from '../utils/utils';
-import { accessTokenName, refreshTokenName } from '../config/keys';
+import { accessTokenName, isDev, refreshTokenName } from '../config/keys';
 import settingsRoutes from './settings';
 import { Client, SocialAccount, User } from '../models/user';
 
@@ -28,10 +28,10 @@ router.post('/', async (req, res) => {
 router.post('/logout', (req, res) => {
     try {
         res.clearCookie(accessTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !isDev ? 'devclub.in' : null,
         });
         res.clearCookie(refreshTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !isDev ? 'devclub.in' : null,
         });
         return res.json({
             err: false,
@@ -85,7 +85,7 @@ router.post('/delete', async (req, res) => {
         await user.remove();
 
         res.clearCookie(accessTokenName, {
-            domain: process.env.NODE_ENV !== 'DEV' ? 'devclub.in' : null,
+            domain: !isDev ? 'devclub.in' : null,
         });
         return res.redirect('/');
     } catch (error) {
