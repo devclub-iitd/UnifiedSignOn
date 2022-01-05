@@ -37,7 +37,7 @@ const getRoleData = async (roles) => {
     return data;
 };
 
-const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
+const createJWTToken = (user, expiry) => {
     const payload = {
         user: {
             id: user.id,
@@ -50,14 +50,19 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
             isverified: user.isverified,
         },
     };
-    const exp =
-        tokenName === keys.refreshTokenName ? keys.rememberTime : keys.expTime;
-    // create a token
     const token = jwt.sign(payload, keys.privateKey, {
-        expiresIn: exp, // in seconds
+        expiresIn: expiry,
         issuer: keys.iss,
         algorithm: 'RS256',
     });
+    return token;
+};
+
+const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
+    const exp =
+        tokenName === keys.refreshTokenName ? keys.rememberTime : keys.expTime;
+    // create a token
+    const token = createJWTToken(user, exp);
 
     // set the cookie with token with the same age as that of token
     res.cookie(tokenName, token, {
@@ -365,4 +370,5 @@ export {
     sendPassResetEmail,
     addRoles,
     getRequestToken,
+    createJWTToken,
 };
