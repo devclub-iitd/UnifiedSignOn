@@ -37,7 +37,7 @@ const getRoleData = async (roles) => {
     return data;
 };
 
-const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
+const createJWTToken = (user, expiry) => {
     const payload = {
         user: {
             id: user.id,
@@ -50,14 +50,19 @@ const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
             isverified: user.isverified,
         },
     };
-    const exp =
-        tokenName === keys.refreshTokenName ? keys.rememberTime : keys.expTime;
-    // create a token
     const token = jwt.sign(payload, keys.privateKey, {
-        expiresIn: exp, // in seconds
+        expiresIn: expiry,
         issuer: keys.iss,
         algorithm: 'RS256',
     });
+    return token;
+};
+
+const createJWTCookie = (user, res, tokenName = keys.accessTokenName) => {
+    const exp =
+        tokenName === keys.refreshTokenName ? keys.rememberTime : keys.expTime;
+    // create a token
+    const token = createJWTToken(user, exp);
 
     // set the cookie with token with the same age as that of token
     res.cookie(tokenName, token, {
@@ -352,30 +357,6 @@ const getRequestToken = (reqToken) => {
     return token;
 };
 
-const createAuthToken = (user) => {
-    const payload = {
-        user: {
-            id: user.id,
-            email: user.email,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            username: user.username,
-            roles: user.roles,
-            privilege: getUserPrivilege(user),
-            isverified: user.isverified,
-        },
-    };
-    const exp = keys.authExpTime;
-    // create a token
-    const token = jwt.sign(payload, keys.privateKey, {
-        expiresIn: exp, // in seconds
-        issuer: keys.iss,
-        algorithm: 'RS256',
-    });
-
-    return token;
-};
-
 export {
     makeid,
     createJWTCookie,
@@ -389,5 +370,5 @@ export {
     sendPassResetEmail,
     addRoles,
     getRequestToken,
-    createAuthToken,
+    createJWTToken,
 };

@@ -13,7 +13,7 @@ import {
     linkSocial,
     makeid,
     getRequestToken,
-    createAuthToken,
+    createJWTToken,
 } from '../utils/utils';
 import {
     accessTokenName,
@@ -433,6 +433,9 @@ router.post('/requestToken', async (req, res) => {
 router.get('/verifyRToken', async (req, res) => {
     try {
         const { q } = req.query;
+        verify(q, keys.publicKey, {
+            algorithms: ['RS256'],
+        });
         const { requestToken } = decode(q);
         rtoken.exists = util.promisify(rtoken.exists);
         rtoken.hget = util.promisify(rtoken.hget);
@@ -453,10 +456,6 @@ router.get('/verifyRToken', async (req, res) => {
                 msg: 'No client found',
             });
         }
-
-        verify(requestToken, keys.privateKey, {
-            algorithms: ['HS256'],
-        });
         rtoken.hmset(requestToken.toString(), {
             cId: clientId,
             uId: user._id.toString(),
@@ -474,7 +473,7 @@ router.get('/verifyRToken', async (req, res) => {
     }
 });
 
-router.post('/getToken', async (req, res) => {
+router.post('/getAuthToken', async (req, res) => {
     try {
         const { token } = req.body;
         const { requestToken } = decode(token);
@@ -499,13 +498,13 @@ router.post('/getToken', async (req, res) => {
             });
         }
 
-        verify(requestToken, keys.privateKey, {
+        verify(token, client.access_token, {
             algorithms: ['HS256'],
         });
 
         const user = await User.findById(userId);
 
-        const authToken = createAuthToken(user);
+        const authToken = createJWTToken(user, keys.authExpTime);
 
         res.send(authToken);
     } catch (error) {
