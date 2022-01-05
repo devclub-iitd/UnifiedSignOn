@@ -1,6 +1,6 @@
 /* eslint-disable import/named */
 import bcrypt from 'bcryptjs';
-import { SocialAccount } from '../models/user';
+import { SocialAccount, User } from '../models/user';
 import { accessTokenName, isDev } from '../config/keys';
 import { createJWTCookie, verifyToken } from '../utils/utils';
 
@@ -76,7 +76,13 @@ router.post('/', async (req, res) => {
                 error: false,
             });
         }
-        if (newUsername && newUsername !== user.username) {
+        const existingUser = await User.findOne({ username: newUsername });
+        if (existingUser) {
+            messages.push({
+                message: 'Username is already taken',
+                error: true,
+            });
+        } else if (newUsername && newUsername !== user.username) {
             user.username = newUsername;
             messages.push({
                 message: 'Username updated successfully',
