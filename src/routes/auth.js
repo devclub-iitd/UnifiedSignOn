@@ -58,7 +58,7 @@ router.get('/email/verify/token', async (req, res) => {
         await user.save();
         res.render('account_verified');
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.clearCookie(accessTokenName, {
             domain: !keys.isDev ? 'devclub.in' : null,
         });
@@ -119,7 +119,7 @@ router.get('/password/reset/token', async (req, res) => {
             serviceURL: '',
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         res.clearCookie(accessTokenName, {
             domain: !keys.isDev ? 'devclub.in' : null,
         });
@@ -262,7 +262,7 @@ router.get('/iitd/confirm', async (req, res) => {
             authInfo = null
         ) => {
             if (err || !user) {
-                console.log(err, user);
+                console.error(err, user);
                 return res.sendStatus(500);
             }
 
@@ -313,7 +313,7 @@ router.get('/iitd/confirm', async (req, res) => {
             );
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.sendStatus(500);
     }
 });
@@ -347,7 +347,7 @@ router.get('/clientVerify', async (req, res) => {
             msg: 'Client verified successfully',
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(401).json({
             err: true,
             msg: 'Unauthorized Client',
@@ -413,7 +413,7 @@ router.post('/requestToken', async (req, res) => {
         const token = getRequestToken(requestToken);
         res.send(token);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(401).json({
             err: true,
             msg: 'Unauthorized Client',

@@ -9,7 +9,7 @@ const rtokens = redis.createClient({
 });
 
 rtokens.on('error', (err) => {
-    console.log(err);
+    console.error(err);
 });
 
 export default rtokens;

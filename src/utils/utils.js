@@ -106,7 +106,6 @@ const verifyToken = async (
 
         return user;
     } catch (err) {
-        console.log(err);
         // I wasn't able to verify the token as it was invalid
         // clear the tokens
         res.clearCookie(keys.accessTokenName, {
@@ -141,7 +140,7 @@ const sendVerificationEmail = async (user) => {
             secret: process.env.MAILER_TOKEN,
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 const sendPassResetEmail = async (user, newPass) => {
@@ -168,7 +167,7 @@ const sendPassResetEmail = async (user, newPass) => {
             secret: process.env.MAILER_TOKEN,
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -209,7 +208,7 @@ const assignRoleToUsers = async (role, del = false, users = null) => {
                 await user.save();
             }
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
     }
 };
@@ -238,7 +237,7 @@ const addRoles = async (user) => {
             await assignRoleToUsers(role, false, [user]);
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
     }
 };
 
@@ -310,7 +309,7 @@ const socialAuthenticate = async (
             message: msg,
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return done(error);
     }
 };

@@ -14,6 +14,7 @@ import * as keys from './config/keys';
 import { socialAuthenticate, linkSocial } from './utils/utils';
 
 const app = express();
+const morgan = require('morgan');
 
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -115,6 +116,8 @@ githubStrategy._oauth2.setAgent(httpsProxyAgent);
 passport.use(googleStrategy);
 passport.use(fbStrategy);
 passport.use(githubStrategy);
+
+app.use(morgan('combined'));
 app.use(passport.initialize());
 
 app.use(cors());
@@ -146,7 +149,7 @@ mongoose
         console.log('Connected to the database...');
     })
     .catch((err) => {
-        console.log(err);
+        console.error(err);
     });
 
 // Root page

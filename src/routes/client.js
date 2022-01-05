@@ -37,7 +37,7 @@ const verifyClientOwner = async (req, res, next) => {
             throw Error('Unauthorized access');
         }
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(401).render('client/clients.ejs', {
             err: true,
             msg: 'This client does not belong to you',
@@ -181,7 +181,7 @@ router.post('/register', async (req, res) => {
         await client.save();
         return res.redirect(`/client/${client.id}`);
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.render('client/client_register.ejs', {
             err: true,
             msg: 'Whoops! A server error occured',
@@ -225,7 +225,7 @@ router.get('/:id/config', verifyClientOwner, async (req, res) => {
         const randomFile = path.resolve(__dirname, `./${makeid(10, true)}`);
         fs.writeFileSync(randomFile, vars);
         res.sendFile(randomFile, (err) => {
-            if (err) console.log(err);
+            if (err) console.error(err);
             fs.unlinkSync(randomFile);
         });
     } catch (error) {
@@ -309,7 +309,7 @@ router.post('/:id/update', verifyClientOwner, async (req, res) => {
             msg: 'Client Updated Successfully',
         });
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).json({
             err: true,
             msg: 'Whoops! A server error occured',
@@ -341,7 +341,7 @@ router.post('/:id/delete', verifyClientOwner, async (req, res) => {
         await client.remove();
         return res.redirect('/client?err=false&msg=Client+deleted+succesfully');
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.status(500).json({
             err: true,
             msg: 'Whoops! A server error occured',

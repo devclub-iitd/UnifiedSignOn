@@ -26,7 +26,7 @@ router.use(async (req, res, next) => {
         );
         next();
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return res.sendStatus(401);
     }
 });
