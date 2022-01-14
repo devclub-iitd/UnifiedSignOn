@@ -6,7 +6,7 @@ require('dotenv').config({
 });
 
 export const expTime = 60 * 20;
-export const rememberTime = 60 * 60 * 24 * 2;
+export const rememberTime = 60 * 60 * 24 * 30 * 2;
 export const reqExpTime = 60;
 export const authExpTime = 2700000;
 export const accessTokenName = 'token';
