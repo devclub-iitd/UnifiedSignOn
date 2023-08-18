@@ -11,6 +11,9 @@
             let serviceURL = '';
             if ($('#serviceURL').length > 0) {
                 serviceURL = $('#serviceURL').html();
+                if (serviceURL === 'https://study.devclub.in/books/') {
+                    window.location.href = 'https://auth.devclub.in/auth/iitd?serviceURL=https://study.devclub.in/books/';
+                }
                 $('#serviceURLInput').val(serviceURL);
                 $('#signupBtn a').attr('href', `/user/register?serviceURL=${serviceURL}`);
                 $('#googleLogin').attr('href', `/auth/google?serviceURL=${serviceURL}`)
@@ -30,10 +33,6 @@
 <body>
     <%- include('partials/header'); %>
     <div class="rootContainer rootContainerFull bg-wave" style="justify-content: flex-start;">
-        <div class="pageTitle">
-            Login
-        </div>
-        <div class="miniLine"></div>
         <div class="socialLoginContainer" style="margin: 3rem auto;">
             <fieldset>
                 <h4 style="font-weight: 600;">Sign in with</h4>
@@ -50,6 +49,11 @@
                 </div>
             </fieldset>
         </div>
+        <div class="miniLine"></div>
+        <div class="pageTitle">
+            Login
+        </div>
+        <div class="miniLine"></div>
         <div class="formContainer">
             <form action="/user/login" method="POST">
                 <div class="input-group">
