@@ -368,7 +368,7 @@ body {
 /* ROOT CONTAINER */
 .rootContainer {
     margin-top: 60px;
-    padding: 40px;
+    padding: 40px 0px;
     display: flex;
     padding-bottom: 80px;
     flex-direction: column;
